@@ -3,25 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plyndi — Travel & Lifestyle</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Plyndi - Plan Your Perfect Journey</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
 
-    <header>
-        <h1>Plyndi</h1>
-        <p>Your smarter everyday companion.</p>
+    <!-- Header & Navigation -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#home" class="logo">
+                <img src="image.png" alt="Plyndi Logo">
+                <span>Plyndi</span>
+            </a>
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#planner">Travel Planner</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#support">Support</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
     </header>
 
-    <main>
-        <h2>Travel with Plyndi</h2>
-        <p>Explore travel guides, tips, destinations and more.</p>
-    </main>
+    <!-- 1. Home Section -->
+    <section id="home" class="hero-section">
+        <div class="container hero-content">
+            <h1>Explore The World With <span>Plyndi</span></h1>
+            <p>Your ultimate travel companion to plan trips, discover places, and make memories seamless.</p>
+            <a href="#planner" class="btn btn-primary">Start Planning Now</a>
+        </div>
+    </section>
 
-    <footer>
-        <p>© 2026 Plyndi. All rights reserved.</p>
+    <!-- 2. Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">Why Choose Plyndi?</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <i class="fas fa-route card-icon"></i>
+                    <h3>Smart Itinerary Builder</h3>
+                    <p>Easily build day-by-day travel schedules tailored to your preferences.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-compass card-icon"></i>
+                    <h3>Destination Guides</h3>
+                    <p>Explore curated recommendations for food, stays, and hidden gems.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-users card-icon"></i>
+                    <h3>Collaborative Planning</h3>
+                    <p>Share travel plans with friends and family in real-time seamlessly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Travel Planner Section -->
+    <section id="planner" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Travel Planner</h2>
+            <p class="subtitle">Quickly generate an itinerary sketch for your next destination.</p>
+            
+            <form id="plannerForm" class="planner-form">
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" placeholder="e.g., Mandalay, Bangkok, Tokyo" required>
+                </div>
+                <div class="form-group">
+                    <label for="days">Duration (Days)</label>
+                    <input type="number" id="days" min="1" max="30" value="3" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Generate Trip Outline</button>
+            </form>
+
+            <div id="plannerResult" class="planner-result"></div>
+        </div>
+    </section>
+
+    <!-- 4. Blog / Travel Content Section -->
+    <section id="blog" class="section">
+        <div class="container">
+            <h2 class="section-title">Latest Travel Stories</h2>
+            <div class="grid grid-3">
+                <article class="card blog-card">
+                    <h3>Top 5 Hidden Spots in Myanmar</h3>
+                    <p class="date">September 2026</p>
+                    <p>Discover untouched natural beauty and quiet retreats for your next vacation...</p>
+                </article>
+                <article class="card blog-card">
+                    <h3>Budget Travel Hacks for Beginners</h3>
+                    <p class="date">August 2026</p>
+                    <p>How to save money on flights, accommodation, and food without sacrificing comfort...</p>
+                </article>
+                <article class="card blog-card">
+                    <h3>Packing Essentials Checklist</h3>
+                    <p class="date">July 2026</p>
+                    <p>Never leave important gear behind with our downloadable essential packing list...</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Help & Support Section -->
+    <section id="support" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Help & Support</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <h4>Q: Is Plyndi free to use?</h4>
+                    <p>A: Yes! Our basic travel planning features are completely free for all users.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Q: Can I share my itineraries with friends?</h4>
+                    <p>A: Absolutely. You can export or send direct links to your travel group.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Feedback Section -->
+    <section id="feedback" class="section">
+        <div class="container">
+            <h2 class="section-title">Send Us Feedback</h2>
+            <form id="feedbackForm" class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="4" placeholder="Your suggestions or feedback..." required></textarea>
+                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- 9. About Plyndi Section -->
+    <section id="about" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">About Plyndi</h2>
+            <p class="about-text">Plyndi was built to simplify how modern travelers plan their adventures. We believe that traveling should be exciting, not overwhelming. Our goal is to bring all travel tools into one clean, seamless experience.</p>
+        </div>
+    </section>
+
+    <!-- Footer with Legal Links (7 & 8: Privacy & Terms) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <span>|</span>
+                <a href="#terms">Terms of Service</a>
+            </div>
+            <p class="copyright">&copy; 2026 Plyndi. All rights reserved.</p>
+        </div>
     </footer>
 
+    <!-- Modals for Privacy & Terms -->
+    <div id="privacy" class="modal-target">
+        <div class="modal-content">
+            <h3>Privacy Policy</h3>
+            <p>Your privacy is important to Plyndi. We do not collect or sell your personal data to third parties. All itineraries created are stored securely.</p>
+            <a href="#" class="btn btn-primary">Close</a>
+        </div>
+    </div>
+
+    <div id="terms" class="modal-target">
+        <div class="modal-content">
+            <h3>Terms of Service</h3>
+            <p>By using Plyndi, you agree to our terms of service. Our tools are provided 'as is' for trip planning and informational purposes.</p>
+            <a href="#" class="btn btn-primary">Close</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
