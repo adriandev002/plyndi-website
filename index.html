@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plyndi - Plan Your Perfect Journey</title>
-    <meta name="description" content="Plan your trips, discover destination guides, and build customized travel itineraries with Plyndi.">
+    <title>Plyndi - Smart Travel Planner & World Guides</title>
+    <meta name="description" content="Plan your trips, search flight deals, discover destination guides, and build travel itineraries with Plyndi.">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -13,18 +13,17 @@
     <!-- Navigation -->
     <header class="navbar">
         <div class="container nav-container">
-            <a href="index.html#home" class="logo">
-                <img src="logo.png" alt="Plyndi Logo">
+            <a href="index.html" class="logo">
+                <i class="fas fa-paper-plane logo-icon"></i>
                 <span>Plyndi</span>
             </a>
             <nav>
                 <ul class="nav-links" id="navLinks">
-                    <li><a href="index.html#home">Home</a></li>
-                    <li><a href="index.html#features">Features</a></li>
-                    <li><a href="index.html#planner">Travel Planner</a></li>
-                    <li><a href="index.html#blog">Blog</a></li>
-                    <li><a href="index.html#support">Support</a></li>
-                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#search-widget">Find Deals</a></li>
+                    <li><a href="#planner">Planner</a></li>
+                    <li><a href="#blog">Travel Guides</a></li>
+                    <li><a href="#support">Support</a></li>
                 </ul>
             </nav>
             <div class="menu-toggle" id="menuToggle">
@@ -33,35 +32,25 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Background Overlay -->
     <section id="home" class="hero-section">
+        <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <h1>Explore The World With <span>Plyndi</span></h1>
-            <p>Your ultimate travel companion to plan trips, discover places, and make memories seamless.</p>
-            <a href="#planner" class="btn btn-primary">Start Planning Now</a>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="section">
-        <div class="container">
-            <h2 class="section-title">Why Choose Plyndi?</h2>
-            <div class="grid grid-3">
-                <div class="card">
-                    <i class="fas fa-route card-icon"></i>
-                    <h3>Smart Itinerary Builder</h3>
-                    <p>Easily build day-by-day travel schedules tailored to your preferences.</p>
+            <h1>Plan Your Next Adventure With <span>Plyndi</span></h1>
+            <p>Discover top-rated destinations, custom itineraries, and exclusive travel deals all in one place.</p>
+            
+            <!-- Hero Quick Search Widget Bar -->
+            <div id="search-widget" class="search-widget-box">
+                <div class="widget-tabs">
+                    <button class="tab-btn active"><i class="fas fa-plane"></i> Flights</button>
+                    <button class="tab-btn"><i class="fas fa-hotel"></i> Hotels</button>
+                    <button class="tab-btn"><i class="fas fa-car"></i> Rental Cars</button>
                 </div>
-                <div class="card">
-                    <i class="fas fa-compass card-icon"></i>
-                    <h3>Destination Guides</h3>
-                    <p>Explore curated recommendations for food, stays, and hidden gems.</p>
-                </div>
-                <div class="card">
-                    <i class="fas fa-users card-icon"></i>
-                    <h3>Collaborative Planning</h3>
-                    <p>Share travel plans with friends and family in real-time seamlessly.</p>
-                </div>
+                <form class="widget-form" onsubmit="event.preventDefault(); alert('Search functionality will redirect to travel partner offers!');">
+                    <input type="text" placeholder="Where are you going?" required>
+                    <input type="date" required>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search Deals</button>
+                </form>
             </div>
         </div>
     </section>
@@ -69,89 +58,91 @@
     <!-- Travel Planner Section -->
     <section id="planner" class="section bg-light">
         <div class="container">
-            <h2 class="section-title">Travel Planner</h2>
-            <p class="subtitle">Quickly generate an itinerary sketch for your next destination.</p>
+            <h2 class="section-title">Smart Itinerary Generator</h2>
+            <p class="subtitle">Enter your destination to build a step-by-step trip outline instantly.</p>
             
             <form id="plannerForm" class="planner-form">
                 <div class="form-group">
-                    <label for="destination">Destination</label>
-                    <input type="text" id="destination" placeholder="e.g., Yangon, Bagan, Bangkok" required>
+                    <label for="destination">Destination City</label>
+                    <input type="text" id="destination" placeholder="e.g., Bangkok, Tokyo, Paris" required>
                 </div>
                 <div class="form-group">
                     <label for="days">Duration (Days)</label>
                     <input type="number" id="days" min="1" max="14" value="3" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Generate Trip Outline</button>
+                <button type="submit" class="btn btn-primary">Generate Itinerary</button>
             </form>
 
             <div id="plannerResult" class="planner-result"></div>
         </div>
     </section>
 
-    <!-- Blog Section -->
+    <!-- Premium Blog / Destination Content Section -->
     <section id="blog" class="section">
         <div class="container">
-            <h2 class="section-title">Latest Travel Stories</h2>
+            <h2 class="section-title">Featured Travel Guides</h2>
+            <p class="subtitle">Expert tips and guides for your upcoming international trips.</p>
+            
             <div class="grid grid-3">
+                <!-- Card 1 -->
                 <article class="card blog-card">
-                    <h3><a href="blog-hidden-spots.html" class="blog-title-link">Top 5 Hidden Spots in Myanmar</a></h3>
-                    <p class="date">September 2026</p>
-                    <p>Discover untouched natural beauty and quiet retreats for your next vacation...</p>
-                    <a href="blog-hidden-spots.html" class="btn-link">Read Full Article &rarr;</a>
+                    <div class="card-img-holder">
+                        <img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=600&q=80" alt="Bangkok Travel">
+                        <span class="category-badge">Thailand</span>
+                    </div>
+                    <div class="card-body">
+                        <h3><a href="blog-bangkok.html">The Ultimate Bangkok Travel Guide 2026</a></h3>
+                        <p class="date"><i class="far fa-calendar-alt"></i> September 2026</p>
+                        <p>Explore bustling night markets, sacred temples, and top street food spots in Thailand's capital...</p>
+                        <a href="blog-bangkok.html" class="btn-link">Read Full Guide &rarr;</a>
+                    </div>
                 </article>
 
+                <!-- Card 2 -->
                 <article class="card blog-card">
-                    <h3><a href="blog-budget-hacks.html" class="blog-title-link">Budget Travel Hacks for Beginners</a></h3>
-                    <p class="date">August 2026</p>
-                    <p>How to save money on flights, accommodation, and food without sacrificing comfort...</p>
-                    <a href="blog-budget-hacks.html" class="btn-link">Read Full Article &rarr;</a>
+                    <div class="card-img-holder">
+                        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80" alt="Bali Travel">
+                        <span class="category-badge">Indonesia</span>
+                    </div>
+                    <div class="card-body">
+                        <h3><a href="blog-bali.html">Bali Budget Travel Hacks & Hidden Beaches</a></h3>
+                        <p class="date"><i class="far fa-calendar-alt"></i> August 2026</p>
+                        <p>How to travel across Bali's tropical waterfalls, temples, and beaches on a flexible budget...</p>
+                        <a href="blog-bali.html" class="btn-link">Read Full Guide &rarr;</a>
+                    </div>
                 </article>
 
+                <!-- Card 3 -->
                 <article class="card blog-card">
-                    <h3><a href="blog-packing-checklist.html" class="blog-title-link">Packing Essentials Checklist</a></h3>
-                    <p class="date">July 2026</p>
-                    <p>Never leave important gear behind with our downloadable essential packing list...</p>
-                    <a href="blog-packing-checklist.html" class="btn-link">Read Full Article &rarr;</a>
+                    <div class="card-img-holder">
+                        <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80" alt="Tokyo Travel">
+                        <span class="category-badge">Japan</span>
+                    </div>
+                    <div class="card-body">
+                        <h3><a href="blog-tokyo.html">First-Time Tokyo Itinerary & Tips</a></h3>
+                        <p class="date"><i class="far fa-calendar-alt"></i> July 2026</p>
+                        <p>Navigate Tokyo's train systems, traditional shrines, and futuristic districts effortlessly...</p>
+                        <a href="blog-tokyo.html" class="btn-link">Read Full Guide &rarr;</a>
+                    </div>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- Support Section -->
+    <!-- Support FAQ Section -->
     <section id="support" class="section bg-light">
         <div class="container">
-            <h2 class="section-title">Help & Support</h2>
+            <h2 class="section-title">Help & Frequently Asked Questions</h2>
             <div class="faq-container">
                 <div class="faq-item">
-                    <h4>Q: Is Plyndi free to use?</h4>
-                    <p>A: Yes! Our basic travel planning features are completely free for all users.</p>
+                    <h4>Q: How does Plyndi help plan my trip?</h4>
+                    <p>A: Our travel planner generates tailored daily itineraries while offering direct destination guides for accommodation and flights.</p>
                 </div>
                 <div class="faq-item">
-                    <h4>Q: Can I share my itineraries with friends?</h4>
-                    <p>A: Absolutely. You can export or send direct links to your travel group.</p>
+                    <h4>Q: Is Plyndi affiliated with travel booking providers?</h4>
+                    <p>A: Yes, we partner with trusted global travel networks to bring you real-time flight and hotel deals.</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Feedback Section -->
-    <section id="feedback" class="section">
-        <div class="container">
-            <h2 class="section-title">Send Us Feedback</h2>
-            <form id="feedbackForm" class="contact-form">
-                <input type="text" placeholder="Your Name" required>
-                <input type="email" placeholder="Your Email" required>
-                <textarea rows="4" placeholder="Your suggestions or feedback..." required></textarea>
-                <button type="submit" class="btn btn-primary">Submit Feedback</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section bg-light">
-        <div class="container">
-            <h2 class="section-title">About Plyndi</h2>
-            <p class="about-text">Plyndi was built to simplify how modern travelers plan their adventures. We believe that traveling should be exciting, not overwhelming. Our goal is to bring all travel tools into one clean, seamless experience.</p>
         </div>
     </section>
 
@@ -163,7 +154,7 @@
                 <span>|</span>
                 <a href="terms.html">Terms of Service</a>
             </div>
-            <p class="copyright">&copy; 2026 Plyndi. All rights reserved.</p>
+            <p class="copyright">&copy; 2026 Plyndi Travel. All rights reserved.</p>
         </div>
     </footer>
 
