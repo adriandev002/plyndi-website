@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plyndi - Plan Your Perfect Journey</title>
+    <meta name="description" content="Plan your trips, discover destination guides, and build customized travel itineraries with Plyndi.">
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome CDN Link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Header & Navigation -->
+    <!-- Navigation -->
     <header class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">
+            <a href="index.html#home" class="logo">
                 <img src="logo.png" alt="Plyndi Logo">
                 <span>Plyndi</span>
             </a>
@@ -33,7 +33,7 @@
         </div>
     </header>
 
-    <!-- 1. Home Section -->
+    <!-- Hero Section -->
     <section id="home" class="hero-section">
         <div class="container hero-content">
             <h1>Explore The World With <span>Plyndi</span></h1>
@@ -42,7 +42,7 @@
         </div>
     </section>
 
-    <!-- 2. Features Section -->
+    <!-- Features Section -->
     <section id="features" class="section">
         <div class="container">
             <h2 class="section-title">Why Choose Plyndi?</h2>
@@ -66,29 +66,20 @@
         </div>
     </section>
 
-    <!-- 3. Travel Planner Section -->
+    <!-- Travel Planner Section -->
     <section id="planner" class="section bg-light">
         <div class="container">
             <h2 class="section-title">Travel Planner</h2>
-            <p class="subtitle">Select your destination and duration to get a curated travel itinerary.</p>
+            <p class="subtitle">Quickly generate an itinerary sketch for your next destination.</p>
             
             <form id="plannerForm" class="planner-form">
                 <div class="form-group">
-                    <label for="destination">Select Destination</label>
-                    <select id="destination" required style="padding: 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-                        <option value="">-- Choose a Destination --</option>
-                        <option value="yangon">Yangon, Myanmar</option>
-                        <option value="bagan">Bagan, Myanmar</option>
-                        <option value="bangkok">Bangkok, Thailand</option>
-                    </select>
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" placeholder="e.g., Yangon, Bagan, Bangkok" required>
                 </div>
                 <div class="form-group">
                     <label for="days">Duration (Days)</label>
-                    <select id="days" required style="padding: 12px; border: 1px solid var(--border-color); border-radius: 6px;">
-                        <option value="1">1 Day</option>
-                        <option value="2">2 Days</option>
-                        <option value="3">3 Days</option>
-                    </select>
+                    <input type="number" id="days" min="1" max="14" value="3" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Generate Trip Outline</button>
             </form>
@@ -97,34 +88,36 @@
         </div>
     </section>
 
-    <!-- 4. Blog / Travel Content Section -->
+    <!-- Blog Section -->
     <section id="blog" class="section">
         <div class="container">
             <h2 class="section-title">Latest Travel Stories</h2>
             <div class="grid grid-3">
                 <article class="card blog-card">
-                    <h3>Top 5 Hidden Spots in Myanmar</h3>
+                    <h3><a href="blog-hidden-spots.html" class="blog-title-link">Top 5 Hidden Spots in Myanmar</a></h3>
                     <p class="date">September 2026</p>
                     <p>Discover untouched natural beauty and quiet retreats for your next vacation...</p>
-                    <a href="blog-1.html" class="btn btn-primary" style="margin-top: 15px; font-size: 0.9rem;">Read Article</a>
+                    <a href="blog-hidden-spots.html" class="btn-link">Read Full Article &rarr;</a>
                 </article>
+
                 <article class="card blog-card">
-                    <h3>Budget Travel Hacks for Beginners</h3>
+                    <h3><a href="blog-budget-hacks.html" class="blog-title-link">Budget Travel Hacks for Beginners</a></h3>
                     <p class="date">August 2026</p>
                     <p>How to save money on flights, accommodation, and food without sacrificing comfort...</p>
-                    <a href="blog-2.html" class="btn btn-primary" style="margin-top: 15px; font-size: 0.9rem;">Read Article</a>
+                    <a href="blog-budget-hacks.html" class="btn-link">Read Full Article &rarr;</a>
                 </article>
+
                 <article class="card blog-card">
-                    <h3>Packing Essentials Checklist</h3>
+                    <h3><a href="blog-packing-checklist.html" class="blog-title-link">Packing Essentials Checklist</a></h3>
                     <p class="date">July 2026</p>
                     <p>Never leave important gear behind with our downloadable essential packing list...</p>
-                    <a href="blog-3.html" class="btn btn-primary" style="margin-top: 15px; font-size: 0.9rem;">Read Article</a>
+                    <a href="blog-packing-checklist.html" class="btn-link">Read Full Article &rarr;</a>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- 5. Help & Support Section -->
+    <!-- Support Section -->
     <section id="support" class="section bg-light">
         <div class="container">
             <h2 class="section-title">Help & Support</h2>
@@ -141,7 +134,7 @@
         </div>
     </section>
 
-    <!-- 6. Feedback Section -->
+    <!-- Feedback Section -->
     <section id="feedback" class="section">
         <div class="container">
             <h2 class="section-title">Send Us Feedback</h2>
@@ -154,7 +147,7 @@
         </div>
     </section>
 
-    <!-- 7. About Section -->
+    <!-- About Section -->
     <section id="about" class="section bg-light">
         <div class="container">
             <h2 class="section-title">About Plyndi</h2>
