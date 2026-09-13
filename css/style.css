@@ -1,6 +1,6 @@
 :root {
     --primary-color: #20C1C4;
-    --primary-dark: #0077B6;
+    --primary-dark: #199A9C;
     --text-color: #2D3748;
     --bg-light: #F7FAFC;
     --white: #ffffff;
@@ -46,14 +46,22 @@ body {
     padding: 0.9rem 0;
 }
 
+/* Logo Image Styling */
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     text-decoration: none;
     font-weight: 700;
     font-size: 1.6rem;
     color: var(--primary-color);
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 6px; /* Logo background အဝိုင်း/ထောင့်လှစေရန် */
 }
 
 .logo-icon {
