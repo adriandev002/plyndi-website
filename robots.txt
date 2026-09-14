@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://plyndi.adrianveloradev.workers.dev/sitemap.xml
+Sitemap: https://plyndi.com/sitemap.xml
