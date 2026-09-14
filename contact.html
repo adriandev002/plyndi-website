@@ -43,7 +43,7 @@
   <section style="padding-top:0">
     <div class="container contact-grid">
       <div class="contact-card">
-        <form id="contact-form">
+        <form id="contact-form" action="https://formspree.io/f/mppzvlqz" method="POST">
           <div class="field-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div>
               <label for="name">Name</label>
@@ -68,14 +68,17 @@
             <label for="message">Message</label>
             <textarea id="message" name="message" rows="5" required></textarea>
           </div>
+          <input type="hidden" name="_subject" value="New message from Plyndi contact form">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+          <p class="form-status form-note" style="display:none"></p>
           <button type="submit" class="btn btn-primary btn-block">Send message</button>
-          <p class="form-note">This opens your email client addressed to contact@plyndi.com — swap in your real inbox once it's set up.</p>
+          <p class="form-note">Sent via Formspree — it'll land directly in your inbox.</p>
         </form>
       </div>
 
       <div>
         <h2 style="margin-top:0">Other ways to reach me</h2>
-        <p>For anything urgent, or if the form above doesn't work on your device, email directly at <strong>contact@plyndi.com</strong> (placeholder — connect this to a real inbox before launch).</p>
+        <p>For anything urgent, or if the form above doesn't work on your device, email directly at <strong>hello@plyndi.com</strong> (placeholder — connect this to a real inbox before launch).</p>
         <h3>Before you write in</h3>
         <ul>
           <li>Spotted outdated info in a guide? Include the page and what changed — corrections get prioritized.</li>
