@@ -229,7 +229,7 @@
       </div>
       <div class="trust-copy">
         <h2>Built by one person, not a content farm</h2>
-        <p class="lede">I'm Axel — a student in Taipei building Plyndi on the side. There's no editorial team behind the byline; it's one person researching each destination properly before publishing.</p>
+        <p class="lede">I'm Adrian — a student in Taipei building Plyndi on the side. There's no editorial team behind the byline; it's one person researching each destination properly before publishing.</p>
         <ul>
           <li>No guide goes up until it covers getting around, what things actually cost, and at least one mistake worth avoiding.</li>
           <li>Guides get revisited and corrected — prices and transit info are dated so you know how fresh they are.</li>
@@ -277,11 +277,14 @@
           <h2>Get new guides by email</h2>
           <p class="lede">One email when a new destination guide goes up. No drip campaigns.</p>
         </div>
-        <form id="newsletter-form" class="newsletter-form">
+        <form id="newsletter-form" class="newsletter-form" action="https://formspree.io/f/mwlkgqol" method="POST">
           <label for="newsletter-email" class="visually-hidden">Email address</label>
           <input type="email" id="newsletter-email" name="email" placeholder="you@email.com" required>
+          <input type="hidden" name="_subject" value="New Plyndi newsletter subscriber">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
           <button type="submit" class="btn btn-primary">Subscribe</button>
         </form>
+        <p class="form-status form-note" style="display:none; width:100%"></p>
       </div>
     </div>
   </section>
