@@ -229,17 +229,40 @@ function initBlogFilters(){
   });
 }
 
-/* ---------- Contact form (static site — routes via mailto for now) ---------- */
+/* ---------- Contact form (Formspree) ---------- */
 function initContactForm(){
   const form = document.getElementById('contact-form');
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+  const status = form.querySelector('.form-status');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = encodeURIComponent(form.name.value);
-    const email = encodeURIComponent(form.email.value);
-    const message = encodeURIComponent(form.message.value);
-    const subject = encodeURIComponent(`Message from ${form.name.value} via Plyndi`);
-    const body = `From: ${form.name.value} (${form.email.value})%0D%0A%0D%0A${message}`;
-    window.location.href = `mailto:hello@plyndi.com?subject=${subject}&body=${body}`;
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (response.ok) {
+        form.reset();
+        if (status) {
+          status.style.display = 'block';
+          status.textContent = "Thanks — your message is on its way. I'll get back to you soon.";
+        }
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (err) {
+      if (status) {
+        status.style.display = 'block';
+        status.textContent = 'Something went wrong sending that — please try again, or email directly.';
+      }
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
+    }
   });
 }
