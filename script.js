@@ -197,16 +197,41 @@ function initPlanner(){
   });
 }
 
-/* ---------- Newsletter form (static site — no backend yet) ---------- */
+/* ---------- Newsletter form (Formspree) ---------- */
 function initNewsletterForm(){
   const form = document.getElementById('newsletter-form');
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+  const status = form.parentElement.querySelector('.form-status');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const status = form.querySelector('.form-status') || document.createElement('p');
-    status.className = 'form-status form-note';
-    status.textContent = 'Thanks — hook this form up to your email provider (e.g. Mailchimp/ConvertKit) to start collecting subscribers.';
-    if (!form.contains(status)) form.appendChild(status);
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Subscribing…'; }
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' },
+      });
+
+      if (response.ok) {
+        form.reset();
+        if (status) {
+          status.style.display = 'block';
+          status.textContent = "You're on the list — you'll hear from us when a new guide goes up.";
+        }
+      } else {
+        throw new Error('Submission failed');
+      }
+    } catch (err) {
+      if (status) {
+        status.style.display = 'block';
+        status.textContent = 'Something went wrong subscribing — please try again in a moment.';
+      }
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Subscribe'; }
+    }
   });
 }
 
