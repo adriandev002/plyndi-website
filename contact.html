@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Plyndi</title>
+<meta name="description" content="Get in touch with Plyndi — questions, corrections, destination suggestions, or partnership inquiries.">
+<link rel="canonical" href="https://plyndi.com/contact.html">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/favicon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-word">Plyndi</span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Travel Guides</a>
+      <a href="index.html#planner">Trip Planner</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="is-active">Contact</a>
+      <a class="btn btn-primary nav-cta" href="blog.html">Browse guides</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-hero">
+    <div class="container">
+      <h1>Get in touch</h1>
+      <p class="lede" style="max-width:60ch">Corrections, destination suggestions, partnership or advertising inquiries — all welcome.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container contact-grid">
+      <div class="contact-card">
+        <form id="contact-form" action="https://formspree.io/f/mppzvlqz" method="POST">
+          <div class="field-row" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div>
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <label for="subject">What's this about?</label>
+            <select id="subject" name="subject">
+              <option>General question</option>
+              <option>Correction on a guide</option>
+              <option>Destination suggestion</option>
+              <option>Partnership / advertising</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <input type="hidden" name="_subject" value="New message from Plyndi contact form">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+          <p class="form-status form-note" style="display:none"></p>
+          <button type="submit" class="btn btn-primary btn-block">Send message</button>
+          <p class="form-note">Sent via Formspree — it'll land directly in your inbox.</p>
+        </form>
+      </div>
+
+      <div>
+        <h2 style="margin-top:0">Other ways to reach me</h2>
+        <p>For anything urgent, or if the form above doesn't work on your device, email directly at <strong>contact@plyndi.com</strong>.</p>
+        <h3>Before you write in</h3>
+        <ul>
+          <li>Spotted outdated info in a guide? Include the page and what changed — corrections get prioritized.</li>
+          <li>Suggesting a destination? Tell me why it's worth covering, not just the name — it helps with research.</li>
+          <li>Partnership inquiries: include your company, what you're proposing, and relevant links.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="index.html" style="display:inline-flex">
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-word">Plyndi</span>
+        </a>
+        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="blog.html">Travel guides</a></li>
+          <li><a href="index.html#planner">Trip planner</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy.html">Privacy policy</a></li>
+          <li><a href="terms.html">Terms of service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Plyndi. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclosure.html">Disclosure</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
