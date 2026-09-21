@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Vietnam", "item": "https://plyndi.com/blog.html#vietnam" },
+    { "@type": "ListItem", "position": 4, "name": "Hanoi for First-Timers: Old Quarter, Egg Coffee &amp; Crossing the Street", "item": "https://plyndi.com/blog-hanoi.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Vietnam</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#vietnam">Vietnam</a></p>
       <span class="article-tag">Vietnam</span>
       <h1>Hanoi for First-Timers: Old Quarter, Egg Coffee &amp; Crossing the Street</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 15, 2026</span>
-        <span>10 min read</span>
+        <span>4 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?auto=format&fit=crop&w=1400&q=80" alt="Motorbike traffic and old shophouses in Hanoi's Old Quarter" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?auto=format&fit=crop&w=1400&q=80" alt="Motorbike traffic and old shophouses in Hanoi's Old Quarter" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>October–December (mild, dry). Avoid the humid, hot peak of June–August if you can.</dd>
               <dt>Getting around</dt><dd>Old Quarter is walkable; Grab (ride-hailing) for everything further, including bike/scooter options.</dd>
@@ -87,10 +102,10 @@
             </dl>
           </div>
 
-          <h2>1. Crossing the street: the technique that actually works</h2>
+          <h2 id="crossing-the-street-the-technique-that-actually-wo">1. Crossing the street: the technique that actually works</h2>
           <p>There's no real gap in Hanoi's motorbike traffic to wait for — it doesn't come. The local technique: step out at a slow, steady, predictable pace, never stop, never run, never change direction suddenly. Drivers are constantly adjusting around pedestrians who move predictably; sudden stops or sprints are what actually cause near-misses. It feels wrong the first time and becomes normal by day two.</p>
 
-          <h2>2. The Old Quarter: 36 streets, each with a specialty</h2>
+          <h2 id="the-old-quarter-36-streets-each-with-a-specialty">2. The Old Quarter: 36 streets, each with a specialty</h2>
           <p>Hanoi's Old Quarter historically organized itself by guild — each street originally sold one type of good, and many still echo that today: Hang Bac (silver), Hang Ma (paper goods and festival decorations), Hang Gai (silk). You don't need to track this to enjoy wandering, but it explains why the neighborhood feels so densely, specifically commercial rather than generically touristy.</p>
 
           <div class="pull-tip">
@@ -98,10 +113,10 @@
             Walk the Old Quarter early morning (before 8am) once during your trip — the street-vendor breakfast setup and much lighter traffic show a completely different side of the neighborhood than the evening chaos.
           </div>
 
-          <h2>3. Egg coffee and the cafe culture</h2>
+          <h2 id="egg-coffee-and-the-cafe-culture">3. Egg coffee and the cafe culture</h2>
           <p><strong>Egg coffee (cà phê trứng)</strong> — whipped egg yolk, condensed milk, and strong Vietnamese coffee — was invented in Hanoi and is worth trying at least once, ideally at a small, old-school cafe rather than a tourist-oriented chain. Giảng Café, one of the originators, is touristy now but still legitimately good. Vietnamese iced coffee (cà phê sữa đá) is the more everyday order if egg coffee isn't your thing.</p>
 
-          <h2>4. Street food that's worth seeking out specifically</h2>
+          <h2 id="street-food-that-s-worth-seeking-out-specifically">4. Street food that's worth seeking out specifically</h2>
           <ul>
             <li><strong>Bún chả</strong> — grilled pork patties in a sweet-sour broth with rice noodles, Hanoi's signature dish. Small plastic-stool restaurants specializing in just this one dish are usually the best version.</li>
             <li><strong>Phở</strong> — Hanoi-style phở is simpler and lighter than the Saigon version, less garnish, more focus on the broth itself.</li>
@@ -109,19 +124,29 @@
           </ul>
           <p>Sit on the small plastic stools if you see locals doing the same at a stall — it's the single best quality signal in Hanoi's street food scene.</p>
 
-          <h2>5. Ho Chi Minh Mausoleum and the Temple of Literature</h2>
+          <h2 id="ho-chi-minh-mausoleum-and-the-temple-of-literature">5. Ho Chi Minh Mausoleum and the Temple of Literature</h2>
           <p>The <strong>Ho Chi Minh Mausoleum</strong> has strict visiting hours (generally mornings only, closed certain days, no bare shoulders/knees, no talking or photography inside) — check current hours before planning your morning around it, since the schedule is specific and changes periodically. The <strong>Temple of Literature</strong>, Vietnam's first national university, is a calmer, more flexible visit and one of the best-preserved traditional sites in the city.</p>
 
-          <h2>6. The Ha Long Bay question</h2>
+          <h2 id="the-ha-long-bay-question">6. The Ha Long Bay question</h2>
           <p><strong>Ha Long Bay</strong>'s limestone karsts are a genuine highlight of northern Vietnam, but it's roughly a 2.5–3.5 hour drive each way from Hanoi, making a single day trip rushed and often disappointing — most of your day goes to transit. An overnight boat cruise (one or two nights) is the significantly better way to experience it if your schedule allows; if not, treat a Ha Long day trip as a "saw it, didn't fully experience it" outcome rather than skip it entirely.</p>
 
-          <h2>7. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">7. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Hesitating or running when crossing the street</strong> — counterintuitively more dangerous than the slow, steady approach.</li>
             <li><strong>Not negotiating cyclo or unmetered taxi fares upfront</strong> — agree on a price before getting in, or use Grab to avoid the conversation entirely.</li>
             <li><strong>Trying Ha Long Bay as a rushed day trip</strong> without knowing you're sacrificing most of the actual bay experience to driving time.</li>
             <li><strong>Skipping the Hanoi–Ho Chi Minh City distinction</strong> in planning — they're very different cities nearly 1,000 miles apart, not a quick add-on to each other.</li>
           </ul>
+
+          <div class="booking-block" data-city="hanoi">
+            <p class="box-title">Booking Hanoi</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Hanoi">Find stays in Hanoi</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Hanoi">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Hanoi">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -130,6 +155,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-bangkok.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=700&q=80" alt="Golden temple spires against the Bangkok skyline at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>The Complete First-Timer's Guide to Bangkok</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-chiangmai.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1520643290407-08ec162c7450?auto=format&fit=crop&w=700&q=80" alt="A temple in Chiang Mai, Thailand, reflected in water" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Chiang Mai: Temples, Ethical Elephant Sanctuaries &amp; the Pai Road Trip</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-hongkong.html">
+          <div class="guide-media">
+            <span class="guide-tag">Hong Kong</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1536599424071-0b215a388ba7?auto=format&fit=crop&w=700&q=80" alt="Hong Kong skyline viewed across Victoria Harbour at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 15, 2026 &middot; 3 min read</div>
+            <h3>Hong Kong in 3 Days: Dim Sum, the Peak &amp; the Star Ferry</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -143,26 +207,31 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Crossing the street</a></li>
-              <li><a href="#main">The Old Quarter</a></li>
-              <li><a href="#main">Egg coffee</a></li>
-              <li><a href="#main">Street food</a></li>
-              <li><a href="#main">Mausoleum &amp; Temple of Literature</a></li>
-              <li><a href="#main">Ha Long Bay</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#crossing-the-street-the-technique-that-actually-wo">Crossing the street: the technique that actually works</a></li>
+              <li><a href="#the-old-quarter-36-streets-each-with-a-specialty">The Old Quarter: 36 streets, each with a specialty</a></li>
+              <li><a href="#egg-coffee-and-the-cafe-culture">Egg coffee and the cafe culture</a></li>
+              <li><a href="#street-food-that-s-worth-seeking-out-specifically">Street food that's worth seeking out specifically</a></li>
+              <li><a href="#ho-chi-minh-mausoleum-and-the-temple-of-literature">Ho Chi Minh Mausoleum and the Temple of Literature</a></li>
+              <li><a href="#the-ha-long-bay-question">The Ha Long Bay question</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, hotels, and Ha Long Bay cruise options — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="hanoi">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Hanoi through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Hanoi">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Hanoi">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Vietnam</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog.html">All Vietnam guides →</a></li>
+              <li><a href="blog-bangkok.html">Thailand: The Complete First-Timer's Guide to Bangkok</a></li>
+              <li><a href="blog-chiangmai.html">Thailand: Chiang Mai</a></li>
+              <li><a href="blog-hongkong.html">Hong Kong: Hong Kong in 3 Days</a></li>
+              <li><a href="blog.html#vietnam">All Vietnam guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -176,44 +245,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -223,6 +294,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

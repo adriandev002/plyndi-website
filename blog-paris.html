@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "France", "item": "https://plyndi.com/blog.html#france" },
+    { "@type": "ListItem", "position": 4, "name": "Paris for First-Timers: Arrondissements, the Metro &amp; Skipping the Lines", "item": "https://plyndi.com/blog-paris.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / France</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#france">France</a></p>
       <span class="article-tag">France</span>
       <h1>Paris for First-Timers: Arrondissements, the Metro &amp; Skipping the Lines</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 14, 2026</span>
-        <span>11 min read</span>
+        <span>4 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1400&q=80" alt="The Eiffel Tower rising above Paris rooftops" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1400&q=80" alt="The Eiffel Tower rising above Paris rooftops" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>April–June or September–October (mild, fewer crowds than peak summer). August sees many small local businesses close for holidays.</dd>
               <dt>Getting around</dt><dd>Metro covers the whole city; buy a Navigo Easy card and load individual tickets or a day pass onto it.</dd>
@@ -87,7 +102,7 @@
             </dl>
           </div>
 
-          <h2>1. Which arrondissement to base yourself in</h2>
+          <h2 id="which-arrondissement-to-base-yourself-in">1. Which arrondissement to base yourself in</h2>
           <p>Paris is organized into 20 numbered arrondissements spiraling outward from the center. For a first visit, staying within arrondissements 1–9 keeps almost everything walkable or a short metro ride away:</p>
           <ul>
             <li><strong>Le Marais (3rd/4th)</strong> — historic, walkable, excellent food and boutique shopping, central to nearly everything.</li>
@@ -96,7 +111,7 @@
           </ul>
           <p>Avoid booking purely on price without checking the arrondissement — a cheap hotel in the far outer ring can cost you an hour a day in transit.</p>
 
-          <h2>2. Skipping the lines that actually matter</h2>
+          <h2 id="skipping-the-lines-that-actually-matter">2. Skipping the lines that actually matter</h2>
           <p>Two queues can eat half a day if you don't plan around them:</p>
           <ul>
             <li><strong>The Louvre</strong> — book a timed-entry ticket online in advance, and enter through the Carrousel du Louvre underground entrance (via the Palais Royal–Musée du Louvre metro stop) rather than the main pyramid, where the line is usually much longer.</li>
@@ -108,10 +123,10 @@
             The Louvre is free on the first Sunday of the month October–March, which sounds appealing but means significantly bigger crowds — go on a regular paid day if you actually want to see the art rather than the backs of people's heads.
           </div>
 
-          <h2>3. Notre-Dame's reopening and Île de la Cité</h2>
+          <h2 id="notre-dame-s-reopening-and-ile-de-la-cite">3. Notre-Dame's reopening and Île de la Cité</h2>
           <p>Notre-Dame Cathedral reopened to the public in December 2024 following the 2019 fire and subsequent restoration. Entry is free but timed-entry tickets are strongly recommended given ongoing demand — check the cathedral's official site for current booking requirements before you go, as access rules have been updated periodically since reopening. Pair the visit with a walk around Île de la Cité and Sainte-Chapelle, whose stained glass is arguably more striking than Notre-Dame's interior.</p>
 
-          <h2>4. Where Parisians actually eat</h2>
+          <h2 id="where-parisians-actually-eat">4. Where Parisians actually eat</h2>
           <p>Skip the cafes with laminated multilingual menus directly facing major monuments — they're priced for one-time tourist traffic, not repeat local customers. Better signals:</p>
           <ul>
             <li>A short, handwritten, French-only menu that changes with the season.</li>
@@ -120,16 +135,26 @@
           </ul>
           <p>A market visit is worth building into your trip — Marché des Enfants Rouges (Marais) or Marché Bastille (Thursday and Sunday mornings) for cheese, produce, and prepared food stalls.</p>
 
-          <h2>5. A day trip that's genuinely worth it</h2>
+          <h2 id="a-day-trip-that-s-genuinely-worth-it">5. A day trip that's genuinely worth it</h2>
           <p><strong>Versailles</strong>, about 40 minutes by RER train, is the obvious choice and earns it — but go early and book a timed entry ticket, since the Hall of Mirrors gets extremely crowded by mid-morning. Budget the better part of a day if you also want to walk the gardens, which are enormous.</p>
 
-          <h2>6. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">6. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Not booking timed tickets for the Louvre, Eiffel Tower, or Versailles</strong> in advance — walk-up queues at all three can run hours in peak season.</li>
             <li><strong>Assuming everywhere is walkable</strong> — Paris is bigger than the postcard version suggests; use the Metro for anything more than 20–25 minutes on foot.</li>
             <li><strong>Not learning a few basic French greetings</strong> — a simple "Bonjour" before asking a question, even in English, changes how you're received in shops and cafes.</li>
             <li><strong>Visiting in August expecting everything open</strong> — many independent restaurants and shops close for a few weeks; check ahead if a specific place is on your list.</li>
           </ul>
+
+          <div class="booking-block" data-city="paris">
+            <p class="box-title">Booking Paris</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Paris">Find stays in Paris</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Paris">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Paris">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -138,6 +163,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-rome.html">
+          <div class="guide-media">
+            <span class="guide-tag">Italy</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=700&q=80" alt="The ancient Colosseum in Rome, Italy under a clear sky" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 3 min read</div>
+            <h3>3 Days in Rome: Ruins, Neighborhoods &amp; Not Overplanning It</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-barcelona.html">
+          <div class="guide-media">
+            <span class="guide-tag">Spain</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=700&q=80" alt="The spires of Sagrada Família in Barcelona against a blue sky" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 15, 2026 &middot; 3 min read</div>
+            <h3>Barcelona for First-Timers: Gaudí, Tapas Timing &amp; Avoiding Pickpockets</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-tokyo.html">
+          <div class="guide-media">
+            <span class="guide-tag">Japan</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=700&q=80" alt="Neon-lit street crossing in Tokyo, Japan at night" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Tokyo for First-Timers: A Neighborhood-by-Neighborhood Guide</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -151,26 +215,30 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Which arrondissement</a></li>
-              <li><a href="#main">Skipping the lines</a></li>
-              <li><a href="#main">Notre-Dame &amp; Île de la Cité</a></li>
-              <li><a href="#main">Where Parisians eat</a></li>
-              <li><a href="#main">Versailles day trip</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#which-arrondissement-to-base-yourself-in">Which arrondissement to base yourself in</a></li>
+              <li><a href="#skipping-the-lines-that-actually-matter">Skipping the lines that actually matter</a></li>
+              <li><a href="#notre-dame-s-reopening-and-ile-de-la-cite">Notre-Dame's reopening and Île de la Cité</a></li>
+              <li><a href="#where-parisians-actually-eat">Where Parisians actually eat</a></li>
+              <li><a href="#a-day-trip-that-s-genuinely-worth-it">A day trip that's genuinely worth it</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, hotels, and skip-the-line museum tickets — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="paris">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Paris through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Paris">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Paris">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Europe</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog-rome.html">Rome guide →</a></li>
-              <li><a href="blog.html">All guides →</a></li>
+              <li><a href="blog-rome.html">Italy: 3 Days in Rome</a></li>
+              <li><a href="blog-barcelona.html">Spain: Barcelona for First-Timers</a></li>
+              <li><a href="blog-tokyo.html">Japan: Tokyo for First-Timers</a></li>
+              <li><a href="blog.html#france">All France guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -184,44 +252,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -231,6 +301,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

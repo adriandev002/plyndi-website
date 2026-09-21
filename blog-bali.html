@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Indonesia", "item": "https://plyndi.com/blog.html#indonesia" },
+    { "@type": "ListItem", "position": 4, "name": "Bali on a Budget: Rice Fields, Waterfalls &amp; Warungs", "item": "https://plyndi.com/blog-bali.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Indonesia</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#indonesia">Indonesia</a></p>
       <span class="article-tag">Indonesia</span>
       <h1>Bali on a Budget: Rice Fields, Waterfalls &amp; Warungs</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 14, 2026</span>
-        <span>10 min read</span>
+        <span>4 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1400&q=80" alt="Terraced green rice fields with palm trees in Bali, Indonesia" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1400&q=80" alt="Terraced green rice fields with palm trees in Bali, Indonesia" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>April–October (dry season). July–August is peak crowds and price.</dd>
               <dt>Getting around</dt><dd>Scooter rental if you're comfortable riding (helmet always, international license technically required); Grab/Gojek for everything else.</dd>
@@ -87,7 +102,7 @@
             </dl>
           </div>
 
-          <h2>1. Pick your base — you can't do it all from one town</h2>
+          <h2 id="pick-your-base-you-can-t-do-it-all-from-one-town">1. Pick your base — you can't do it all from one town</h2>
           <p>Bali is bigger than it looks on a map, and traffic between regions is slow. Splitting your stay across two or three bases beats trying to day-trip everywhere from one hotel.</p>
           <ul>
             <li><strong>Canggu</strong> — surf, beach clubs, the best co-working/cafe scene, flattest area to scooter around. Best base for your first few days to adjust.</li>
@@ -96,7 +111,7 @@
           </ul>
           <p>A common, well-paced first trip: 3 nights Canggu → 2 nights Ubud → 2 nights Uluwatu, in that order so you end on the coast.</p>
 
-          <h2>2. Ubud's rice terraces without the crowd shot everyone has</h2>
+          <h2 id="ubud-s-rice-terraces-without-the-crowd-shot-everyo">2. Ubud's rice terraces without the crowd shot everyone has</h2>
           <p><strong>Tegalalang Rice Terrace</strong> is the famous one and it's genuinely striking, but it's also the most crowded and has the most "donation" gates and photo-prop hawkers per square meter. Two alternatives with the same terraced-hillside views and a fraction of the people:</p>
           <ul>
             <li><strong>Tegallalang's quieter neighbor terraces</strong> a short walk further along the same road, past the main viewing platforms.</li>
@@ -109,31 +124,41 @@
             Skip the Ubud Monkey Forest if you're short on time and have seen wildlife elsewhere on your trip — it's fine, not essential, and the macaques there are habituated enough to grab sunglasses and snacks off visitors.
           </div>
 
-          <h2>3. Waterfalls actually worth the hike</h2>
+          <h2 id="waterfalls-actually-worth-the-hike">3. Waterfalls actually worth the hike</h2>
           <p>Bali has dozens of waterfalls listed on maps; a lot are a muddy 20-minute walk for a small trickle. These two consistently deliver:</p>
           <ul>
             <li><strong>Tibumana Waterfall</strong> — near Ubud, an easy walk in, genuinely swimmable pool, less crowded than the famous Tegenungan.</li>
             <li><strong>Sekumpul Waterfall</strong> — in the north, a proper multi-tier waterfall and a longer trek (guide recommended, arranged locally), but the most dramatic in Bali by a wide margin.</li>
           </ul>
 
-          <h2>4. Uluwatu: temple, sunset, and the Kecak fire dance</h2>
+          <h2 id="uluwatu-temple-sunset-and-the-kecak-fire-dance">4. Uluwatu: temple, sunset, and the Kecak fire dance</h2>
           <p><strong>Uluwatu Temple</strong> sits on a cliff edge with genuinely dramatic ocean views. Time your visit for late afternoon and stay for the <strong>Kecak fire dance</strong> at sunset — a traditional Balinese performance with a chanting circle of performers, no instruments, staged right at the cliff with the sunset behind it. Buy tickets on arrival; it's inexpensive and books up on weekends.</p>
           <p>Watch your belongings and don't wear dangly earrings or hold food near the temple monkeys — they're notorious for snatching sunglasses and anything shiny.</p>
 
-          <h2>5. Warungs over restaurants (most of the time)</h2>
+          <h2 id="warungs-over-restaurants-most-of-the-time">5. Warungs over restaurants (most of the time)</h2>
           <p>A "warung" is a small, family-run local eatery, and it's where the best value and often the best food is. A full plate of nasi campur (rice with a selection of sides) at a local warung costs a fraction of the same dish at a restaurant aimed at tourists, and it's usually better. Save restaurant budget for one or two nicer sunset dinners in Canggu or Uluwatu, and eat warung-style the rest of the trip.</p>
           <p>If you want to actually learn the food rather than just eat it, a half-day <strong>Balinese cooking class</strong> in Ubud (many include a market visit) is one of the better-value activity bookings on the island.</p>
 
-          <h2>6. A day trip worth the boat ride</h2>
+          <h2 id="a-day-trip-worth-the-boat-ride">6. A day trip worth the boat ride</h2>
           <p><strong>Nusa Penida</strong>, a short fast-boat ride from Sanur, has the cliff-and-turquoise-water views that circulate endlessly online (Kelingking Beach, Broken Beach, Angel's Billabong). It's a long day — early boat out, late boat back — and the island's roads are rough, so book a driver rather than self-riding a scooter unless you're very confident.</p>
 
-          <h2>7. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">7. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Renting a scooter with zero experience</strong> — Bali's roads and traffic patterns are unforgiving for beginners; take a car/driver instead if you're not confident.</li>
             <li><strong>Not checking visa-on-arrival requirements</strong> before flying — rules vary by nationality and length of stay, so verify against your own passport before booking.</li>
             <li><strong>Skipping travel insurance that covers scooter accidents</strong> — a genuinely common source of trip-ending injuries and expensive medical bills for visitors.</li>
             <li><strong>Drinking tap water</strong> — stick to bottled or filtered water, including for brushing teeth.</li>
           </ul>
+
+          <div class="booking-block" data-city="bali">
+            <p class="box-title">Booking Bali</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Bali">Find stays in Bali</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Bali">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Bali">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -142,6 +167,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-chiangmai.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1520643290407-08ec162c7450?auto=format&fit=crop&w=700&q=80" alt="A temple in Chiang Mai, Thailand, reflected in water" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Chiang Mai: Temples, Ethical Elephant Sanctuaries &amp; the Pai Road Trip</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-cebu.html">
+          <div class="guide-media">
+            <span class="guide-tag">Philippines</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&w=700&q=80" alt="Turquoise water and limestone cliffs near Cebu, Philippines" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 15, 2026 &middot; 3 min read</div>
+            <h3>Cebu &amp; Nearby Islands: Whale Sharks, Canyoneering &amp; Island-Hopping Done Right</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-bangkok.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=700&q=80" alt="Golden temple spires against the Bangkok skyline at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>The Complete First-Timer's Guide to Bangkok</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -155,25 +219,31 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Picking a base</a></li>
-              <li><a href="#main">Rice terraces</a></li>
-              <li><a href="#main">Waterfalls</a></li>
-              <li><a href="#main">Uluwatu &amp; Kecak dance</a></li>
-              <li><a href="#main">Warungs</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#pick-your-base-you-can-t-do-it-all-from-one-town">Pick your base — you can't do it all from one town</a></li>
+              <li><a href="#ubud-s-rice-terraces-without-the-crowd-shot-everyo">Ubud's rice terraces without the crowd shot everyone has</a></li>
+              <li><a href="#waterfalls-actually-worth-the-hike">Waterfalls actually worth the hike</a></li>
+              <li><a href="#uluwatu-temple-sunset-and-the-kecak-fire-dance">Uluwatu: temple, sunset, and the Kecak fire dance</a></li>
+              <li><a href="#warungs-over-restaurants-most-of-the-time">Warungs over restaurants (most of the time)</a></li>
+              <li><a href="#a-day-trip-worth-the-boat-ride">A day trip worth the boat ride</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, villas, and Nusa Penida boat tickets — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="bali">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Bali through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Bali">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Bali">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Indonesia</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog.html">All Indonesia guides →</a></li>
+              <li><a href="blog-chiangmai.html">Thailand: Chiang Mai</a></li>
+              <li><a href="blog-cebu.html">Philippines: Cebu &amp; Nearby Islands</a></li>
+              <li><a href="blog-bangkok.html">Thailand: The Complete First-Timer's Guide to Bangkok</a></li>
+              <li><a href="blog.html#indonesia">All Indonesia guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -187,44 +257,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -234,6 +306,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

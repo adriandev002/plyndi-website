@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Italy", "item": "https://plyndi.com/blog.html#italy" },
+    { "@type": "ListItem", "position": 4, "name": "3 Days in Rome: Ruins, Neighborhoods &amp; Not Overplanning It", "item": "https://plyndi.com/blog-rome.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Italy</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#italy">Italy</a></p>
       <span class="article-tag">Italy</span>
       <h1>3 Days in Rome: Ruins, Neighborhoods &amp; Not Overplanning It</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 14, 2026</span>
-        <span>10 min read</span>
+        <span>3 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1400&q=80" alt="The ancient Colosseum in Rome, Italy under a clear sky" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1400&q=80" alt="The ancient Colosseum in Rome, Italy under a clear sky" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>April–May or September–October. Avoid August if you can — many locals leave and the heat is intense.</dd>
               <dt>Getting around</dt><dd>Historic center is walkable; the compact Metro (2 main lines) covers the rest, plus buses and trams.</dd>
@@ -87,14 +102,14 @@
             </dl>
           </div>
 
-          <h2>1. Where to base yourself</h2>
+          <h2 id="where-to-base-yourself">1. Where to base yourself</h2>
           <ul>
             <li><strong>Monti</strong> — closest neighborhood to the Colosseum, artsy and increasingly trendy, walkable to the ancient core.</li>
             <li><strong>Trastevere</strong> — cobblestone charm, best nightlife and trattoria density, a short walk or tram from the center across the river.</li>
             <li><strong>Prati</strong> — quieter, closest to the Vatican, good if that's your priority, a bit further from the ancient ruins.</li>
           </ul>
 
-          <h2>2. Booking the Colosseum and Forum properly</h2>
+          <h2 id="booking-the-colosseum-and-forum-properly">2. Booking the Colosseum and Forum properly</h2>
           <p>A combined ticket covers the <strong>Colosseum</strong>, <strong>Roman Forum</strong>, and <strong>Palatine Hill</strong>, and it's worth booking online in advance regardless of season — walk-up lines are long even outside peak summer. A few booking notes that trip people up:</p>
           <ul>
             <li>The combined ticket is valid across all three sites but typically only once each, over a set window (commonly 24 hours) — check current terms when booking.</li>
@@ -107,17 +122,17 @@
             Visit the Colosseum and Forum in the late afternoon if your ticket allows — the light is better for photos and the heat (especially in summer) is far more bearable than a midday visit.
           </div>
 
-          <h2>3. The Vatican: give it more time than you think</h2>
+          <h2 id="the-vatican-give-it-more-time-than-you-think">3. The Vatican: give it more time than you think</h2>
           <p>The <strong>Vatican Museums</strong> and <strong>Sistine Chapel</strong> deserve a genuine half-day, not a rushed hour. Book a timed-entry ticket in advance — the walk-up line along the Vatican walls is one of the longest in the city on a normal day. St. Peter's Basilica itself is free to enter but has its own security line; visiting early morning, right at opening, is the single best way to avoid both the basilica line and the worst of the museum crowds.</p>
 
-          <h2>4. The free things that rival the paid ones</h2>
+          <h2 id="the-free-things-that-rival-the-paid-ones">4. The free things that rival the paid ones</h2>
           <ul>
             <li><strong>Trevi Fountain</strong> and the <strong>Pantheon</strong> — both free, both genuinely worth seeing, both best visited very early morning or later at night to avoid the crush of tour groups.</li>
             <li><strong>Piazza Navona</strong> and the surrounding streets — no ticket needed, just good wandering, street artists, and gelato.</li>
             <li>A sunset walk up to the <strong>Gianicolo Hill</strong> viewpoint above Trastevere — a wide view over the city with a fraction of the crowd of more famous lookouts.</li>
           </ul>
 
-          <h2>5. Eating well without the tourist markup</h2>
+          <h2 id="eating-well-without-the-tourist-markup">5. Eating well without the tourist markup</h2>
           <p>Restaurants directly facing the Colosseum, Trevi Fountain, or Spanish Steps are reliably overpriced and underwhelming. Walk two or three streets away instead, and look for:</p>
           <ul>
             <li>A menu in Italian first (with maybe a smaller English translation), not laminated multilingual boards.</li>
@@ -125,13 +140,23 @@
             <li>Testaccio neighborhood, historically Rome's market and slaughterhouse district, now one of the best places in the city for genuinely local, unpretentious food.</li>
           </ul>
 
-          <h2>6. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">6. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Not booking Colosseum and Vatican tickets in advance</strong> — both can mean hours in line without a timed entry.</li>
             <li><strong>Trying to see "everything" in three days</strong> — Rome rewards slower mornings and long lunches more than a packed checklist.</li>
             <li><strong>Drinking from the tap and skipping the nasoni</strong> (public drinking fountains) — they're safe, free, and everywhere; bring a refillable bottle.</li>
             <li><strong>Dressing inappropriately for the Vatican or major churches</strong> — covered shoulders and knees are enforced, not just suggested.</li>
           </ul>
+
+          <div class="booking-block" data-city="rome">
+            <p class="box-title">Booking Rome</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Rome">Find stays in Rome</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Rome">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Rome">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -140,6 +165,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-barcelona.html">
+          <div class="guide-media">
+            <span class="guide-tag">Spain</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=700&q=80" alt="The spires of Sagrada Família in Barcelona against a blue sky" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 15, 2026 &middot; 3 min read</div>
+            <h3>Barcelona for First-Timers: Gaudí, Tapas Timing &amp; Avoiding Pickpockets</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-paris.html">
+          <div class="guide-media">
+            <span class="guide-tag">France</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=700&q=80" alt="The Eiffel Tower rising above Paris rooftops" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Paris for First-Timers: Arrondissements, the Metro &amp; Skipping the Lines</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-tokyo.html">
+          <div class="guide-media">
+            <span class="guide-tag">Japan</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=700&q=80" alt="Neon-lit street crossing in Tokyo, Japan at night" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Tokyo for First-Timers: A Neighborhood-by-Neighborhood Guide</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -153,26 +217,30 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Where to base yourself</a></li>
-              <li><a href="#main">Colosseum &amp; Forum</a></li>
-              <li><a href="#main">The Vatican</a></li>
-              <li><a href="#main">Free things worth it</a></li>
-              <li><a href="#main">Eating well</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#where-to-base-yourself">Where to base yourself</a></li>
+              <li><a href="#booking-the-colosseum-and-forum-properly">Booking the Colosseum and Forum properly</a></li>
+              <li><a href="#the-vatican-give-it-more-time-than-you-think">The Vatican: give it more time than you think</a></li>
+              <li><a href="#the-free-things-that-rival-the-paid-ones">The free things that rival the paid ones</a></li>
+              <li><a href="#eating-well-without-the-tourist-markup">Eating well without the tourist markup</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, hotels, and skip-the-line Colosseum/Vatican tickets — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="rome">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Rome through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Rome">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Rome">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Europe</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog-paris.html">Paris guide →</a></li>
-              <li><a href="blog.html">All guides →</a></li>
+              <li><a href="blog-barcelona.html">Spain: Barcelona for First-Timers</a></li>
+              <li><a href="blog-paris.html">France: Paris for First-Timers</a></li>
+              <li><a href="blog-tokyo.html">Japan: Tokyo for First-Timers</a></li>
+              <li><a href="blog.html#italy">All Italy guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -186,44 +254,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -233,6 +303,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

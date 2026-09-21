@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1508062878650-88b52897f298?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Malaysia", "item": "https://plyndi.com/blog.html#malaysia" },
+    { "@type": "ListItem", "position": 4, "name": "Kuala Lumpur for First-Timers: Petronas Towers, Batu Caves &amp; Hawker Food", "item": "https://plyndi.com/blog-kualalumpur.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Malaysia</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#malaysia">Malaysia</a></p>
       <span class="article-tag">Malaysia</span>
       <h1>Kuala Lumpur for First-Timers: Petronas Towers, Batu Caves &amp; Hawker Food</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 15, 2026</span>
-        <span>9 min read</span>
+        <span>3 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1508062878650-88b52897f298?auto=format&fit=crop&w=1400&q=80" alt="The Petronas Twin Towers rising above Kuala Lumpur at dusk" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1508062878650-88b52897f298?auto=format&fit=crop&w=1400&q=80" alt="The Petronas Twin Towers rising above Kuala Lumpur at dusk" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>May–July or December–February (drier stretches). KL sees rain year-round, so pack for it regardless.</dd>
               <dt>Getting around</dt><dd>Touch 'n Go card for the LRT/MRT/monorail; Grab for everything else.</dd>
@@ -87,10 +102,10 @@
             </dl>
           </div>
 
-          <h2>1. Petronas Towers: book ahead or skip the skybridge</h2>
+          <h2 id="petronas-towers-book-ahead-or-skip-the-skybridge">1. Petronas Towers: book ahead or skip the skybridge</h2>
           <p>The <strong>Petronas Towers</strong> skybridge and observation deck tickets are released in limited daily batches and often sell out, especially in high season — book online several days ahead if you want to go up. If you don't get a slot, the towers are still genuinely spectacular from ground level at <strong>KLCC Park</strong>, especially the fountain show in the evening, and it costs nothing.</p>
 
-          <h2>2. Batu Caves: the stairs are the whole thing</h2>
+          <h2 id="batu-caves-the-stairs-are-the-whole-thing">2. Batu Caves: the stairs are the whole thing</h2>
           <p><strong>Batu Caves</strong>, a limestone hill temple complex with a towering golden statue of Murugan at the entrance, requires climbing 272 colorful steps to reach the main cave temple. Go early morning to avoid both the heat and the crowds — it's a working Hindu temple and busiest around festivals (especially Thaipusam, when it draws over a million visitors). Watch belongings closely; the resident macaque monkeys are notorious for grabbing food, sunglasses, and bags.</p>
 
           <div class="pull-tip">
@@ -98,7 +113,7 @@
             Batu Caves is about 40 minutes from central KL by KTM Komuter train, cheap and straightforward — no need to book a tour for what's an easy DIY half-day trip.
           </div>
 
-          <h2>3. Hawker food: where to actually go</h2>
+          <h2 id="hawker-food-where-to-actually-go">3. Hawker food: where to actually go</h2>
           <p>KL's hawker and street food scene rivals Singapore's at a fraction of the price. Prioritize:</p>
           <ul>
             <li><strong>Jalan Alor</strong> — the best-known food street, touristy but still legitimately good, especially for grilled seafood and satay at night.</li>
@@ -106,19 +121,29 @@
             <li><strong>Nasi lemak</strong> from a street stall for breakfast, roti canai from a mamak (Indian-Muslim) stall any time of day, and char kway teow wherever the queue of locals is longest.</li>
           </ul>
 
-          <h2>4. The multicultural neighborhoods</h2>
+          <h2 id="the-multicultural-neighborhoods">4. The multicultural neighborhoods</h2>
           <p>KL's Malay, Chinese, and Indian communities each have distinct, walkable neighborhoods worth exploring on foot: <strong>Chinatown</strong> around Petaling Street, <strong>Brickfields ("Little India")</strong> near KL Sentral for temples and South Indian food, and the colonial-era buildings around <strong>Merdeka Square</strong>. A single day can realistically cover all three if you plan the route well.</p>
 
-          <h2>5. A cooler escape: the Cameron Highlands</h2>
+          <h2 id="a-cooler-escape-the-cameron-highlands">5. A cooler escape: the Cameron Highlands</h2>
           <p>If your trip is longer than 3–4 days, the <strong>Cameron Highlands</strong> — tea plantations and a noticeably cooler climate a few hours from KL — is a worthwhile overnight add-on, though it's too far for a single rushed day trip. Most first-time visitors skip it in favor of a shorter KL-only trip, which is a reasonable call if time is tight.</p>
 
-          <h2>6. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">6. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Not booking Petronas Towers tickets in advance</strong> — daily slots are limited and sell out, especially on weekends.</li>
             <li><strong>Underestimating the heat and humidity on the Batu Caves stairs</strong> — bring water and go early.</li>
             <li><strong>Assuming KL is "just a stopover"</strong> and rushing it — it holds up well as a 3-day standalone destination.</li>
             <li><strong>Not packing for rain</strong> — KL gets sudden downpours year-round regardless of season.</li>
           </ul>
+
+          <div class="booking-block" data-city="kualalumpur">
+            <p class="box-title">Booking Kuala Lumpur</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Kuala Lumpur">Find stays in Kuala Lumpur</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Kuala Lumpur">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Kuala Lumpur">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -127,6 +152,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-singapore.html">
+          <div class="guide-media">
+            <span class="guide-tag">Singapore</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=700&q=80" alt="Supertree Grove at Gardens by the Bay, Singapore, lit up at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Singapore in 3 Days: Hawker Centers, Gardens by the Bay &amp; the Rules That Trip People Up</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-bangkok.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=700&q=80" alt="Golden temple spires against the Bangkok skyline at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>The Complete First-Timer's Guide to Bangkok</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-bali.html">
+          <div class="guide-media">
+            <span class="guide-tag">Indonesia</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=700&q=80" alt="Terraced green rice fields with palm trees in Bali, Indonesia" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Bali on a Budget: Rice Fields, Waterfalls &amp; Warungs</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -140,26 +204,30 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Petronas Towers</a></li>
-              <li><a href="#main">Batu Caves</a></li>
-              <li><a href="#main">Hawker food</a></li>
-              <li><a href="#main">Multicultural neighborhoods</a></li>
-              <li><a href="#main">Cameron Highlands</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#petronas-towers-book-ahead-or-skip-the-skybridge">Petronas Towers: book ahead or skip the skybridge</a></li>
+              <li><a href="#batu-caves-the-stairs-are-the-whole-thing">Batu Caves: the stairs are the whole thing</a></li>
+              <li><a href="#hawker-food-where-to-actually-go">Hawker food: where to actually go</a></li>
+              <li><a href="#the-multicultural-neighborhoods">The multicultural neighborhoods</a></li>
+              <li><a href="#a-cooler-escape-the-cameron-highlands">A cooler escape: the Cameron Highlands</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, hotels, and Petronas Towers timed tickets — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="kualalumpur">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Kuala Lumpur through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Kuala Lumpur">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Kuala Lumpur">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Southeast Asia</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog-singapore.html">Singapore guide →</a></li>
-              <li><a href="blog.html">All guides →</a></li>
+              <li><a href="blog-singapore.html">Singapore: Singapore in 3 Days</a></li>
+              <li><a href="blog-bangkok.html">Thailand: The Complete First-Timer's Guide to Bangkok</a></li>
+              <li><a href="blog-bali.html">Indonesia: Bali on a Budget</a></li>
+              <li><a href="blog.html#malaysia">All Malaysia guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -173,44 +241,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -220,6 +290,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

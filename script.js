@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsletterForm();
   initContactForm();
   initBlogFilters();
+  initBookingLinks();
+  initAnalytics();
 });
 
 /* ---------- Sticky header shadow on scroll ---------- */
@@ -257,7 +259,7 @@ function initPlanner(){
     }
 
     output.innerHTML = `
-      <h4>Your ${days}-day ${trip.label} skeleton (${pace} pace)</h4>
+      <p class="box-title">Your ${days}-day ${trip.label} skeleton (${pace} pace)</p>
       <ol>${items.join('')}</ol>
       <p class="planner-disclaimer">
         This is a starting frame, not a booked plan — swap items around and leave
@@ -311,19 +313,59 @@ function initNewsletterForm(){
 function initBlogFilters(){
   const buttons = document.querySelectorAll('.filter-row button');
   const cards = document.querySelectorAll('[data-category]');
+  const heading = document.querySelector('.page-hero h1');
   if (!buttons.length || !cards.length) return;
 
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      const filter = btn.dataset.filter;
-      cards.forEach(card => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.style.display = show ? '' : 'none';
-      });
+  function apply(filter, push){
+    const known = [...buttons].some(b => b.dataset.filter === filter);
+    if (!known) filter = 'all';
+    buttons.forEach(b => b.classList.toggle('is-active', b.dataset.filter === filter));
+    let shown = 0;
+    cards.forEach(card => {
+      const show = filter === 'all' || card.dataset.category === filter;
+      card.style.display = show ? '' : 'none';
+      if (show) shown++;
     });
+    if (heading){
+      const label = [...buttons].find(b => b.dataset.filter === filter);
+      heading.textContent = filter === 'all'
+        ? 'Travel guides'
+        : (label ? label.textContent.replace(/ guides$/,'') + ' travel guides' : 'Travel guides');
+    }
+    document.title = filter === 'all'
+      ? 'Travel Guides — Plyndi'
+      : (heading ? heading.textContent + ' — Plyndi' : document.title);
+    if (push){
+      const hash = filter === 'all' ? ' ' : '#' + filter;
+      history.replaceState(null, '', filter === 'all' ? location.pathname : hash);
+    }
+    return shown;
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => apply(btn.dataset.filter, true));
   });
+
+  /* Deep links: blog.html#japan lands already filtered, so every
+     "All <country> guides" link in a guide actually goes somewhere. */
+  const initial = decodeURIComponent(location.hash.replace('#',''));
+  if (initial) apply(initial, false);
+  window.addEventListener('hashchange', () => {
+    apply(decodeURIComponent(location.hash.replace('#','')) || 'all', false);
+  });
+}
+
+/* ---------- Privacy-friendly analytics ----------
+   Cloudflare Web Analytics: no cookies, so no cookie banner needed.
+   Paste your token into config.js and it starts collecting. */
+function initAnalytics(){
+  const token = (window.PLYNDI_ANALYTICS || {}).cloudflareToken;
+  if (!token || /^PASTE_/.test(token)) return;
+  const el = document.createElement('script');
+  el.defer = true;
+  el.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  el.setAttribute('data-cf-beacon', JSON.stringify({ token }));
+  document.head.appendChild(el);
 }
 
 /* ---------- Contact form (Formspree) ---------- */
@@ -361,5 +403,44 @@ function initContactForm(){
     } finally {
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send message'; }
     }
+  });
+}
+
+/* ---------- Affiliate booking links ----------
+   Reads window.PLYNDI_AFFILIATES from config.js and fills in every
+   [data-book] button on the page. A partner that isn't enabled yet
+   has its buttons removed rather than left pointing nowhere — the
+   site never shows a dead or fake booking link. */
+function initBookingLinks(){
+  const cfg = window.PLYNDI_AFFILIATES || {};
+  const buttons = document.querySelectorAll('[data-book]');
+  if (!buttons.length) return;
+
+  buttons.forEach(btn => {
+    const entry = cfg[btn.dataset.book];
+    const dest = btn.dataset.dest || '';
+
+    if (!entry || !entry.enabled || !entry.url || /^PASTE_/.test(entry.url)) {
+      btn.remove();
+      return;
+    }
+
+    btn.href = entry.url.replace('{dest}', encodeURIComponent(dest));
+    btn.target = '_blank';
+    btn.rel = 'sponsored noopener nofollow';
+    if (entry.partner) {
+      btn.setAttribute('title', 'Opens ' + entry.partner + ' in a new tab');
+    }
+  });
+
+  /* Any booking container left with no live buttons gets an honest note. */
+  document.querySelectorAll('.booking-block, .affiliate-box').forEach(box => {
+    if (box.querySelector('a[data-book]')) return;
+    const actions = box.querySelector('.booking-actions');
+    if (actions) actions.remove();
+    const note = document.createElement('p');
+    note.className = 'form-note';
+    note.textContent = 'Booking partners are being connected \u2014 no booking links are live on this page yet.';
+    box.appendChild(note);
   });
 }

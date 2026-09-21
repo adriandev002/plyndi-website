@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1520643290407-08ec162c7450?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Thailand", "item": "https://plyndi.com/blog.html#thailand" },
+    { "@type": "ListItem", "position": 4, "name": "Chiang Mai: Temples, Ethical Elephant Sanctuaries &amp; the Pai Road Trip", "item": "https://plyndi.com/blog-chiangmai.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Thailand</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#thailand">Thailand</a></p>
       <span class="article-tag">Thailand</span>
       <h1>Chiang Mai: Temples, Ethical Elephant Sanctuaries &amp; the Pai Road Trip</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 14, 2026</span>
-        <span>10 min read</span>
+        <span>4 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1520643290407-08ec162c7450?auto=format&fit=crop&w=1400&q=80" alt="A temple in Chiang Mai, Thailand, reflected in water" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1520643290407-08ec162c7450?auto=format&fit=crop&w=1400&q=80" alt="A temple in Chiang Mai, Thailand, reflected in water" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>November–February (cool, clear). Avoid March–April: seasonal agricultural burning causes heavy smoke haze.</dd>
               <dt>Getting around</dt><dd>Old City is walkable; a rented scooter or Grab covers everything else.</dd>
@@ -87,7 +102,7 @@
             </dl>
           </div>
 
-          <h2>1. The Old City temple walk</h2>
+          <h2 id="the-old-city-temple-walk">1. The Old City temple walk</h2>
           <p>Chiang Mai's Old City is a walled, moated square packed with temples, and unlike Bangkok's, most are free to enter and rarely crowded. A single afternoon on foot covers the highlights:</p>
           <ul>
             <li><strong>Wat Phra Singh</strong> — the most revered temple in the city, elaborate Lanna-style architecture.</li>
@@ -95,7 +110,7 @@
             <li><strong>Wat Phan Tao</strong> — a smaller wooden teak temple next to Chedi Luang, easy to miss and worth not missing.</li>
           </ul>
 
-          <h2>2. Doi Suthep: worth the trip up the mountain</h2>
+          <h2 id="doi-suthep-worth-the-trip-up-the-mountain">2. Doi Suthep: worth the trip up the mountain</h2>
           <p><strong>Wat Phra That Doi Suthep</strong> sits on a mountain overlooking the city, reached by a short songthaew (shared truck-taxi) ride and a 300-step naga staircase (or a funicular, if you'd rather skip the stairs). Go for sunset if you can — the golden chedi against the darkening valley view below is the single best photo opportunity in the region.</p>
 
           <div class="pull-tip">
@@ -103,7 +118,7 @@
             Songthaews to Doi Suthep leave from near Chiang Mai Gate once there are enough passengers — negotiate the round-trip fare including wait time before you get in, not after.
           </div>
 
-          <h2>3. Elephant sanctuaries: how to actually vet one</h2>
+          <h2 id="elephant-sanctuaries-how-to-actually-vet-one">3. Elephant sanctuaries: how to actually vet one</h2>
           <p>Chiang Mai's elephant tourism industry has shifted hard toward "ethical sanctuaries" as a marketing term, and not all of them deserve it. The distinction that actually matters: does the visit involve riding, or performances (painting, football, etc.)? Both indicate the animals were broken through harsh training methods to tolerate it. A genuine sanctuary lets you observe, feed, and sometimes bathe elephants on their terms, with no riding and no tricks.</p>
           <ul>
             <li>Read recent reviews specifically mentioning "no riding" and "no chains" rather than trusting the name alone.</li>
@@ -111,22 +126,32 @@
             <li>Expect to pay more for a genuine sanctuary than a riding camp — it's a real cost difference, not just marketing.</li>
           </ul>
 
-          <h2>4. Sunday Walking Street</h2>
+          <h2 id="sunday-walking-street">4. Sunday Walking Street</h2>
           <p>Every Sunday evening, Ratchadamnoen Road through the Old City closes to traffic and becomes a market stretching over a kilometer — textiles, local art, and food stalls filling the temple courtyards along the route. It's genuinely one of the better night markets in Thailand and worth planning a Sunday into your trip for.</p>
 
-          <h2>5. Nimman: coffee and the digital-nomad district</h2>
+          <h2 id="nimman-coffee-and-the-digital-nomad-district">5. Nimman: coffee and the digital-nomad district</h2>
           <p>West of the Old City, <strong>Nimmanhaemin Road (Nimman)</strong> is Chiang Mai's cafe and co-working hub — a good half-day if you want strong coffee, boutique shopping, and a break from temple-hopping. It's also where a lot of the city's longer-term expat and remote-work community bases itself.</p>
 
-          <h2>6. Pai: the road trip everyone talks about</h2>
+          <h2 id="pai-the-road-trip-everyone-talks-about">6. Pai: the road trip everyone talks about</h2>
           <p><strong>Pai</strong> is a small mountain town about 3–4 hours from Chiang Mai by a famously winding road (often quoted at over 700 curves). It's doable as a long day trip by minivan but genuinely better as a 1–2 night stop if your schedule allows — waterfalls, hot springs, and a laid-back backpacker town that feels worlds away from Chiang Mai's pace. If you get motion sick easily, take motion sickness medication before the drive or book a private car instead of a shared minivan.</p>
 
-          <h2>7. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">7. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Booking a riding-elephant "sanctuary"</strong> without checking recent reviews — the ethical-sounding name isn't a guarantee.</li>
             <li><strong>Visiting during burning season (Mar–Apr)</strong> without checking air quality first — it can be genuinely bad for respiratory health some years.</li>
             <li><strong>Renting a scooter without checking your travel insurance covers it</strong> — many policies exclude scooter accidents without a proper motorcycle license.</li>
             <li><strong>Doing Pai as a rushed day trip</strong> when you had the extra night to spare — the road alone eats half the day.</li>
           </ul>
+
+          <div class="booking-block" data-city="chiangmai">
+            <p class="box-title">Booking Chiang Mai</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Chiang Mai">Find stays in Chiang Mai</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Chiang Mai">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Chiang Mai">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -135,6 +160,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-bangkok.html">
+          <div class="guide-media">
+            <span class="guide-tag">Thailand</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=700&q=80" alt="Golden temple spires against the Bangkok skyline at dusk" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>The Complete First-Timer's Guide to Bangkok</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-hanoi.html">
+          <div class="guide-media">
+            <span class="guide-tag">Vietnam</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1509030450996-dd1a26dda07a?auto=format&fit=crop&w=700&q=80" alt="Motorbike traffic and old shophouses in Hanoi&#x27;s Old Quarter" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 15, 2026 &middot; 4 min read</div>
+            <h3>Hanoi for First-Timers: Old Quarter, Egg Coffee &amp; Crossing the Street</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-bali.html">
+          <div class="guide-media">
+            <span class="guide-tag">Indonesia</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=700&q=80" alt="Terraced green rice fields with palm trees in Bali, Indonesia" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Bali on a Budget: Rice Fields, Waterfalls &amp; Warungs</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -148,27 +212,31 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Old City temple walk</a></li>
-              <li><a href="#main">Doi Suthep</a></li>
-              <li><a href="#main">Elephant sanctuaries</a></li>
-              <li><a href="#main">Sunday Walking Street</a></li>
-              <li><a href="#main">Nimman</a></li>
-              <li><a href="#main">Pai road trip</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#the-old-city-temple-walk">The Old City temple walk</a></li>
+              <li><a href="#doi-suthep-worth-the-trip-up-the-mountain">Doi Suthep: worth the trip up the mountain</a></li>
+              <li><a href="#elephant-sanctuaries-how-to-actually-vet-one">Elephant sanctuaries: how to actually vet one</a></li>
+              <li><a href="#sunday-walking-street">Sunday Walking Street</a></li>
+              <li><a href="#nimman-coffee-and-the-digital-nomad-district">Nimman: coffee and the digital-nomad district</a></li>
+              <li><a href="#pai-the-road-trip-everyone-talks-about">Pai: the road trip everyone talks about</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, hotels, and vetted sanctuary day-trips — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="chiangmai">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Chiang Mai through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Chiang Mai">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Chiang Mai">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Thailand</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog-bangkok.html">Bangkok guide →</a></li>
-              <li><a href="blog.html">All Thailand guides →</a></li>
+              <li><a href="blog-bangkok.html">Thailand: The Complete First-Timer's Guide to Bangkok</a></li>
+              <li><a href="blog-hanoi.html">Vietnam: Hanoi for First-Timers</a></li>
+              <li><a href="blog-bali.html">Indonesia: Bali on a Budget</a></li>
+              <li><a href="blog.html#thailand">All Thailand guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -182,44 +250,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -229,6 +299,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

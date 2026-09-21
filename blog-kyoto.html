@@ -13,7 +13,9 @@
 <meta property="og:image" content="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
 <link rel="apple-touch-icon" href="assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">
 {
@@ -26,6 +28,18 @@
   "publisher": { "@type": "Organization", "name": "Plyndi" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://plyndi.com/" },
+    { "@type": "ListItem", "position": 2, "name": "Travel Guides", "item": "https://plyndi.com/blog.html" },
+    { "@type": "ListItem", "position": 3, "name": "Japan", "item": "https://plyndi.com/blog.html#japan" },
+    { "@type": "ListItem", "position": 4, "name": "Kyoto for First-Timers: Temples Without the Crowds &amp; the Bus vs. Train Question", "item": "https://plyndi.com/blog-kyoto.html" }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +48,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-mark"><img loading="lazy" decoding="async" src="assets/logo.png" alt="" width="34" height="34"></span>
       <span class="brand-word">Plyndi</span>
     </a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -42,9 +56,10 @@
       <a href="index.html">Home</a>
       <a href="blog.html" class="is-active">Travel Guides</a>
       <a href="index.html#planner">Trip Planner</a>
+      <a href="app.html">The App</a>
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-primary nav-cta" href="index.html#planner">Plan a trip</a>
+      <a class="btn btn-primary nav-cta" href="app.html">Get the app</a>
     </nav>
   </div>
 </header>
@@ -52,19 +67,19 @@
 <main id="main">
   <article>
     <div class="container article-hero">
-      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / Japan</p>
+      <p class="article-crumb"><a href="blog.html">Travel Guides</a> / <a href="blog.html#japan">Japan</a></p>
       <span class="article-tag">Japan</span>
       <h1>Kyoto for First-Timers: Temples Without the Crowds &amp; the Bus vs. Train Question</h1>
       <div class="article-meta">
         <span class="byline">By Adrian</span>
         <span>Updated September 15, 2026</span>
-        <span>11 min read</span>
+        <span>4 min read</span>
       </div>
     </div>
 
     <div class="container">
       <div class="article-cover">
-        <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1400&q=80" alt="Red torii gates at Fushimi Inari Shrine in Kyoto" width="1400" height="700">
+        <img fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1400&q=80" alt="Red torii gates at Fushimi Inari Shrine in Kyoto" width="1400" height="700">
       </div>
 
       <div class="article-body">
@@ -78,7 +93,7 @@
           </div>
 
           <div class="fact-box">
-            <h4>Quick facts</h4>
+            <p class="box-title">Quick facts</p>
             <dl>
               <dt>Best time to visit</dt><dd>Early April (cherry blossoms) or November (autumn colors) — both stunning and both the most crowded weeks of the year, book well ahead.</dd>
               <dt>Getting around</dt><dd>A mix of bus and train; buses cover more sights but are slower and crowded, trains are faster where routes exist.</dd>
@@ -87,10 +102,10 @@
             </dl>
           </div>
 
-          <h2>1. Fushimi Inari at the right hour</h2>
+          <h2 id="fushimi-inari-at-the-right-hour">1. Fushimi Inari at the right hour</h2>
           <p><strong>Fushimi Inari Shrine</strong>'s thousands of red torii gates are free, open 24 hours, and by 10am absolutely packed with tour groups. Go at sunrise, or in the evening after 5pm when most day-trippers have left — both give you genuinely empty stretches of the gate tunnels for photos, plus a completely different, quieter atmosphere. The full hike to the summit takes 2–3 hours round trip; most visitors only do the first 20–30 minutes, so going further also naturally thins the crowd.</p>
 
-          <h2>2. Arashiyama: earlier than you think</h2>
+          <h2 id="arashiyama-earlier-than-you-think">2. Arashiyama: earlier than you think</h2>
           <p>The <strong>Arashiyama Bamboo Grove</strong> is a short, free walk that looks stunning in photos and, by mid-morning, is a slow-moving crowd of people taking the same photo. Arrive by 8am (the grove itself never closes) to get it close to empty. Pair it with <strong>Tenryu-ji Temple</strong> right next to the grove, and the Togetsukyo Bridge nearby.</p>
 
           <div class="pull-tip">
@@ -98,25 +113,35 @@
             Kyoto rewards an early-riser itinerary more than almost any city in Japan — the same sights that are unbearable at noon are genuinely peaceful at 7–8am. Shift your whole schedule earlier if you can.
           </div>
 
-          <h2>3. Kinkaku-ji and Ginkaku-ji: gold and silver, different crowds</h2>
+          <h2 id="kinkaku-ji-and-ginkaku-ji-gold-and-silver-differen">3. Kinkaku-ji and Ginkaku-ji: gold and silver, different crowds</h2>
           <p><strong>Kinkaku-ji</strong> (the Golden Pavilion) is spectacular and, correspondingly, one of the most crowded single stops in the city — there's a fixed one-way walking path, so there's no real way to avoid the crowd, just time it earlier in the day. <strong>Ginkaku-ji</strong> (the Silver Pavilion, despite the name, isn't actually silver-covered) is quieter, has a genuinely excellent moss garden, and pairs well with a walk down the <strong>Philosopher's Path</strong> alongside it.</p>
 
-          <h2>4. Gion: geisha-district etiquette</h2>
+          <h2 id="gion-geisha-district-etiquette">4. Gion: geisha-district etiquette</h2>
           <p><strong>Gion</strong>, Kyoto's famous geisha district, has had real problems with tourist harassment of geiko and maiko (geisha and apprentice geisha) — chasing them for photos, blocking their path, touching their clothing. Some narrow streets are now off-limits to tourists entirely, with fines for violations, following resident complaints. If you do see one, the basic etiquette: don't approach, don't block their path, and don't photograph without a respectful distance and, ideally, without them noticing you at all. A better way to experience the culture respectfully is booking an actual geisha performance or tea ceremony rather than street-photographing real working geisha.</p>
 
-          <h2>5. Bus vs. train: how to actually decide</h2>
+          <h2 id="bus-vs-train-how-to-actually-decide">5. Bus vs. train: how to actually decide</h2>
           <p>Kyoto's city buses cover almost every major temple but move slowly and get seriously crowded, especially the routes to Kiyomizu-dera and Arashiyama. A one-day or two-day bus pass makes sense if your day is bus-route-heavy; otherwise, mix in trains and short walks where routes allow — the Keihan and Hankyu lines connect several areas faster than the equivalent bus route. Don't default to buses for everything; check each specific route before assuming it's the fastest option.</p>
 
-          <h2>6. Kiyomizu-dera and the eastern old town</h2>
+          <h2 id="kiyomizu-dera-and-the-eastern-old-town">6. Kiyomizu-dera and the eastern old town</h2>
           <p><strong>Kiyomizu-dera</strong>'s wooden stage, built without a single nail, offers one of the best city views in Kyoto. The approach through <strong>Sannenzaka and Ninenzaka</strong>, preserved old streets lined with traditional shops, is worth slowing down for rather than rushing straight to the temple — go in the late afternoon for softer light and thinner crowds on the approach streets.</p>
 
-          <h2>7. Common first-timer mistakes</h2>
+          <h2 id="common-first-timer-mistakes">7. Common first-timer mistakes</h2>
           <ul>
             <li><strong>Visiting the famous sights at midday</strong> — Kyoto's crowd patterns are extreme and predictable; early morning or early evening consistently beats 10am–3pm.</li>
             <li><strong>Chasing or photographing geisha up close</strong> — actively harmful to residents and, on some streets, now finable.</li>
             <li><strong>Assuming buses are always faster</strong> — check the specific route; trains often beat buses on the same journey.</li>
             <li><strong>Trying to see all of Kyoto's temples</strong> — pick 4–5 that genuinely interest you rather than rushing through a dozen at a surface level.</li>
           </ul>
+
+          <div class="booking-block" data-city="kyoto">
+            <p class="box-title">Booking Kyoto</p>
+            <p>Plyndi earns a commission on bookings made through these partners, at no extra cost to you &mdash; it&rsquo;s what keeps these guides free. <a href="disclosure.html">How this works</a>.</p>
+            <div class="booking-actions">
+              <a class="btn btn-gold" data-book="stays" data-dest="Kyoto">Find stays in Kyoto</a>
+              <a class="btn btn-outline" data-book="flights" data-dest="Kyoto">Compare flights</a>
+              <a class="btn btn-outline" data-book="activities" data-dest="Kyoto">Tours &amp; activities</a>
+            </div>
+          </div>
 
           <div class="article-cta">
             <div>
@@ -125,6 +150,45 @@
             </div>
             <a class="btn btn-primary" href="index.html#planner">Open the trip planner</a>
           </div>
+
+          <section class="related-guides" aria-labelledby="related-heading">
+            <h2 id="related-heading">Where to go next</h2>
+            <div class="guides-grid">
+        <a class="guide-card" href="blog-tokyo.html">
+          <div class="guide-media">
+            <span class="guide-tag">Japan</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=700&q=80" alt="Neon-lit street crossing in Tokyo, Japan at night" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 4 min read</div>
+            <h3>Tokyo for First-Timers: A Neighborhood-by-Neighborhood Guide</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-taipei.html">
+          <div class="guide-media">
+            <span class="guide-tag">Taiwan</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=700&q=80" alt="Taipei 101 skyscraper rising above the city skyline" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 3 min read</div>
+            <h3>Taipei for First-Timers: Night Markets, Hot Springs &amp; the MRT</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+        <a class="guide-card" href="blog-seoul.html">
+          <div class="guide-media">
+            <span class="guide-tag">South Korea</span>
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=700&q=80" alt="Traditional hanok rooftops with modern Seoul skyline behind" width="700" height="525">
+          </div>
+          <div class="guide-body">
+            <div class="guide-meta">Updated September 14, 2026 &middot; 3 min read</div>
+            <h3>Seoul for First-Timers: Palaces, Hongdae &amp; the T-money Card</h3>
+            <span class="guide-link">Read the guide &rarr;</span>
+          </div>
+        </a>
+            </div>
+          </section>
 
           <div class="author-box">
             <div class="avatar-mark">A</div>
@@ -138,27 +202,31 @@
 
         <aside class="article-sidebar">
           <div class="sidebar-card">
-            <h4>On this page</h4>
+            <p class="box-title">On this page</p>
             <ul>
-              <li><a href="#main">Fushimi Inari timing</a></li>
-              <li><a href="#main">Arashiyama</a></li>
-              <li><a href="#main">Kinkaku-ji &amp; Ginkaku-ji</a></li>
-              <li><a href="#main">Gion etiquette</a></li>
-              <li><a href="#main">Bus vs. train</a></li>
-              <li><a href="#main">Kiyomizu-dera</a></li>
-              <li><a href="#main">Common mistakes</a></li>
+              <li><a href="#fushimi-inari-at-the-right-hour">Fushimi Inari at the right hour</a></li>
+              <li><a href="#arashiyama-earlier-than-you-think">Arashiyama: earlier than you think</a></li>
+              <li><a href="#kinkaku-ji-and-ginkaku-ji-gold-and-silver-differen">Kinkaku-ji and Ginkaku-ji: gold and silver, different crowds</a></li>
+              <li><a href="#gion-geisha-district-etiquette">Gion: geisha-district etiquette</a></li>
+              <li><a href="#bus-vs-train-how-to-actually-decide">Bus vs. train: how to actually decide</a></li>
+              <li><a href="#kiyomizu-dera-and-the-eastern-old-town">Kiyomizu-dera and the eastern old town</a></li>
+              <li><a href="#common-first-timer-mistakes">Common first-timer mistakes</a></li>
             </ul>
           </div>
-          <div class="sidebar-card affiliate-box">
-            <h4>Book this leg of your trip</h4>
-            <p>Flights, ryokan stays, and bus-pass options — booking links are being added as affiliate programs are approved.</p>
-            <a class="btn btn-gold btn-block" href="index.html#planner">Plan this trip</a>
+          <div class="sidebar-card affiliate-box" data-city="kyoto">
+            <p class="box-title">Book this trip</p>
+            <p>Compare stays and flights for Kyoto through Plyndi&rsquo;s booking partners.</p>
+            <a class="btn btn-gold btn-block" data-book="stays" data-dest="Kyoto">Find stays</a>
+            <a class="btn btn-outline btn-block" data-book="flights" data-dest="Kyoto">Compare flights</a>
+            <p class="form-note">Affiliate links &mdash; <a href="disclosure.html">disclosure</a>.</p>
           </div>
           <div class="sidebar-card">
-            <h4>More Japan</h4>
+            <p class="box-title">Related guides</p>
             <ul>
-              <li><a href="blog-tokyo.html">Tokyo guide →</a></li>
-              <li><a href="blog.html">All Japan guides →</a></li>
+              <li><a href="blog-tokyo.html">Japan: Tokyo for First-Timers</a></li>
+              <li><a href="blog-taipei.html">Taiwan: Taipei for First-Timers</a></li>
+              <li><a href="blog-seoul.html">South Korea: Seoul for First-Timers</a></li>
+              <li><a href="blog.html#japan">All Japan guides &rarr;</a></li>
             </ul>
           </div>
         </aside>
@@ -172,44 +240,46 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="index.html" style="display:inline-flex">
-          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34"></span>
+          <span class="brand-mark"><img src="assets/logo-white.png" alt="" width="34" height="34" loading="lazy"></span>
           <span class="brand-word">Plyndi</span>
         </a>
-        <p>Independent, practical travel guides and trip-planning tools — built one destination at a time.</p>
+        <p>Practical, independently written travel guides — and Plyndi, the trip-planning app they grew into.</p>
         <div class="footer-social">
           <a href="https://www.instagram.com/plyndi.app" target="_blank" rel="noopener" aria-label="Plyndi on Instagram">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.facebook.com/plyndi" target="_blank" rel="noopener" aria-label="Plyndi on Facebook">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
         </div>
       </div>
       <div class="footer-col">
-        <h4>Explore</h4>
+        <h2 class="footer-head">Explore</h2>
         <ul>
           <li><a href="blog.html">Travel guides</a></li>
           <li><a href="index.html#planner">Trip planner</a></li>
+          <li><a href="app.html">The Plyndi app</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
+        <h2 class="footer-head">Plyndi</h2>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="disclosure.html">Affiliate disclosure</a></li>
+          <li><a href="support.html">Support</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Legal</h4>
+        <h2 class="footer-head">Legal</h2>
         <ul>
+          <li><a href="disclosure.html">Affiliate disclosure</a></li>
           <li><a href="privacy.html">Privacy policy</a></li>
           <li><a href="terms.html">Terms of service</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Plyndi. All rights reserved.</span>
+      <span>&copy; 2026 Plyndi. Written and built in Taipei.</span>
       <div class="footer-legal">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -219,6 +289,7 @@
   </div>
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
