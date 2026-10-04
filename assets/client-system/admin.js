@@ -24,6 +24,7 @@ async function init() {
   $('ad-export-all').addEventListener('click', exportAllCsv);
   $('tab-subs').addEventListener('click', () => tab('subs'));
   $('tab-links').addEventListener('click', () => tab('links'));
+  $('tab-inq').addEventListener('click', () => tab('inquiries'));
   $('ad-invite-form').addEventListener('submit', createInvite);
   $('ad-back').addEventListener('click', e => { e.preventDefault(); history.pushState(null, '', location.pathname); route(); });
   window.addEventListener('popstate', route);
@@ -55,15 +56,24 @@ function flash(msg, isError) {
 function route() {
   const id = new URLSearchParams(location.search).get('id');
   if (id) { $('ad-list-view').hidden = true; $('ad-detail-view').hidden = false; loadDetail(id); }
-  else { $('ad-detail-view').hidden = true; $('ad-list-view').hidden = false; loadList(); }
+  else {
+    $('ad-detail-view').hidden = true; $('ad-list-view').hidden = false; loadList();
+    if (location.hash === '#inquiries') tab('inquiries');
+    else if (location.hash === '#links') tab('links');
+    else api('/admin/inquiries').then(r => { inquiries = r.inquiries || []; drawInquiries(); }).catch(() => {});
+  }
 }
 
 function tab(which) {
   $('tab-subs').setAttribute('aria-selected', String(which === 'subs'));
+  $('tab-inq').setAttribute('aria-selected', String(which === 'inquiries'));
   $('tab-links').setAttribute('aria-selected', String(which === 'links'));
   $('ad-subs').hidden = which !== 'subs';
+  $('ad-inq').hidden = which !== 'inquiries';
   $('ad-links').hidden = which !== 'links';
   if (which === 'links') loadInvites();
+  if (which === 'inquiries') loadInquiries();
+  history.replaceState(null, '', location.pathname + location.search + (which === 'subs' ? '' : '#' + which));
 }
 
 /* ---------------- Submissions list ---------------- */
@@ -277,4 +287,87 @@ async function createInvite(e) {
 async function copy(text) {
   try { await navigator.clipboard.writeText(text); flash('Link copied to clipboard.'); }
   catch (_) { window.prompt('Copy this link:', text); }
+}
+
+/* ---------------- Inquiries (public "Start Your Project" requests) ---------------- */
+let inquiries = [];
+const INQ_SERVICE = { website: 'Website Development' };
+
+async function loadInquiries() {
+  $('inq-rows').replaceChildren(h('tr', null, h('td', { colspan: 5, class: 'ad-empty' }, 'Loading…')));
+  try { inquiries = (await api('/admin/inquiries')).inquiries || []; drawInquiries(); }
+  catch (e) { if ([401, 403, 503].includes(e.status)) return fatal(e); flash(e.message, true); }
+}
+
+function drawInquiries() {
+  const badge = $('tab-inq-count');
+  const fresh = inquiries.filter(q => q.status === 'New').length;
+  if (badge) { badge.textContent = fresh ? String(fresh) : ''; badge.hidden = !fresh; }
+  if (!inquiries.length) {
+    $('inq-rows').replaceChildren(h('tr', null, h('td', { colspan: 5, class: 'ad-empty' }, 'No inquiries yet. They appear here when someone clicks “Start Your Project” on the Services page.')));
+    return;
+  }
+  $('inq-rows').replaceChildren(...inquiries.flatMap(q => {
+    const row = h('tr', null,
+      h('td', { 'data-label': 'Email' }, h('a', { href: 'mailto:' + q.email }, q.email)),
+      h('td', { 'data-label': 'Service' }, INQ_SERVICE[q.service] || q.service),
+      h('td', { 'data-label': 'Received' }, formatDate(q.created_at)),
+      h('td', { 'data-label': 'Status' }, h('span', { class: 'ad-pill ' + (q.status === 'Invited' ? 'is-on' : q.status === 'New' ? 'is-new' : 'is-off') }, q.status)),
+      h('td', { class: 'ad-actions' }, inquiryActions(q)));
+    return [row];
+  }));
+}
+
+function inquiryActions(q) {
+  if (q.status === 'Invited' && q.invite_token) {
+    return [h('button', { type: 'button', class: 'cs-link-btn', onclick: () => copy(inviteUrl(q.invite_token)) }, 'Copy client link')];
+  }
+  if (q.status === 'Declined') {
+    return [h('button', { type: 'button', class: 'cs-link-btn', onclick: () => setInquiryStatus(q, 'New') }, 'Re-open')];
+  }
+  return [
+    h('button', { type: 'button', class: 'btn btn-primary ad-btn-sm', onclick: e => openInviteForm(q, e.currentTarget.closest('tr')) }, 'Create client link'),
+    h('button', { type: 'button', class: 'cs-link-btn cs-danger', onclick: () => setInquiryStatus(q, 'Declined') }, 'Decline')
+  ];
+}
+
+async function setInquiryStatus(q, status) {
+  try { await api(`/admin/inquiries/${q.id}`, { method: 'PATCH', body: { status } }); q.status = status; drawInquiries(); flash(`Marked as ${status}.`); }
+  catch (e) { flash(e.message, true); }
+}
+
+function openInviteForm(q, tr) {
+  if (tr.nextElementSibling && tr.nextElementSibling.classList.contains('ad-inq-form')) { tr.nextElementSibling.querySelector('input').focus(); return; }
+  const nameId = 'inq-name-' + q.id, mailId = 'inq-mail-' + q.id;
+  const name = h('input', { id: nameId, maxlength: 200, placeholder: 'e.g. WanderAsia' });
+  const mail = h('input', { type: 'checkbox', id: mailId, checked: true });
+  const result = h('div', { class: 'ad-invite-result', hidden: true });
+  const create = h('button', { type: 'button', class: 'btn btn-primary ad-btn-sm' }, 'Create link');
+  const cancel = h('button', { type: 'button', class: 'cs-link-btn', onclick: () => formRow.remove() }, 'Cancel');
+  create.addEventListener('click', async () => {
+    create.disabled = true;
+    try {
+      const r = await api(`/admin/inquiries/${q.id}/invite`, { method: 'POST', body: { client_name: name.value.trim(), send_email: mail.checked } });
+      q.status = 'Invited'; q.invite_token = r.invite.token; q.invite_id = r.invite.id;
+      result.hidden = false;
+      result.replaceChildren(
+        h('p', null, h('strong', null, 'Private link created. '),
+          r.emailed ? `It has been emailed to ${q.email}.`
+            : (mail.checked && !r.email_configured ? 'Email sending isn’t set up yet (Resend) — copy the link and send it yourself.'
+              : mail.checked ? 'The email could not be sent — copy the link and send it yourself.'
+              : 'Copy the link and send it to your client.')),
+        h('div', { class: 'ad-copy-row' }, h('input', { readonly: true, value: r.link, 'aria-label': 'Client form link', onfocus: ev => ev.target.select() }),
+          h('button', { type: 'button', class: 'btn btn-primary', onclick: () => copy(r.link) }, 'Copy')));
+      create.remove(); cancel.textContent = 'Done';
+      cancel.onclick = () => { formRow.remove(); drawInquiries(); };
+    } catch (e) { flash(e.message, true); create.disabled = false; }
+  });
+  const formRow = h('tr', { class: 'ad-inq-form' }, h('td', { colspan: 5 },
+    h('div', { class: 'ad-inq-form-inner' },
+      h('div', { class: 'cs-field' }, h('label', { for: nameId }, 'Client / company name'), name),
+      h('label', { class: 'ad-check', for: mailId }, mail, ` Email the link to ${q.email}`),
+      h('div', { class: 'ad-inq-form-actions' }, create, cancel)),
+    result));
+  tr.after(formRow);
+  name.focus();
 }

@@ -464,3 +464,20 @@ function initBookingLinks(){
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   setInterval(function () { show(i + 1); }, 4000);
 })();
+
+/* =========================================================
+   Feature cards: gentle reveal as they scroll into view
+   ========================================================= */
+(function () {
+  var cards = document.querySelectorAll('.feature-card');
+  if (!cards.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  cards.forEach(function (c) { c.classList.add('reveal'); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  cards.forEach(function (c) { io.observe(c); });
+})();

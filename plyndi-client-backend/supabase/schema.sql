@@ -389,6 +389,80 @@ returns jsonb language sql as $$
   returning jsonb_build_object('ref', ref, 'status', status, 'updated_at', updated_at);
 $$;
 
+-- =========================================================
+-- Public project inquiries (Services → Website Development → "Start Your Project")
+-- A visitor leaves only an email. Plyndi reviews it, then creates a
+-- private client-form link (client_invites) from the admin dashboard.
+-- =========================================================
+create table if not exists public.project_inquiries (
+  id          uuid primary key default gen_random_uuid(),
+  email       text not null check (length(email) between 3 and 254),
+  service     text not null default 'website',
+  source_page text,
+  status      text not null default 'New' check (status in ('New','Invited','Declined')),
+  invite_id   uuid references public.client_invites(id) on delete set null,
+  owner_notes text,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+create index if not exists project_inquiries_created_idx on public.project_inquiries (created_at desc);
+create index if not exists project_inquiries_email_idx on public.project_inquiries (lower(email), service);
+
+alter table public.project_inquiries enable row level security;
+revoke all on table public.project_inquiries from public;
+do $$ begin
+  if exists (select 1 from pg_roles where rolname = 'anon') then
+    revoke all on table public.project_inquiries from anon, authenticated;
+  end if;
+  if exists (select 1 from pg_roles where rolname = 'service_role') then
+    grant select, insert, update, delete on table public.project_inquiries to service_role;
+  end if;
+end $$;
+
+-- Save an inquiry. The same email asking for the same service within 24 hours is
+-- treated as a duplicate (no new row, no second confirmation email).
+create or replace function public.cp_create_inquiry(p_email text, p_service text, p_source_page text)
+returns jsonb language plpgsql as $$
+declare v_id uuid;
+begin
+  select id into v_id from public.project_inquiries
+   where lower(email) = lower(p_email) and service = p_service and created_at > now() - interval '24 hours'
+   order by created_at desc limit 1;
+  if v_id is not null then
+    return jsonb_build_object('id', v_id, 'duplicate', true);
+  end if;
+  insert into public.project_inquiries (email, service, source_page)
+  values (lower(trim(p_email)), p_service, left(p_source_page, 300))
+  returning id into v_id;
+  return jsonb_build_object('id', v_id, 'duplicate', false);
+end $$;
+
+create or replace function public.cp_list_inquiries()
+returns jsonb language sql stable as $$
+  select coalesce(jsonb_agg(jsonb_build_object(
+    'id', q.id, 'email', q.email, 'service', q.service, 'source_page', q.source_page,
+    'status', q.status, 'owner_notes', q.owner_notes, 'created_at', q.created_at,
+    'invite_id', q.invite_id, 'invite_token', i.token, 'invite_active', i.active
+  ) order by q.created_at desc), '[]'::jsonb)
+  from public.project_inquiries q left join public.client_invites i on i.id = q.invite_id;
+$$;
+
+create or replace function public.cp_get_inquiry(p_id uuid)
+returns jsonb language sql stable as $$
+  select to_jsonb(q) from public.project_inquiries q where q.id = p_id;
+$$;
+
+create or replace function public.cp_update_inquiry(p_id uuid, p_status text, p_invite_id uuid default null, p_notes text default null)
+returns jsonb language sql as $$
+  update public.project_inquiries
+     set status = coalesce(p_status, status),
+         invite_id = coalesce(p_invite_id, invite_id),
+         owner_notes = coalesce(p_notes, owner_notes),
+         updated_at = now()
+   where id = p_id
+  returning to_jsonb(project_inquiries.*);
+$$;
+
 -- Only the service role (the Worker) may call these functions.
 do $$
 declare fn text;

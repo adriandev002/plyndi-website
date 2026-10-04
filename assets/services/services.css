@@ -1,0 +1,133 @@
+/* =========================================================
+   Plyndi — Services pages (/services, /services/websites)
+   Builds on /style.css tokens. Prefixed svc- / tier- / sp-
+   so nothing affects existing pages.
+   ========================================================= */
+
+.svc-hero{ padding-bottom: 8px; }
+.svc-hero .lede{ max-width: 56ch; }
+.svc-hero-actions{ margin: 26px 0 0; }
+.svc-section{ padding-top: 36px; }
+.svc-head{ margin-bottom: 26px; }
+.svc-crumb{ font-size: .88rem; color: var(--ink-soft); margin-bottom: 14px; }
+.svc-crumb a{ color: var(--teal-deep); font-weight: 600; text-decoration: none; }
+.svc-crumb a:hover{ text-decoration: underline; }
+
+/* ---------- Service cards (hub) ---------- */
+.svc-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 22px;
+}
+.svc-card{
+  display: flex;
+  flex-direction: column;
+  padding: 28px 26px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.svc-card-top{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.svc-num{ font-family: var(--font-display); font-size: 1.05rem; color: var(--teal); font-weight: 600; letter-spacing: .02em; }
+.svc-title{ font-size: 1.45rem; margin-bottom: 10px; }
+.svc-desc{ color: var(--ink-soft); font-size: .97rem; margin-bottom: 24px; }
+.svc-cta{ margin-top: auto; align-self: flex-start; }
+.svc-card.is-soon{ background: transparent; border-style: dashed; }
+.svc-card.is-soon .svc-title{ color: var(--ink-soft); }
+.svc-card.is-soon .svc-num{ color: var(--ink-soft); opacity: .7; }
+.svc-more{ margin: 28px 0 0; color: var(--ink-soft); font-size: .95rem; max-width: none; }
+.svc-more a{ color: var(--teal-deep); font-weight: 600; }
+
+/* ---------- Pricing tiers (websites) ---------- */
+.tier-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.tier{
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.tier.is-wide{ grid-column: span 2; }
+.tier.is-wide .tier-list{ columns: 2; column-gap: 28px; }
+.tier-name{ font-size: 1.18rem; margin-bottom: 6px; }
+.tier-for{ color: var(--ink-soft); font-size: .93rem; margin-bottom: 16px; }
+.tier-list{ list-style: none; padding: 0; margin: 0 0 22px; font-size: .93rem; }
+.tier-list li{ position: relative; padding: 5px 0 5px 22px; break-inside: avoid; }
+.tier-list li::before{
+  content: ''; position: absolute; left: 2px; top: 12px;
+  width: 9px; height: 5px; border-left: 2px solid var(--teal); border-bottom: 2px solid var(--teal);
+  transform: rotate(-45deg);
+}
+.tier-price{ margin: auto 0 0; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
+.tier-price-label{ font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.tier-price-value{ font-family: var(--font-display); font-size: 1.55rem; font-weight: 600; color: var(--teal-deep); line-height: 1.2; }
+.tier-note{ margin: 22px 0 0; font-size: .88rem; color: var(--ink-soft); max-width: 80ch; }
+
+/* ---------- How it works ---------- */
+.svc-steps{
+  list-style: none; counter-reset: step; padding: 0; margin: 22px 0 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;
+}
+.svc-steps li{ counter-increment: step; display: grid; gap: 4px; font-size: .93rem; color: var(--ink-soft); }
+.svc-steps li::before{
+  content: counter(step);
+  width: 30px; height: 30px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--teal-tint); color: var(--teal-deep); font-weight: 700; font-size: .85rem; margin-bottom: 8px;
+}
+.svc-steps strong{ color: var(--teal-deep); font-size: 1rem; }
+
+/* ---------- CTA band ---------- */
+.svc-cta-inner{ display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.svc-cta-inner h2{ margin-bottom: 6px; }
+.svc-cta-inner p{ margin: 0; }
+
+/* ---------- Start Your Project dialog ---------- */
+.sp-dialog{
+  border: 0; border-radius: 14px; padding: 30px 28px 26px;
+  width: calc(100% - 32px); max-width: 460px;
+  color: var(--ink); background: var(--white);
+  box-shadow: 0 24px 60px rgba(14,59,61,.25);
+}
+.sp-dialog::backdrop{ background: rgba(14,33,31,.45); }
+.sp-dialog h2{ font-size: 1.45rem; padding-right: 26px; }
+.sp-dialog p{ color: var(--ink-soft); }
+.sp-close{
+  position: absolute; top: 12px; right: 14px; width: 34px; height: 34px;
+  border: 0; background: none; font-size: 1.6rem; line-height: 1; color: var(--ink-soft); cursor: pointer; border-radius: 50%;
+}
+.sp-close:hover{ background: var(--paper-2); }
+.sp-actions{ display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.sp-dialog label{ margin-top: 6px; }
+.sp-dialog input[aria-invalid="true"]{ border-color: #C0492F; background: #FFF8F6; }
+.sp-error{ color: #A3321E; font-weight: 600; font-size: .88rem; margin: 8px 0 0; }
+.sp-hp{ position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.sp-check{
+  width: 46px; height: 46px; border-radius: 50%; margin: 0 0 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--teal-tint); color: var(--teal-deep) !important; font-size: 1.4rem; font-weight: 700;
+}
+.sp-heading{ outline: none; }
+.sp-sent{ font-size: .9rem; }
+.btn.is-loading{ opacity: .7; cursor: progress; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px){
+  .tier-grid{ grid-template-columns: 1fr 1fr; }
+  .tier.is-wide{ grid-column: 1 / -1; }
+  .svc-steps{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px){
+  .tier-grid, .svc-steps{ grid-template-columns: 1fr; }
+  .tier.is-wide .tier-list{ columns: 1; }
+  .svc-card, .tier{ padding: 22px 20px; }
+  .svc-cta-inner .btn, .svc-hero-actions .btn{ width: 100%; justify-content: center; }
+  .sp-dialog{ padding: 26px 20px 20px; }
+  .sp-actions{ flex-direction: column-reverse; }
+  .sp-actions .btn{ width: 100%; justify-content: center; }
+}

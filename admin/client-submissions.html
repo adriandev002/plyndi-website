@@ -39,6 +39,7 @@
         </div>
         <div class="ad-tabs" role="tablist" aria-label="Admin sections">
           <button role="tab" id="tab-subs" aria-selected="true" aria-controls="ad-subs">Submissions</button>
+          <button role="tab" id="tab-inq" aria-selected="false" aria-controls="ad-inq">Inquiries <span class="ad-count" id="tab-inq-count" hidden></span></button>
           <button role="tab" id="tab-links" aria-selected="false" aria-controls="ad-links">Client links</button>
         </div>
       </div>
@@ -59,6 +60,16 @@
               <th scope="col">Submitted</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th>
             </tr></thead>
             <tbody id="ad-rows"><tr><td colspan="6" class="ad-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="ad-inq" role="tabpanel" aria-labelledby="tab-inq" hidden>
+        <p class="cs-step-intro ad-inq-intro">People who asked for a project form on the Services page. Review each request, then create their private client-form link.</p>
+        <div class="cs-panel ad-table-wrap">
+          <table class="ad-table">
+            <thead><tr><th scope="col">Email</th><th scope="col">Service</th><th scope="col">Received</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="inq-rows"><tr><td colspan="5" class="ad-empty">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>

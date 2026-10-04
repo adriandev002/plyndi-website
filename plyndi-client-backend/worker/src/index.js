@@ -70,6 +70,7 @@ async function route(request, env, ctx, url) {
   if ((p = path.match(/^\/uploads\/([0-9a-f-]{36})$/)) && m === 'DELETE') return deleteUpload(request, env, p[1]);
   if (m === 'POST' && path === '/submit') return submit(request, env, ctx);
   if (m === 'GET' && path === '/preview') return preview(env, url.searchParams.get('id'));
+  if (m === 'POST' && path === '/inquiry') return createInquiry(request, env, ctx);
 
   // ----- Owner / admin (Cloudflare Access) -----
   if (path.startsWith('/admin/')) {
@@ -81,6 +82,9 @@ async function route(request, env, ctx, url) {
       if (m === 'GET') return adminGetSubmission(env, p[1]);
       if (m === 'PATCH') return adminUpdateSubmission(request, env, p[1]);
     }
+    if (ap === '/inquiries' && m === 'GET') return json({ inquiries: await rpc(env, 'cp_list_inquiries', {}) });
+    if ((p = ap.match(/^\/inquiries\/([0-9a-f-]{36})$/)) && m === 'PATCH') return adminUpdateInquiry(request, env, p[1]);
+    if ((p = ap.match(/^\/inquiries\/([0-9a-f-]{36})\/invite$/)) && m === 'POST') return adminInviteFromInquiry(request, env, url, p[1]);
     if (ap === '/invites' && m === 'GET') return json({ invites: await rpc(env, 'cp_list_invites', {}) });
     if (ap === '/invites' && m === 'POST') return adminCreateInvite(request, env);
     if ((p = ap.match(/^\/invites\/([0-9a-f-]{36})$/)) && m === 'PATCH') {
@@ -447,8 +451,13 @@ function checkOrigin(request, env) {
 }
 
 async function rateLimit(request, env, url) {
-  if (!env.RATE_LIMITER) return;
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  // Stricter limit for the public inquiry form (it can trigger emails)
+  if (url.pathname === API + '/inquiry' && env.INQUIRY_LIMITER) {
+    const { success } = await env.INQUIRY_LIMITER.limit({ key: `${ip}:inquiry` });
+    if (!success) throw new HttpError(429, 'Too many requests — please wait a minute and try again.');
+  }
+  if (!env.RATE_LIMITER) return;
   const bucketKey = url.pathname.startsWith(API + '/admin') ? 'admin' : (url.pathname.includes('/uploads') ? 'upload' : 'form');
   const { success } = await env.RATE_LIMITER.limit({ key: `${ip}:${bucketKey}` });
   if (!success) throw new HttpError(429, 'Too many requests — please wait a minute and try again.');
@@ -501,4 +510,115 @@ function b64urlDecode(s) {
 function b64urlDecodeText(s) { return new TextDecoder().decode(b64urlDecode(s)); }
 function escapeHtml(v) {
   return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ---------------- Public project inquiries (Services pages) ---------------- */
+const INQUIRY_SERVICES = { website: 'Website Development' };
+const INQUIRY_STATUSES = ['New', 'Invited', 'Declined'];
+const INQUIRY_EMAIL_RE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[a-z]{2,}$/i;
+
+async function createInquiry(request, env, ctx) {
+  const b = await readJson(request);
+  if (b.company_website) return json({ ok: true }, 201);           // honeypot filled → bot; pretend success
+  const email = String(b.email || '').trim().toLowerCase();
+  if (email.length > 254 || !INQUIRY_EMAIL_RE.test(email)) throw new HttpError(422, 'Please enter a valid email address, e.g. name@company.com.');
+  const service = Object.prototype.hasOwnProperty.call(INQUIRY_SERVICES, b.service) ? b.service : null;
+  if (!service) throw new HttpError(400, 'Unknown service.');
+  const result = await rpc(env, 'cp_create_inquiry', {
+    p_email: email, p_service: service, p_source_page: String(b.source_page || '').slice(0, 300)
+  });
+  if (!result.duplicate) {
+    ctx.waitUntil(Promise.allSettled([
+      sendEmail(env, {
+        to: [email],
+        subject: 'We’ve received your request — Plyndi',
+        html: inquiryConfirmationHtml(INQUIRY_SERVICES[service])
+      }),
+      env.OWNER_EMAIL ? sendEmail(env, {
+        to: env.OWNER_EMAIL.split(',').map(s => s.trim()).filter(Boolean),
+        subject: `New ${INQUIRY_SERVICES[service]} inquiry: ${email}`,
+        html: inquiryOwnerHtml(email, INQUIRY_SERVICES[service], new URL(request.url).origin),
+        reply_to: email
+      }) : null
+    ]).then(r => r.forEach(x => x.status === 'rejected' && console.error('inquiry email failed', x.reason && x.reason.message))));
+  }
+  return json({ ok: true, confirmation_email: !result.duplicate && !!env.RESEND_API_KEY }, 201);
+}
+
+async function adminUpdateInquiry(request, env, id) {
+  const b = await readJson(request);
+  if (b.status && !INQUIRY_STATUSES.includes(b.status)) throw new HttpError(400, 'Unknown status.');
+  const row = await rpc(env, 'cp_update_inquiry', {
+    p_id: id, p_status: b.status || null, p_invite_id: null,
+    p_notes: typeof b.owner_notes === 'string' ? b.owner_notes.slice(0, MAX_TEXT) : null
+  });
+  if (!row) throw new HttpError(404, 'Inquiry not found.');
+  return json(row);
+}
+
+// Turn a reviewed inquiry into a private client-form link (the existing invite system).
+async function adminInviteFromInquiry(request, env, url, id) {
+  const b = await readJson(request);
+  const inq = await rpc(env, 'cp_get_inquiry', { p_id: id });
+  if (!inq) throw new HttpError(404, 'Inquiry not found.');
+  const name = String(b.client_name || '').trim().slice(0, 200) || inq.email;
+  const invite = await rpc(env, 'cp_create_invite', {
+    p_token: randomToken(24), p_client_name: name, p_notes: `From website inquiry (${inq.email})`
+  });
+  await rpc(env, 'cp_update_inquiry', { p_id: id, p_status: 'Invited', p_invite_id: invite.id, p_notes: null });
+  const siteOrigin = (env.SITE_ORIGINS || '').split(',')[0].trim() || url.origin;   // public site, e.g. https://plyndi.com
+  const link = `${siteOrigin}/client-form?invite=${encodeURIComponent(invite.token)}`;
+  let emailed = false;
+  if (b.send_email) {
+    emailed = await sendEmail(env, { to: [inq.email], subject: 'Your Plyndi project form', html: inviteEmailHtml(name, link) })
+      .catch(e => { console.error('invite email failed', e.message); return false; });
+  }
+  return json({ invite, link, emailed, email_configured: !!env.RESEND_API_KEY }, 201);
+}
+
+/* ---------------- Email (Resend) ---------------- */
+async function sendEmail(env, { to, subject, html, reply_to }) {
+  if (!env.RESEND_API_KEY) { console.log('Email skipped (RESEND_API_KEY not set):', subject); return false; }
+  const res = await fetch(env.RESEND_API_URL || 'https://api.resend.com/emails', {   // RESEND_API_URL: local testing only
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: env.NOTIFY_FROM || 'Plyndi <forms@plyndi.com>',
+      to, subject, html,
+      reply_to: reply_to || (env.OWNER_EMAIL ? env.OWNER_EMAIL.split(',')[0].trim() : undefined)
+    })
+  });
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+  return true;
+}
+
+function emailShell(inner) {
+  return `<div style="font-family:Arial,Helvetica,sans-serif;color:#14211F;max-width:560px;margin:0 auto;padding:8px 4px;line-height:1.55">
+    <p style="font-size:20px;font-weight:bold;color:#0E3B3D;margin:0 0 18px">Plyndi</p>${inner}
+    <p style="font-size:12px;color:#3B4B48;margin-top:28px;border-top:1px solid #e5e1d6;padding-top:12px">Plyndi · Taipei · <a href="https://plyndi.com" style="color:#0E3B3D">plyndi.com</a></p></div>`;
+}
+function inquiryConfirmationHtml(serviceLabel) {
+  const e = escapeHtml;
+  return emailShell(`
+    <h1 style="font-size:20px;color:#0E3B3D;margin:0 0 12px">Thank you — we’ve received your request.</h1>
+    <p>Thanks for your interest in Plyndi ${e(serviceLabel)}. We’ll review your request and send you a personalized project form within 24 hours.</p>
+    <p>The project form lets you share your business details, design preferences and the features you need. We’ll use it to understand your project and prepare a proposal.</p>
+    <p>Have something to add in the meantime? Just reply to this email.</p>
+    <p style="font-size:12px;color:#3B4B48">You’re receiving this because this email address was entered on plyndi.com. If that wasn’t you, you can ignore this message.</p>`);
+}
+function inquiryOwnerHtml(email, serviceLabel, origin) {
+  const e = escapeHtml;
+  return emailShell(`
+    <h1 style="font-size:18px;color:#0E3B3D;margin:0 0 12px">New ${e(serviceLabel)} inquiry</h1>
+    <p><strong>${e(email)}</strong> asked for a project form.</p>
+    <p><a href="${e(origin)}/admin/client-submissions#inquiries" style="background:#0E3B3D;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold">Review in admin</a></p>`);
+}
+function inviteEmailHtml(name, link) {
+  const e = escapeHtml;
+  return emailShell(`
+    <h1 style="font-size:20px;color:#0E3B3D;margin:0 0 12px">Your project form is ready</h1>
+    <p>Hi ${e(name)},</p>
+    <p>Thanks for your patience. Here is your personal Plyndi project form. It takes about 20–40 minutes, saves automatically on your device, and you can upload your logo, photos and documents as you go.</p>
+    <p style="margin:22px 0"><a href="${e(link)}" style="background:#0E3B3D;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-weight:bold">Open my project form</a></p>
+    <p style="font-size:13px;color:#3B4B48">This link is private to your project — please don’t share it publicly. When you submit, you’ll immediately see a first preview of your website.</p>`);
 }

@@ -159,3 +159,22 @@ accepts the same fields. A brand-new single field also needs a matching column i
 `plyndi-client-backend/worker/.dev.vars.example` → copy to `.dev.vars`, fill in a **test** Supabase project,
 then `npx wrangler dev --local-upstream localhost:8787`. `DEV_INSECURE_ADMIN=true` skips Access
 **only** on localhost and only in `.dev.vars` (never deployed).
+
+## 12. Services pages + "Start Your Project" inquiries (added 5 Oct 2026)
+
+Public flow: `/services` → `/services/websites` → **Start Your Project** → visitor leaves an email →
+saved as an *inquiry* (table `project_inquiries`) → confirmation email to the visitor + notification to
+`OWNER_EMAIL` → you review it in **Admin → Inquiries** → **Create client link** (optionally emails the
+private link) → the client fills in the existing private project form.
+
+The public pages never show a client-form link. Private links are still only created by you.
+
+To turn it on after pulling these changes:
+1. Supabase → SQL Editor → paste the whole `supabase/schema.sql` again → Run (safe to re-run; it only adds what's missing).
+2. `cd plyndi-client-backend/worker && npx wrangler deploy` (new endpoints + a stricter 5/min rate limit on the inquiry form).
+3. Push the website (`git push`).
+4. Emails need Resend (section 6). Without `RESEND_API_KEY`, inquiries are still saved and shown in the admin,
+   but no confirmation/notification/invite emails are sent.
+
+Adding a future service: copy one `<article class="svc-card">` in `services/index.html`
+(instructions are in the comment above the cards). Coming-soon cards get `is-soon` and no button.

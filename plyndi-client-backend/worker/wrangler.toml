@@ -37,6 +37,14 @@ namespace_id = "4201"
   limit = 60
   period = 60
 
+# Stricter limit for the public "Start Your Project" email form (5 per minute per IP)
+[[ratelimits]]
+name = "INQUIRY_LIMITER"
+namespace_id = "4202"
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
 # SECRETS — set these with the commands below, never put them in this file:
 #   npx wrangler secret put SUPABASE_URL
 #   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
