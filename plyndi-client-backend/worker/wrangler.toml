@@ -21,10 +21,10 @@ STORAGE_BUCKET = "client-uploads"
 # Cloudflare Access (Zero Trust) — fill in after creating the Access application:
 #   ACCESS_TEAM_DOMAIN: Zero Trust -> Settings -> Custom pages -> Team domain, e.g. "plyndi.cloudflareaccess.com"
 #   ACCESS_AUD:         Zero Trust -> Access -> Applications -> (your app) -> Overview -> Application Audience (AUD) Tag
-ACCESS_TEAM_DOMAIN = ""
-ACCESS_AUD = ""
+ACCESS_TEAM_DOMAIN = "ancient-lake-10c3.cloudflareaccess.com"
+ACCESS_AUD = "4431ba1710ddb7621300e2322f6bd54f9182943181ef2ad1335e737b24c620ab"
 # Optional extra lock: comma-separated emails allowed into the admin API
-ADMIN_EMAILS = ""
+ADMIN_EMAILS = "adrianveloradev@gmail.com,adrian@plyndi.com,sainawlin43@gmail.com"
 # Email notifications (needs the RESEND_API_KEY secret and plyndi.com verified in Resend)
 OWNER_EMAIL = "contact@plyndi.com"
 NOTIFY_FROM = "Plyndi Client Forms <forms@plyndi.com>"

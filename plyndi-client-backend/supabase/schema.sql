@@ -163,7 +163,15 @@ begin
     if exists (select 1 from pg_roles where rolname = 'anon') then
       execute format('revoke all on table public.%I from anon, authenticated', t);
     end if;
+    -- Only the Worker's role (service_role) may read/write. Granted explicitly, so this works
+    -- even when "Automatically expose new tables" is switched off in Supabase.
+    if exists (select 1 from pg_roles where rolname = 'service_role') then
+      execute format('grant select, insert, update, delete on table public.%I to service_role', t);
+    end if;
   end loop;
+  if exists (select 1 from pg_roles where rolname = 'service_role') then
+    grant usage on schema public to service_role;
+  end if;
 end $$;
 
 -- =========================================================
