@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Worker / Node (backend)
+node_modules/
+.wrangler/
+.dev.vars
+*.log

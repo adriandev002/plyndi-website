@@ -133,11 +133,11 @@
         <h2>Plyndi, the app</h2>
         <p class="lede">The guides tell you what a trip costs. The app is where you run your whole life &mdash; one calm plan for the day, the money, the workouts, the trips and the lists.</p>
         <ul>
-          <li><strong>Daily Briefing</strong> &mdash; what today holds, in one screen you can read in ten seconds.</li>
-          <li><strong>Money</strong> &mdash; budgets and expenses in any currency, plus an AI analyst that spots what&rsquo;s actually happening.</li>
-          <li><strong>Fitness</strong> &mdash; AI workout plans and camera form check while you train.</li>
-          <li><strong>Travel</strong> &mdash; day-by-day itineraries with transit legs, honest multi-currency trip budgets, and packing lists tied to the trip.</li>
-          <li><strong>Quick Add</strong> &mdash; one sentence, typed or dictated, files itself as an expense, a task or a packing item.</li>
+          <li><strong>Daily Briefing</strong> &mdash; your whole day on one screen, readable in ten seconds.</li>
+          <li><strong>Money</strong> &mdash; budgets and expenses in any currency, with an AI analyst that spots what&rsquo;s actually happening.</li>
+          <li><strong>Fitness</strong> &mdash; AI workout plans and a camera form check while you train.</li>
+          <li><strong>Travel</strong> &mdash; day-by-day itineraries and honest multi-currency trip budgets.</li>
+          <li><strong>Quick Add</strong> &mdash; one sentence, typed or dictated, files itself as an expense, a task, or a packing item.</li>
         </ul>
         <p><strong>It&rsquo;s not on the App Store yet.</strong> The app page lists exactly what&rsquo;s built and what isn&rsquo;t.</p>
         <div class="hero-actions">
@@ -148,14 +148,53 @@
       <div class="phone-frame" aria-hidden="true">
         <div class="phone-notch"></div>
         <div class="phone-screen">
-          <p class="phone-label">Tokyo &middot; 5 days</p>
-          <div class="phone-row is-accent"><strong>Day 2 &middot; Shibuya</strong><span>4 stops</span></div>
-          <div class="phone-row"><span>Meiji Jingu</span><span>09:30</span></div>
-          <div class="phone-row"><span>Harajuku &rarr; Shibuya</span><span>12 min</span></div>
-          <div class="phone-row"><span>Shibuya Sky</span><span>16:00</span></div>
-          <p class="phone-label">Trip budget</p>
-          <div class="phone-row"><span>Spent so far</span><strong>&yen;41,200</strong></div>
-          <div class="phone-row"><span>Converted (TWD)</span><strong>NT$8,640</strong></div>
+          <div class="phone-slide is-active" data-module="Daily Briefing">
+            <p class="phone-label">Today</p>
+            <div class="phone-row is-accent"><strong>Good morning</strong><span>4 items</span></div>
+            <div class="phone-row"><span>Morning run</span><span>06:30</span></div>
+            <div class="phone-row"><span>Design review</span><span>10:00</span></div>
+            <div class="phone-row"><span>Tokyo trip</span><span>in 6 days</span></div>
+          </div>
+          <div class="phone-slide" data-module="Money">
+            <p class="phone-label">October</p>
+            <div class="phone-row is-accent"><strong>Spent</strong><span>NT$18,240</span></div>
+            <div class="phone-row"><span>Dining</span><span>NT$4,120</span></div>
+            <div class="phone-row"><span>Transport</span><span>NT$1,880</span></div>
+            <p class="phone-ai">AI analyst: dining is up 18% this month.</p>
+          </div>
+          <div class="phone-slide" data-module="Fitness">
+            <p class="phone-label">Today&rsquo;s workout</p>
+            <div class="phone-row is-accent"><strong>Upper body</strong><span>32 min</span></div>
+            <div class="phone-row"><span>Push-ups</span><span>3 &times; 12</span></div>
+            <div class="phone-row"><span>Plank</span><span>60 sec</span></div>
+            <div class="phone-row"><span>Form check</span><span>ready</span></div>
+          </div>
+          <div class="phone-slide" data-module="Travel">
+            <p class="phone-label">Tokyo &middot; 5 days</p>
+            <div class="phone-row is-accent"><strong>Day 2 &middot; Shibuya</strong><span>4 stops</span></div>
+            <div class="phone-row"><span>Meiji Jingu</span><span>09:30</span></div>
+            <div class="phone-row"><span>Harajuku &rarr; Shibuya</span><span>12 min</span></div>
+            <div class="phone-row"><span>Shibuya Sky</span><span>16:00</span></div>
+            <p class="phone-label">Trip budget</p>
+            <div class="phone-row"><span>Spent so far</span><strong>&yen;41,200</strong></div>
+            <div class="phone-row"><span>Converted (TWD)</span><strong>NT$8,640</strong></div>
+          </div>
+          <div class="phone-slide" data-module="Quick Add">
+            <p class="phone-label">Quick Add</p>
+            <div class="phone-row is-accent"><strong>&ldquo;Bought coffee 120&rdquo;</strong><span></span></div>
+            <div class="phone-row"><span>Filed as expense</span><span>NT$120</span></div>
+            <div class="phone-row"><span>Dining budget</span><span>updated</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-dots" aria-hidden="true">
+        <p class="phone-module-label">Daily Briefing</p>
+        <div>
+          <span class="phone-dot is-active"></span>
+          <span class="phone-dot"></span>
+          <span class="phone-dot"></span>
+          <span class="phone-dot"></span>
+          <span class="phone-dot"></span>
         </div>
       </div>
     </div>
@@ -221,25 +260,6 @@
             <span class="guide-link">Read the guide →</span>
           </div>
         </a>
-      </div>
-
-      <div class="quick-links">
-        <a href="blog-bangkok.html">🇹🇭 Bangkok guide</a>
-        <a href="blog-bali.html">🇮🇩 Bali guide</a>
-        <a href="blog-tokyo.html">🇯🇵 Tokyo guide</a>
-        <a href="blog-taipei.html">🇹🇼 Taipei guide</a>
-        <a href="blog-chiangmai.html">🇹🇭 Chiang Mai guide</a>
-        <a href="blog-seoul.html">🇰🇷 Seoul guide</a>
-        <a href="blog-singapore.html">🇸🇬 Singapore guide</a>
-        <a href="blog-paris.html">🇫🇷 Paris guide</a>
-        <a href="blog-rome.html">🇮🇹 Rome guide</a>
-        <a href="blog-hanoi.html">🇻🇳 Hanoi guide</a>
-        <a href="blog-kyoto.html">🇯🇵 Kyoto guide</a>
-        <a href="blog-hongkong.html">🇭🇰 Hong Kong guide</a>
-        <a href="blog-kualalumpur.html">🇲🇾 KL guide</a>
-        <a href="blog-cebu.html">🇵🇭 Cebu guide</a>
-        <a href="blog-barcelona.html">🇪🇸 Barcelona guide</a>
-        <a href="blog.html">View all guides →</a>
       </div>
     </div>
   </section>

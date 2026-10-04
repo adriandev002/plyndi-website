@@ -444,3 +444,23 @@ function initBookingLinks(){
     box.appendChild(note);
   });
 }
+
+/* =========================================================
+   App preview: rotate the phone mockup through the 5 modules
+   ========================================================= */
+(function () {
+  var slides = document.querySelectorAll('.phone-slide');
+  var dots = document.querySelectorAll('.phone-dot');
+  var label = document.querySelector('.phone-module-label');
+  if (!slides.length) return;
+  var i = 0;
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('is-active', k === i); });
+    dots.forEach(function (d, k) { d.classList.toggle('is-active', k === i); });
+    if (label) label.textContent = slides[i].getAttribute('data-module');
+  }
+  show(0);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  setInterval(function () { show(i + 1); }, 4000);
+})();

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Submissions &mdash; Plyndi Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<meta name="theme-color" content="#0E3B3D">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/assets/client-system/client-system.css">
+</head>
+<body class="cs-body cs-admin">
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/admin/client-submissions">
+      <span class="brand-mark"><img src="/assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-word">Plyndi</span>
+      <span class="cs-admin-chip">Admin</span>
+    </a>
+    <p class="cs-header-note" id="ad-user"></p>
+  </div>
+</header>
+
+<main id="main" class="cs-main">
+  <div class="container">
+    <div id="ad-alert" class="cs-error-summary" role="alert" hidden></div>
+
+    <!-- List view -->
+    <section id="ad-list-view">
+      <div class="ad-head">
+        <div>
+          <h1 class="cs-title">Client submissions</h1>
+          <p class="cs-step-intro">Project information sent through private client form links.</p>
+        </div>
+        <div class="ad-tabs" role="tablist" aria-label="Admin sections">
+          <button role="tab" id="tab-subs" aria-selected="true" aria-controls="ad-subs">Submissions</button>
+          <button role="tab" id="tab-links" aria-selected="false" aria-controls="ad-links">Client links</button>
+        </div>
+      </div>
+
+      <div id="ad-subs" role="tabpanel" aria-labelledby="tab-subs">
+        <div class="ad-toolbar">
+          <label class="visually-hidden" for="ad-search">Search submissions</label>
+          <input id="ad-search" type="search" placeholder="Search company, email or reference…">
+          <label class="visually-hidden" for="ad-filter">Filter by status</label>
+          <select id="ad-filter"><option value="">All statuses</option></select>
+          <button type="button" class="btn cs-btn-ghost" id="ad-refresh">Refresh</button>
+          <button type="button" class="btn btn-outline" id="ad-export-all">Export CSV</button>
+        </div>
+        <div class="cs-panel ad-table-wrap">
+          <table class="ad-table">
+            <thead><tr>
+              <th scope="col">Submission</th><th scope="col">Company</th><th scope="col">Email</th>
+              <th scope="col">Submitted</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th>
+            </tr></thead>
+            <tbody id="ad-rows"><tr><td colspan="6" class="ad-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="ad-links" role="tabpanel" aria-labelledby="tab-links" hidden>
+        <form class="cs-panel ad-invite-form" id="ad-invite-form">
+          <h2>Create a private client form link</h2>
+          <div class="cs-grid">
+            <div class="cs-field is-half"><label for="inv-name">Client name <span class="cs-req">*</span></label><input id="inv-name" required maxlength="200" placeholder="e.g. WanderAsia"></div>
+            <div class="cs-field is-half"><label for="inv-notes">Internal notes</label><input id="inv-notes" maxlength="2000" placeholder="Optional"></div>
+          </div>
+          <div class="ad-invite-actions"><button class="btn btn-primary" type="submit" id="inv-create">Create link</button></div>
+          <div id="inv-result" class="ad-invite-result" hidden></div>
+        </form>
+        <div class="cs-panel ad-table-wrap">
+          <table class="ad-table">
+            <thead><tr><th scope="col">Client</th><th scope="col">Created</th><th scope="col">Submissions</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="inv-rows"><tr><td colspan="5" class="ad-empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detail view -->
+    <section id="ad-detail-view" hidden>
+      <a href="/admin/client-submissions" class="cs-link-btn" id="ad-back">&larr; All submissions</a>
+      <div class="ad-detail-head">
+        <div>
+          <p class="cs-step-count" id="ad-d-ref"></p>
+          <h1 class="cs-title" id="ad-d-title"></h1>
+          <p class="cs-step-intro" id="ad-d-meta"></p>
+        </div>
+        <div class="ad-detail-actions">
+          <label class="visually-hidden" for="ad-d-status">Status</label>
+          <select id="ad-d-status"></select>
+          <button type="button" class="btn btn-primary" id="ad-d-reviewed">Mark as Reviewed</button>
+          <a class="btn btn-outline" id="ad-d-preview" target="_blank" rel="noopener noreferrer">Open Preview</a>
+          <button type="button" class="btn cs-btn-ghost" id="ad-d-json">Export JSON</button>
+          <button type="button" class="btn cs-btn-ghost" id="ad-d-csv">Export CSV</button>
+        </div>
+      </div>
+      <div class="cs-panel ad-notes">
+        <label for="ad-d-notes">Owner notes (private)</label>
+        <textarea id="ad-d-notes" rows="2" placeholder="Notes only you can see"></textarea>
+        <div class="ad-notes-foot"><span class="cs-save-status" id="ad-d-notes-status" aria-live="polite"></span><button type="button" class="btn cs-btn-ghost" id="ad-d-notes-save">Save notes</button></div>
+      </div>
+      <div id="ad-d-body" class="cs-review"></div>
+    </section>
+  </div>
+</main>
+
+<script type="module" src="/assets/client-system/admin.js"></script>
+</body>
+</html>

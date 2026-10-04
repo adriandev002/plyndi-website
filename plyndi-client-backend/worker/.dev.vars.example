@@ -1,0 +1,5 @@
+# Local development only — copy to .dev.vars (never committed, never deployed)
+SUPABASE_URL=https://YOUR-TEST-PROJECT.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-test-project-service-role-key
+SITE_ORIGINS=http://localhost:8080
+DEV_INSECURE_ADMIN=true

@@ -1,0 +1,43 @@
+# =========================================================
+# Plyndi — Client Project API Worker
+# Deploy:  npx wrangler deploy        (from this folder)
+# This Worker ONLY answers /api/client/* — your existing site
+# Worker keeps serving every other URL on plyndi.com.
+# =========================================================
+name = "plyndi-client-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = false
+
+routes = [
+  { pattern = "plyndi.com/api/client/*", zone_name = "plyndi.com" },
+  { pattern = "www.plyndi.com/api/client/*", zone_name = "plyndi.com" }
+]
+
+[vars]
+# Origins allowed to POST to the API (CSRF protection)
+SITE_ORIGINS = "https://plyndi.com,https://www.plyndi.com"
+STORAGE_BUCKET = "client-uploads"
+# Cloudflare Access (Zero Trust) — fill in after creating the Access application:
+#   ACCESS_TEAM_DOMAIN: Zero Trust -> Settings -> Custom pages -> Team domain, e.g. "plyndi.cloudflareaccess.com"
+#   ACCESS_AUD:         Zero Trust -> Access -> Applications -> (your app) -> Overview -> Application Audience (AUD) Tag
+ACCESS_TEAM_DOMAIN = ""
+ACCESS_AUD = ""
+# Optional extra lock: comma-separated emails allowed into the admin API
+ADMIN_EMAILS = ""
+# Email notifications (needs the RESEND_API_KEY secret and plyndi.com verified in Resend)
+OWNER_EMAIL = "contact@plyndi.com"
+NOTIFY_FROM = "Plyndi Client Forms <forms@plyndi.com>"
+
+# Per-IP rate limit for the API (60 requests / minute per IP and endpoint type)
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "4201"
+  [ratelimits.simple]
+  limit = 60
+  period = 60
+
+# SECRETS — set these with the commands below, never put them in this file:
+#   npx wrangler secret put SUPABASE_URL
+#   npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   npx wrangler secret put RESEND_API_KEY        (optional)

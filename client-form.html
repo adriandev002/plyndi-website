@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Information Form &mdash; Plyndi</title>
+<meta name="description" content="Private project information form for Plyndi website clients.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/assets/client-system/client-system.css">
+</head>
+<body class="cs-body">
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/index.html">
+      <span class="brand-mark"><img src="/assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-word">Plyndi</span>
+    </a>
+    <p class="cs-header-note">Client project form &middot; Questions? <a href="mailto:contact@plyndi.com">contact@plyndi.com</a></p>
+  </div>
+</header>
+
+<main id="main" class="cs-main">
+  <div class="container cs-container">
+
+    <!-- Shown while the private link is being checked -->
+    <section id="cs-loading" class="cs-panel cs-center" aria-live="polite">
+      <div class="cs-spinner" aria-hidden="true"></div>
+      <p>Opening your project form&hellip;</p>
+    </section>
+
+    <!-- Shown if the link is missing/invalid or the service is unavailable -->
+    <section id="cs-blocked" class="cs-panel cs-center" hidden>
+      <h1 class="cs-title" id="cs-blocked-title">This form needs a private link</h1>
+      <p id="cs-blocked-msg">Please open the personal link Plyndi sent you by email. If you no longer have it, write to <a href="mailto:contact@plyndi.com">contact@plyndi.com</a> and we&rsquo;ll send a new one.</p>
+      <button type="button" class="btn btn-outline" id="cs-retry" hidden>Try again</button>
+    </section>
+
+    <!-- The form -->
+    <div id="cs-app" hidden>
+      <div class="cs-intro">
+        <p class="hero-eyebrow" id="cs-client-label">Project information</p>
+        <h1 class="cs-title">Tell us about your company and website</h1>
+        <p class="lede">Work through the steps at your own pace &mdash; your answers save automatically on this device. Only fields marked <span class="cs-req" aria-hidden="true">*</span><span class="visually-hidden">with an asterisk</span> are required.</p>
+        <p class="cs-revision-banner" id="cs-revision-banner" hidden></p>
+      </div>
+
+      <nav class="cs-stepper" aria-label="Form progress">
+        <ol id="cs-stepper-list"></ol>
+        <div class="cs-progress" aria-hidden="true"><span id="cs-progress-bar"></span></div>
+      </nav>
+
+      <form id="cs-form" class="cs-panel" novalidate>
+        <div class="cs-step-head">
+          <p class="cs-step-count" id="cs-step-count"></p>
+          <h2 id="cs-step-title" tabindex="-1"></h2>
+          <p class="cs-step-intro" id="cs-step-intro"></p>
+          <div class="cs-notice" id="cs-step-notice" role="note" hidden></div>
+        </div>
+
+        <div class="cs-error-summary" id="cs-error-summary" role="alert" tabindex="-1" hidden></div>
+
+        <div id="cs-step-body" class="cs-step-body"></div>
+
+        <div class="cs-nav">
+          <button type="button" class="btn btn-outline" id="cs-back">&larr; Back</button>
+          <div class="cs-nav-right">
+            <span class="cs-save-status" id="cs-save-status" aria-live="polite"></span>
+            <button type="button" class="btn cs-btn-ghost" id="cs-save">Save progress</button>
+            <button type="submit" class="btn btn-primary" id="cs-next">Next &rarr;</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- Submission confirmation -->
+<dialog id="cs-confirm" class="cs-dialog" aria-labelledby="cs-confirm-title">
+  <form method="dialog">
+    <h2 id="cs-confirm-title">Submit project information?</h2>
+    <p>Are you sure you want to submit your information?</p>
+    <p class="form-note">You&rsquo;ll see a website preview straight away, and you can still send a revision afterwards.</p>
+    <div class="cs-dialog-actions">
+      <button value="cancel" class="btn btn-outline">Cancel</button>
+      <button value="confirm" class="btn btn-primary" id="cs-confirm-yes">Yes, submit</button>
+    </div>
+  </form>
+</dialog>
+
+<footer class="site-footer cs-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; 2026 Plyndi. Your information is stored privately and only shared with the Plyndi team.</span>
+      <div class="footer-legal">
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="/assets/client-system/client-form.js"></script>
+</body>
+</html>

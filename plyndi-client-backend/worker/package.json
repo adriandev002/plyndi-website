@@ -1,0 +1,13 @@
+{
+  "name": "plyndi-client-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "sync-schema": "cp ../../assets/client-system/client-schema.js src/client-schema.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Preview &mdash; Plyndi</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="/assets/client-system/client-preview.css">
+</head>
+<body>
+
+<!-- Plyndi preview notice — always on top, never part of the client's site -->
+<div class="pv-notice" role="region" aria-label="Website preview notice">
+  <div class="pv-notice-inner">
+    <div class="pv-notice-text">
+      <p class="pv-notice-title"><span class="pv-badge">Website Preview</span> <span id="pv-ref"></span></p>
+      <p class="pv-notice-desc">This is a preliminary website preview generated from the information you provided. The final website design, content, features, and functionality may be refined during development.</p>
+    </div>
+    <div class="pv-notice-actions" id="pv-actions">
+      <a class="pv-nbtn pv-nbtn-solid" id="pv-edit" href="#">Edit Information</a>
+      <a class="pv-nbtn" id="pv-revision" href="#">Submit Another Revision</a>
+      <a class="pv-nbtn" id="pv-back" href="#">Back to Form</a>
+    </div>
+  </div>
+  <p class="pv-toast" id="pv-toast" role="status" hidden></p>
+</div>
+
+<div id="pv-state" class="pv-state" aria-live="polite">
+  <div class="pv-spinner" aria-hidden="true"></div>
+  <p>Building your website preview&hellip;</p>
+</div>
+
+<div id="pv-site" class="pv-site" hidden></div>
+
+<script type="module" src="/assets/client-system/client-preview.js"></script>
+</body>
+</html>
