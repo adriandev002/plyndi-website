@@ -46,7 +46,7 @@ create table if not exists public.client_projects (
   whatsapp text, line_id text, business_hours text, google_maps_url text, facebook_url text,
   instagram_url text, tiktok_url text, youtube_url text, other_social text,
   -- Step 2 — Brand
-  brand_colors text, primary_color text, secondary_color text, font_style text,
+  logo_status text, brand_colors text, primary_color text, secondary_color text, font_style text,
   design_styles text[] not null default '{}', design_style_other text,
   websites_like text, websites_dislike text, design_notes text,
   -- Step 3 — Business
@@ -71,6 +71,9 @@ create table if not exists public.client_projects (
   main_goal text, visitor_first_action text, most_important_feature text, success_definition text,
   anything_else text
 );
+-- Added later: safe to re-run on an existing database
+alter table public.client_projects add column if not exists logo_status text;
+
 create index if not exists client_projects_submitted_idx on public.client_projects (submitted_at desc);
 create index if not exists client_projects_invite_idx on public.client_projects (invite_id);
 

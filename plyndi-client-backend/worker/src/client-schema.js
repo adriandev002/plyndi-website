@@ -16,6 +16,7 @@
 const DESIGN_STYLES = ['Modern', 'Luxury', 'Minimal', 'Professional', 'Elegant', 'Friendly', 'Adventurous', 'Premium', 'Other'];
 const FONT_STYLES = ['Modern sans-serif', 'Classic serif', 'Elegant / luxury serif', 'Friendly / rounded', 'Bold / adventurous', 'Not sure — recommend one'];
 const BOOKING_METHODS = ['Contact / inquiry only', 'Booking request', 'Online booking', 'Instant booking', 'Not decided yet'];
+export const LOGO_STATUS = ['Yes — I’ll upload it here', 'No — I need one designed', 'It’s being made — I’ll send it later'];
 const PAYMENT_METHODS = ['Credit / debit card', 'Bank transfer', 'PayPal', 'Cash', 'Other'];
 const LANGUAGES = ['English', 'Traditional Chinese', 'Simplified Chinese', 'Japanese', 'Korean', 'Other'];
 const FEATURES = ['Tour listing', 'Tour detail pages', 'Booking', 'Contact form', 'Blog', 'Reviews', 'FAQ', 'Destination pages', 'Gallery', 'Map', 'Newsletter', 'Customer login', 'Admin dashboard', 'Online payment', 'Other'];
@@ -193,7 +194,8 @@ export const STEPS = [
     id: 'brand', group: 'Brand', title: 'Brand information', review: 'Brand',
     intro: 'Your logo, colours and the feel you want. If you are not sure, leave it — we can recommend.',
     items: [
-      { files: 'logo', help: 'PNG or SVG with a transparent background is ideal.' },
+      { key: 'logo_status', label: 'Do you have a logo?', type: 'radio', options: LOGO_STATUS, required: true },
+      { files: 'logo', help: 'Required if you answered “Yes” above. PNG or SVG with a transparent background is ideal.', requiredIf: { key: 'logo_status', equals: LOGO_STATUS[0] } },
       { key: 'brand_colors', label: 'Brand colours', type: 'text', placeholder: 'e.g. Deep teal, sand, white — or hex codes' },
       { key: 'primary_color', label: 'Preferred primary colour', type: 'color', half: true },
       { key: 'secondary_color', label: 'Preferred secondary colour', type: 'color', half: true },
@@ -379,6 +381,11 @@ export function validateAll(state) {
       if (!item.key || !isVisible(item, state.fields)) return;
       const msg = validateField(item, state.fields[item.key]);
       if (msg) errors.push({ stepIndex, key: item.key, message: msg });
+    });
+    step.items.filter(i => i.files && i.requiredIf).forEach(item => {
+      const need = state.fields[item.requiredIf.key] === item.requiredIf.equals;
+      const files = (state.files && state.files[item.files]) || [];
+      if (need && !files.length) errors.push({ stepIndex, key: 'files.' + item.files, message: `Please upload your ${FILE_CATEGORIES[item.files].label.toLowerCase()}, or change your answer to “Do you have a logo?”.` });
     });
     step.items.filter(i => i.list).forEach(({ list }) => {
       (state.lists[list] || []).forEach((row, rowIndex) => {

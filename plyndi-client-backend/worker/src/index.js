@@ -266,7 +266,8 @@ function sanitizeState(state) {
   const pushFiles = (category, ids) => ids.forEach((file_id, position) => files.push({ file_id, category, position }));
 
   const inFiles = (state.files && typeof state.files === 'object') ? state.files : {};
-  for (const cat of TOP_LEVEL_CATEGORIES) pushFiles(cat, fileIds(inFiles[cat]));
+  const topFiles = {};
+  for (const cat of TOP_LEVEL_CATEGORIES) { topFiles[cat] = fileIds(inFiles[cat]); pushFiles(cat, topFiles[cat]); }
 
   const lists = {};
   const inLists = (state.lists && typeof state.lists === 'object') ? state.lists : {};
@@ -294,7 +295,7 @@ function sanitizeState(state) {
   }
 
   // Validation runs on the same shape the browser validated
-  const forValidation = { fields, lists, files: {} };
+  const forValidation = { fields, lists, files: topFiles };
   return { payload: { fields, lists, files: dedupeFiles(files) }, forValidation };
 }
 function dedupeFiles(files) {

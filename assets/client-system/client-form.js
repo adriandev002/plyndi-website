@@ -203,7 +203,7 @@ function renderStep(step) {
     if (item.list) { frag.append(renderList(item.list)); continue; }
     if (item.files) {
       frag.append(renderUploader({
-        category: item.files, help: item.help, compact: item.compact,
+        category: item.files, help: item.help, compact: item.compact, requiredIf: item.requiredIf,
         get: () => state.files[item.files] || [],
         set: arr => { state.files[item.files] = arr; }
       }));
@@ -216,6 +216,7 @@ function renderStep(step) {
 
 function refreshConditionals(step) {
   for (const item of step.items) {
+    if (item.files && item.requiredIf && state.fields[item.requiredIf.key] !== item.requiredIf.equals) setFieldError('files.' + item.files, '');
     if (!item.showIf) continue;
     const wrap = document.querySelector(`[data-wrap="${item.key}"]`);
     if (wrap) wrap.hidden = !isVisible(item, state.fields);
@@ -394,7 +395,7 @@ function renderList(listKey) {
 }
 
 /* ---------------- Uploads ---------------- */
-function renderUploader({ category, label, help, compact, get, set }) {
+function renderUploader({ category, label, help, compact, requiredIf, get, set }) {
   const cat = FILE_CATEGORIES[category];
   const inputId = `up-${category}-${Math.random().toString(36).slice(2, 7)}`;
   const listEl = h('ul', { class: 'cs-files', 'aria-live': 'polite' });
@@ -405,8 +406,9 @@ function renderUploader({ category, label, help, compact, get, set }) {
       h('span', null, ' or drag & drop here')),
     h('p', { class: 'cs-help' }, `${help ? help + ' ' : ''}Max ${UPLOAD_LIMITS.maxFileBytes / 1048576} MB per file.`),
     input);
-  const wrap = h('div', { class: 'cs-field cs-upload', 'data-upload': category },
-    h('p', { class: 'cs-label' }, label || cat.label), zone, listEl);
+  const errEl = h('p', { class: 'cs-error', hidden: true });
+  const wrap = h('div', { class: 'cs-field cs-upload', 'data-upload': category, 'data-key': requiredIf ? 'files.' + category : null, tabindex: requiredIf ? -1 : null },
+    h('p', { class: 'cs-label' }, label || cat.label), zone, listEl, errEl);
 
   const drawList = () => {
     listEl.replaceChildren(...get().map(ref => fileRow(ref, () => {
@@ -415,6 +417,7 @@ function renderUploader({ category, label, help, compact, get, set }) {
       scheduleSave(); drawList(); updateSubmitState();
     })));
     zone.hidden = !cat.multiple && get().length > 0;
+    if (requiredIf && get().length) setFieldError('files.' + category, '');
   };
 
   const handleFiles = files => {
