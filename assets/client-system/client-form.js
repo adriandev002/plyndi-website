@@ -74,6 +74,7 @@ async function init() {
   $('cs-app').hidden = false;
   wireNav();
   render();
+  if (storageSafe.get(DRAFT_KEY)) setSaveStatus('saved');   // answers were restored from this device
 }
 
 function blocked(title, msg, canRetry) {
@@ -99,24 +100,28 @@ function loadDraft() {
 let saveTimer = null;
 function scheduleSave() {
   clearTimeout(saveTimer);
+  setSaveStatus('saving');
   saveTimer = setTimeout(() => saveDraft(false), 500);
 }
 function saveDraft(silent) {
   const clean = JSON.parse(JSON.stringify(state, (k, v) => (k === 'url' ? undefined : v)));
   const ok = storageSafe.set(DRAFT_KEY, { invite: inviteToken, state: clean, step: current, maxVisited, draftId, revisionOf, savedAt: new Date().toISOString() });
-  if (!silent) {
-    $('cs-save-status').textContent = ok
-      ? 'Saved on this device · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      : 'Autosave is unavailable in this browser — please finish in one sitting.';
-  }
+  if (!silent) setSaveStatus(ok ? 'saved' : 'failed');
   return ok;
+}
+function setSaveStatus(kind) {
+  const el = $('cs-save-status');
+  if (!el) return;
+  el.dataset.state = kind;
+  el.textContent = kind === 'saving' ? 'Saving…'
+    : kind === 'saved' ? '✓ Saved automatically'
+    : 'Autosave unavailable in this browser — please finish in one sitting.';
 }
 
 /* ---------------- Navigation ---------------- */
 function wireNav() {
   $('cs-form').addEventListener('submit', e => { e.preventDefault(); next(); });
   $('cs-back').addEventListener('click', () => go(current - 1));
-  $('cs-save').addEventListener('click', () => { saveDraft(false); });
   window.addEventListener('beforeunload', e => { if (uploads.size) { e.preventDefault(); e.returnValue = ''; } });
 }
 
@@ -132,7 +137,8 @@ function go(i, focusKey) {
   current = i;
   maxVisited = Math.max(maxVisited, i);
   touched = new Set();
-  saveDraft(true);
+  clearTimeout(saveTimer);
+  saveDraft(false);
   render();
   window.scrollTo({ top: document.querySelector('.cs-stepper').offsetTop - 80, behavior: 'smooth' });
   if (focusKey) {

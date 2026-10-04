@@ -150,7 +150,9 @@
   margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line);
 }
 .cs-nav-right{ display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-left: auto; justify-content: flex-end; }
-.cs-save-status{ font-size: .82rem; color: var(--ink-soft); }
+.cs-save-status{ font-size: .8rem; color: var(--ink-soft); opacity: .85; white-space: nowrap; }
+.cs-save-status[data-state="saving"]{ opacity: .6; }
+.cs-save-status[data-state="failed"]{ color: #A3321E; white-space: normal; }
 #cs-back[hidden]{ display: none; }
 
 /* ---------- Errors ---------- */
@@ -208,8 +210,11 @@
   .cs-pill.is-current > span{ padding-right: 12px; }
   .cs-nav{ position: sticky; bottom: 0; background: var(--white); margin: 24px -16px -22px; padding: 14px 16px; border-radius: 0 0 12px 12px; z-index: 5; box-shadow: 0 -8px 20px rgba(14,59,61,.06); }
   .cs-nav .btn{ padding: 12px 16px; }
-  #cs-save{ padding: 12px 12px; }
-  .cs-save-status{ display: none; }
+  .cs-save-status{ font-size: .74rem; }
+  .cs-nav, .cs-nav-right{ flex-wrap: nowrap; gap: 8px; }
+  .cs-nav .btn{ white-space: nowrap; flex-shrink: 0; padding: 12px 14px; }
+  .cs-nav-right{ min-width: 0; }
+  .cs-save-status[data-state="failed"]{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; }
   .cs-dl{ grid-template-columns: 1fr; gap: 2px; }
   .cs-dl dd{ margin-bottom: 8px; }
   .cs-submit-reason{ text-align: left; }
