@@ -835,7 +835,7 @@ section{ padding: 64px 0; }
 .feature-card p{ margin: 0; font-size: 0.93rem; color: var(--ink-soft); }
 .feature-card{ overflow: hidden; transition: transform 0.35s ease, box-shadow 0.35s ease; }
 .feature-card:hover{ transform: translateY(-4px); box-shadow: 0 14px 30px rgba(14,59,61,0.10); }
-.feature-card .feature-img{ display: block; width: calc(100% + 48px); max-width: none; aspect-ratio: 3 / 2; object-fit: cover; margin: -26px -24px 18px; }
+.feature-card .feature-img{ display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .reveal{ opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .reveal.is-in{ opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce){
@@ -916,4 +916,41 @@ section{ padding: 64px 0; }
   .main-nav a{ padding: 12px 10px; border-radius: 8px; }
   .nav-cta{ margin-left: 0; margin-top: 6px; }
   .nav-toggle{ display: block; }
+}
+
+
+/* =========================================================
+   Added 5 Oct 2026 — App page feature showcase
+   (height:auto fixes the 800px-tall images; layout below)
+   ========================================================= */
+.app-features{ grid-template-columns: 1fr; gap: 22px; }
+.app-features .feature-card{ padding: 0; border-radius: 14px; display: flex; flex-direction: column; }
+.app-features .feature-img{ width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; margin: 0; background: var(--paper-2); }
+.app-features .feature-body{ padding: 20px 22px 24px; }
+.app-features .feature-card h3{ font-size: 1.2rem; margin-bottom: 6px; }
+.app-features .feature-card p{ font-size: 0.95rem; }
+.app-features .is-note{ flex-direction: row; align-items: flex-start; gap: 16px; padding: 22px; background: var(--teal-tint); border-color: transparent; }
+.app-features .is-note:hover{ transform: none; box-shadow: none; }
+.app-features .is-note .feature-icon{ margin: 2px 0 0; font-size: 1.7rem; line-height: 1; }
+.app-features .is-note .feature-body{ padding: 0; }
+
+@media (min-width: 640px){
+  .app-features{ grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .app-features .is-lead, .app-features .is-note{ grid-column: 1 / -1; }
+  .app-features .is-note{ align-items: center; padding: 24px 28px; }
+}
+@media (min-width: 900px){
+  .app-features .is-lead{ display: grid; grid-template-columns: 1.35fr 1fr; align-items: center; }
+  .app-features .is-lead .feature-img{ height: 100%; }
+  .app-features .is-lead .feature-body{ padding: 32px 44px; }
+  .app-features .is-lead h3{ font-size: 1.7rem; margin-bottom: 12px; }
+  .app-features .is-lead p{ font-size: 1.05rem; }
+}
+
+/* Launch-list form: keep the button on one line; stack on small phones */
+.newsletter-form .btn{ white-space: nowrap; flex: none; }
+@media (max-width: 480px){
+  .newsletter-card{ padding: 28px 22px; }
+  .newsletter-form{ flex-direction: column; min-width: 0; }
+  .newsletter-form .btn{ justify-content: center; }
 }
