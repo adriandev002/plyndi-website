@@ -337,10 +337,13 @@ function initNewsletterForm(){
   if (!form) return;
   const status = form.parentElement.querySelector('.form-status');
   const submitBtn = form.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn ? submitBtn.textContent : 'Subscribe';
+  const listField = form.querySelector('input[name="list"]');
+  const isAppLaunch = !!listField && listField.value === 'app-launch';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Subscribing…'; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isAppLaunch ? 'Sending…' : 'Subscribing…'; }
 
     try {
       const response = await fetch(form.action, {
@@ -353,7 +356,9 @@ function initNewsletterForm(){
         form.reset();
         if (status) {
           status.style.display = 'block';
-          status.textContent = "You're on the list — you'll hear from us when a new guide goes up.";
+          status.textContent = isAppLaunch
+            ? "You're on the launch list — we'll email you once, the day Plyndi is live."
+            : "You're on the list — you'll hear from us when a new guide goes up.";
         }
       } else {
         throw new Error('Submission failed');
@@ -364,7 +369,7 @@ function initNewsletterForm(){
         status.textContent = 'Something went wrong subscribing — please try again in a moment.';
       }
     } finally {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Subscribe'; }
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
     }
   });
 }
