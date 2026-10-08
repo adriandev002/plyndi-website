@@ -16,8 +16,11 @@
    the booking block falls back to an honest "not live yet" note.
    Nothing on the site ever shows a dead or fake booking link.
 
-   STATUS as of 21 Sep 2026
-   - Trip.com     : APPROVED — paste the tracking URL, flip to true
+   STATUS as of 8 Oct 2026
+   - Trip.com     : LIVE for hotels (stays). Allianceid 10211734,
+                    SID 331682352 (site "Plyndi", https://www.plyndi.com).
+                    Flights + activities URLs are filled in and ready —
+                    flip their `enabled` to true when you want them live.
    - Booking.com  : applied via Commission Junction (CJ) — pending
    - Travelpayouts: not approved, not in use
 
@@ -30,24 +33,24 @@
 window.PLYNDI_AFFILIATES = {
 
   stays: {
-    enabled: false,
+    enabled: true,
     partner: "Trip.com",
     // e.g. "https://www.trip.com/hotels/list?city={dest}&Allianceid=YOURID&SID=YOURSID"
-    url: "PASTE_TRIPCOM_HOTEL_LINK_HERE"
+    url: "https://www.trip.com/hotels/list?keyword={dest}&Allianceid=10211734&SID=331682352&trip_sub1=plyndi_blog"
   },
 
   flights: {
     enabled: false,
     partner: "Trip.com",
     // e.g. "https://www.trip.com/flights/?Allianceid=YOURID&SID=YOURSID&dcity={dest}"
-    url: "PASTE_TRIPCOM_FLIGHT_LINK_HERE"
+    url: "https://www.trip.com/flights/?Allianceid=10211734&SID=331682352&trip_sub1=plyndi_blog"
   },
 
   activities: {
     enabled: false,
     partner: "Trip.com",
     // e.g. "https://www.trip.com/things-to-do/?keyword={dest}&Allianceid=YOURID&SID=YOURSID"
-    url: "PASTE_TRIPCOM_ACTIVITIES_LINK_HERE"
+    url: "https://www.trip.com/things-to-do/?keyword={dest}&Allianceid=10211734&SID=331682352&trip_sub1=plyndi_blog"
   },
 
   // Booking.com via CJ — flip `stays` above to this once CJ approves,
