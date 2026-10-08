@@ -35,8 +35,12 @@ window.PLYNDI_AFFILIATES = {
   stays: {
     enabled: true,
     partner: "Trip.com",
-    // e.g. "https://www.trip.com/hotels/list?city={dest}&Allianceid=YOURID&SID=YOURSID"
-    url: "https://www.trip.com/hotels/list?keyword={dest}&Allianceid=10211734&SID=331682352&trip_sub1=plyndi_blog"
+    // {cityId} is looked up from PLYNDI_TRIP_CITIES below using the
+    // button's data-dest value. Trip.com IGNORES a text keyword here —
+    // it only understands its own numeric city IDs, so a city that is
+    // missing from that map has its button hidden rather than sending
+    // a reader to an empty "0 properties found" page.
+    url: "https://www.trip.com/hotels/list?city={cityId}&Allianceid=10211734&SID=331682352&trip_sub1=plyndi_blog"
   },
 
   flights: {
@@ -60,6 +64,46 @@ window.PLYNDI_AFFILIATES = {
     partner: "Booking.com",
     url: "PASTE_BOOKING_COM_CJ_LINK_HERE"
   }
+};
+
+
+/* =========================================================
+   Trip.com city IDs
+   ---------------------------------------------------------
+   Trip.com's hotel search only accepts ITS OWN numeric city ID
+   (?city=359), not a city name. The key on the left must match the
+   button's data-dest exactly, e.g. <a data-book="stays" data-dest="Chiang Mai">.
+
+   TO ADD A NEW DESTINATION GUIDE
+   1. Go to trip.com/hotels, search the city, press Search.
+   2. Look at the address bar: .../hotels/list?city=NNNN  <- that number.
+   3. Add a line below. Until you do, that guide's hotel button
+      simply won't render — nothing breaks, nothing fakes a link.
+
+   Verified live on 8 Oct 2026 (each ID returned real properties).
+   ========================================================= */
+
+window.PLYNDI_TRIP_CITIES = {
+  "Bangkok": 359,
+  "Bali": 723,
+  "Barcelona": 40795,
+  "Cebu": 1239,
+  "Chiang Mai": 623,
+  "Hanoi": 286,
+  "Hong Kong": 58,
+  "Hualien": 6954,
+  "Kaohsiung": 720,
+  "Kenting": 5589,
+  "Kuala Lumpur": 315,
+  "Kyoto": 734,
+  "Paris": 192,
+  "Rome": 343,
+  "Seoul": 274,
+  "Singapore": 73,
+  "Tainan": 3847,
+  "Taipei": 617,
+  "Taitung": 3848,
+  "Tokyo": 228
 };
 
 

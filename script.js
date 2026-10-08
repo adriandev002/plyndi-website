@@ -490,7 +490,17 @@ function initBookingLinks(){
       return;
     }
 
-    btn.href = entry.url.replace('{dest}', encodeURIComponent(dest));
+    /* Trip.com hotel search needs its own numeric city ID, not a name.
+       No ID for this destination = no button, rather than a link that
+       lands the reader on an empty "0 properties found" page. */
+    let url = entry.url;
+    if (url.indexOf('{cityId}') !== -1) {
+      const cityId = (window.PLYNDI_TRIP_CITIES || {})[dest];
+      if (!cityId) { btn.remove(); return; }
+      url = url.replace('{cityId}', encodeURIComponent(cityId));
+    }
+
+    btn.href = url.replace('{dest}', encodeURIComponent(dest));
     btn.target = '_blank';
     btn.rel = 'sponsored noopener nofollow';
     if (entry.partner) {
