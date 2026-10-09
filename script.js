@@ -287,6 +287,66 @@ const TRIP_TEMPLATES = {
       'Sunset Town at golden hour',
     ],
   },
+  osaka: {
+    label: 'Osaka, Japan',
+    guideUrl: 'blog-osaka.html',
+    anchors: [
+      'Osaka Castle + Amazing Pass sights',
+      'Dotonbori at night: takoyaki and neon',
+      'Kuromon Market breakfast or lunch',
+      'Shinsekai + kushikatsu',
+      'Umeda Sky Building at sunset',
+      'Day trip to Nara or Kyoto',
+    ],
+  },
+  okinawa: {
+    label: 'Okinawa, Japan',
+    guideUrl: 'blog-okinawa.html',
+    anchors: [
+      'Kokusai Street + Makishi Market (Naha)',
+      'Okinawa soba or soki soba lunch',
+      'Churaumi Aquarium (full-day, car recommended)',
+      'Ferry to the Kerama Islands for snorkeling',
+      'Shuri area (check what is open)',
+      'Beach morning in spring or autumn',
+    ],
+  },
+  hokkaido: {
+    label: 'Hokkaido, Japan',
+    guideUrl: 'blog-hokkaido.html',
+    anchors: [
+      'New Chitose to Sapporo train + Susukino',
+      'Odori Park + Sapporo Beer Museum',
+      'Soup curry and king crab',
+      'Otaru canal day trip + uni',
+      'Niseko (winter) or Furano and Biei (summer)',
+      'Hakodate morning market + night view',
+    ],
+  },
+  phuket: {
+    label: 'Phuket, Thailand',
+    guideUrl: 'blog-phuket.html',
+    anchors: [
+      'Kata or Karon beach morning',
+      'Big Buddha + Wat Chalong (before 11am)',
+      'Promthep Cape sunset',
+      'Phuket Old Town + Sunday Lard Yai market',
+      'Phi Phi or Phang Nga Bay boat trip',
+      'Seafood dinner by the beach',
+    ],
+  },
+  kohsamui: {
+    label: 'Koh Samui, Thailand',
+    guideUrl: 'blog-kohsamui.html',
+    anchors: [
+      'Beach morning in Bophut or Lamai',
+      'Big Buddha + Na Muang waterfall',
+      'Fisherman\'s Village Friday walking street',
+      'Ang Thong Marine Park day trip (check season)',
+      'Chaweng evening',
+      'Ferry day to Koh Phangan',
+    ],
+  },
   kyoto: {
     label: 'Kyoto, Japan',
     guideUrl: 'blog-kyoto.html',
@@ -447,7 +507,7 @@ function initBlogFilters(){
     buttons.forEach(b => b.classList.toggle('is-active', b.dataset.filter === filter));
     let shown = 0;
     cards.forEach(card => {
-      const show = filter === 'all' || card.dataset.category === filter;
+      const show = filter === 'all' || (filter === 'trending' ? card.dataset.trending === 'true' : card.dataset.category === filter);
       card.style.display = show ? '' : 'none';
       if (show) shown++;
     });

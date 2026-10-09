@@ -82,6 +82,7 @@ window.PLYNDI_AFFILIATES = {
 
    Verified live on 8 Oct 2026 (each ID returned real properties). Vietnam IDs added 9 Oct 2026
    (Da Nang, Hoi An, Ho Chi Minh City, Quy Nhon, Phu Quoc), each confirmed to return a hotel list.
+   Trending guides added 9 Oct 2026: Osaka, Okinawa (Naha), Phuket, Koh Samui, Sapporo (for Hokkaido).
    ========================================================= */
 
 window.PLYNDI_TRIP_CITIES = {
@@ -98,12 +99,17 @@ window.PLYNDI_TRIP_CITIES = {
   "Hualien": 6954,
   "Kaohsiung": 720,
   "Kenting": 5589,
+  "Koh Samui": 1229,
   "Kuala Lumpur": 315,
   "Kyoto": 734,
+  "Okinawa": 92573,
+  "Osaka": 219,
   "Paris": 192,
   "Phu Quoc": 5649,
+  "Phuket": 725,
   "Quy Nhon": 6172,
   "Rome": 343,
+  "Sapporo": 641,
   "Seoul": 274,
   "Singapore": 73,
   "Tainan": 3847,

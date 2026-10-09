@@ -954,3 +954,43 @@ section{ padding: 64px 0; }
   .newsletter-form{ flex-direction: column; min-width: 0; }
   .newsletter-form .btn{ justify-content: center; }
 }
+
+
+/* =========================================================
+   Trending now (home page)
+   ========================================================= */
+#trending{ padding-top: 48px; padding-bottom: 24px; scroll-margin-top: 84px; }
+.trend-badge{
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--teal-deep);
+  background: var(--gold-soft);
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.trend-more{ margin: 24px 0 6px; color: var(--ink-soft); }
+.trend-more a{ font-weight: 700; color: var(--teal-deep); }
+.dest-chips{ display: grid; gap: 10px; margin-top: 16px; }
+.dest-title{ margin: 0; font-weight: 700; color: var(--teal-deep); }
+.dest-row{ display: grid; grid-template-columns: 110px 1fr; gap: 8px 12px; align-items: start; margin: 0; max-width: none; }
+.dest-row strong{ font-size: 0.86rem; color: var(--ink-soft); padding-top: 8px; }
+.dest-links{ display: flex; flex-wrap: wrap; gap: 8px; }
+.dest-row a{
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--teal-deep);
+  text-decoration: none;
+}
+.dest-row a:hover{ border-color: var(--teal); background: var(--teal-tint); }
+.trend-sources{ font-size: 0.82rem; color: var(--ink-soft); margin-top: 20px; }
+.trend-sources a{ color: inherit; text-decoration: underline; }
+@media (max-width: 640px){
+  .dest-row{ grid-template-columns: 1fr; }
+  .dest-row strong{ padding-top: 0; }
+}
