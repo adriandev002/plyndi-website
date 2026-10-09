@@ -80,16 +80,20 @@ window.PLYNDI_AFFILIATES = {
    3. Add a line below. Until you do, that guide's hotel button
       simply won't render — nothing breaks, nothing fakes a link.
 
-   Verified live on 8 Oct 2026 (each ID returned real properties).
+   Verified live on 8 Oct 2026 (each ID returned real properties). Vietnam IDs added 9 Oct 2026
+   (Da Nang, Hoi An, Ho Chi Minh City, Quy Nhon, Phu Quoc), each confirmed to return a hotel list.
    ========================================================= */
 
 window.PLYNDI_TRIP_CITIES = {
-  "Bangkok": 359,
   "Bali": 723,
+  "Bangkok": 359,
   "Barcelona": 40795,
   "Cebu": 1239,
   "Chiang Mai": 623,
+  "Da Nang": 1356,
   "Hanoi": 286,
+  "Ho Chi Minh City": 301,
+  "Hoi An": 1775,
   "Hong Kong": 58,
   "Hualien": 6954,
   "Kaohsiung": 720,
@@ -97,6 +101,8 @@ window.PLYNDI_TRIP_CITIES = {
   "Kuala Lumpur": 315,
   "Kyoto": 734,
   "Paris": 192,
+  "Phu Quoc": 5649,
+  "Quy Nhon": 6172,
   "Rome": 343,
   "Seoul": 274,
   "Singapore": 73,
