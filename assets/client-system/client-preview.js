@@ -3,8 +3,11 @@
    One reusable travel-agency template; content is swapped in
    from the client's submission. Every value is inserted with
    textContent (never innerHTML) and links are http(s)-only.
+   App projects get an "App project summary" page instead
+   (renderAppSummary) — same rules, Plyndi styling.
    ========================================================= */
 import { api, h, safeUrl } from './client-api.js';
+import { FEATURE_PRIORITIES } from './client-schema.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -21,8 +24,9 @@ async function init() {
     if (e.status === 404) return showState('Preview not found', 'This preview link is not valid. If you just submitted, please use the link from that page or contact contact@plyndi.com.');
     return showState('Preview unavailable', e.message, true);
   }
-  setupNotice(data);
-  renderSite(data);
+  const isApp = data.project.project_type === 'app';
+  setupNotice(data, isApp);
+  if (isApp) await renderAppSummary(data); else renderSite(data);
   $('pv-state').hidden = true;
   $('pv-site').hidden = false;
 }
@@ -34,9 +38,14 @@ function showState(title, msg, retry) {
     retry ? h('button', { type: 'button', class: 'pv-nbtn pv-nbtn-solid', onclick: () => location.reload() }, 'Try again') : null);
 }
 
-function setupNotice(data) {
+function setupNotice(data, isApp) {
   const p = data.project;
   $('pv-ref').textContent = `Ref ${p.ref} · Revision ${p.revision_number} · ${new Date(p.submitted_at).toLocaleDateString()}`;
+  if (isApp) {
+    $('pv-badge').textContent = 'App Project Summary';
+    $('pv-notice-desc').textContent = 'This is a summary of the app project information you provided — not a design. Screens, features and scope will be confirmed with you before development starts.';
+    document.querySelector('.pv-notice').setAttribute('aria-label', 'App project summary notice');
+  }
   if (data.invite) {
     const base = `/client-form?invite=${encodeURIComponent(data.invite)}`;
     $('pv-edit').href = `${base}&edit=${encodeURIComponent(id)}&mode=review`;
@@ -48,7 +57,8 @@ function setupNotice(data) {
   if (params.get('new') === '1') {
     const t = $('pv-toast');
     t.hidden = false;
-    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). Here is a first preview of your website.`;
+    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). ` +
+      (isApp ? 'Here is a summary of your app project.' : 'Here is a first preview of your website.');
     history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(id));
     setTimeout(() => { t.hidden = true; }, 9000);
   }
@@ -371,6 +381,145 @@ function tourCard(t, i, image, ctaText) {
       detail.length ? h('details', { class: 'pv-tour-more' }, h('summary', null, 'Tour details'),
         h('dl', null, detail.map(([k, v]) => [h('dt', null, k), h('dd', null, v)])),
         h('a', { class: 'pv-btn pv-btn-primary pv-btn-sm', href: '#contact' }, ctaText)) : null));
+}
+
+/* =========================================================
+   App project summary (app links)
+   A plain, Plyndi-styled summary of the answers — no mock-ups,
+   no sample content. /style.css is loaded only in this mode.
+   ========================================================= */
+function loadPlyndiStyles() {
+  return new Promise(resolve => {
+    const link = h('link', { rel: 'stylesheet', href: '/style.css' });
+    link.addEventListener('load', resolve, { once: true });
+    link.addEventListener('error', resolve, { once: true });
+    setTimeout(resolve, 3000);
+    document.head.append(link);
+  });
+}
+
+/* Text with any http(s) links in it turned into safe anchors (everything else stays text). */
+function linkified(text) {
+  const out = [];
+  String(text).split(/(https?:\/\/[^\s<>"']+)/i).forEach((part, i) => {
+    if (i % 2 === 1) {
+      const u = safeUrl(part.replace(/[).,;]+$/, ''));
+      if (u) { out.push(h('a', { href: u, target: '_blank', rel: 'noopener noreferrer' }, part)); return; }
+    }
+    if (part) out.push(part);
+  });
+  return out;
+}
+
+async function renderAppSummary(data) {
+  await loadPlyndiStyles();
+  const p = data.project;
+  const a = data.app || {};
+  const files = data.files || [];
+  const images = c => files.filter(f => f.category === c && f.url && (f.type || '').startsWith('image/'));
+  const company = pick(p.company_name, 'Your company');
+  const appName = pick(a.app_name, `${company} app`);
+  document.title = `${appName} — App Project Summary`;
+
+  const chips = (arr, cls) => (arr || []).length ? h('ul', { class: 'pa-chips' + (cls ? ' ' + cls : '') }, arr.map(x => h('li', { class: 'pa-chip' }, x))) : null;
+  const text = v => h('p', { class: 'pa-text' }, linkified(v));
+  const dl = rows => {
+    const ok = rows.filter(([, v]) => has(v));
+    return ok.length ? h('dl', { class: 'pa-dl' }, ok.map(([k, v]) => [h('dt', null, k), h('dd', null, Array.isArray(v) ? v.join(', ') : linkified(v))])) : null;
+  };
+  const card = (title, ...body) => {
+    const content = body.flat().filter(Boolean);
+    return content.length ? h('section', { class: 'pa-card', 'aria-label': title }, h('h2', null, title), content) : null;
+  };
+  const sub = (title, node) => node ? [h('h3', null, title), node] : null;
+
+  /* Hero */
+  const logo = images('logo')[0];
+  const hero = h('header', { class: 'pa-hero' },
+    h('div', { class: 'container' },
+      logo ? h('img', { src: logo.url, alt: `${company} logo`, class: 'pa-logo' }) : null,
+      h('p', { class: 'pa-eyebrow' }, 'App project summary'),
+      h('h1', null, appName),
+      has(a.app_summary) ? h('p', { class: 'lede' }, a.app_summary) : null,
+      chips(a.platforms, 'pa-chips-hero'),
+      h('dl', { class: 'pa-facts' },
+        [['For', company], ['Contact', a.contact_name], ['Target launch', a.target_launch]]
+          .filter(([, v]) => has(v)).map(([k, v]) => h('div', null, h('dt', null, k), h('dd', null, v))))));
+
+  /* Features by priority */
+  const features = (a.features || []).filter(f => f && has(f.name || f.description));
+  const columns = [
+    ...FEATURE_PRIORITIES.map(label => [label, features.filter(f => f.priority === label)]),
+    ['Not prioritised yet', features.filter(f => !FEATURE_PRIORITIES.includes(f.priority))]
+  ].filter(([, list], i) => i < FEATURE_PRIORITIES.length || list.length);
+  const prioClass = ['is-must', 'is-should', 'is-nice', 'is-none'];
+  const featureBlock = features.length
+    ? h('div', { class: 'pa-prio' }, columns.map(([label, list], i) => h('div', { class: 'pa-prio-col ' + prioClass[i] },
+        h('h3', null, label, h('span', { class: 'pa-count' }, String(list.length))),
+        list.length ? list.map(f => h('div', { class: 'pa-feature' },
+          h('strong', null, pick(f.name, 'Unnamed feature')), has(f.description) ? h('p', null, f.description) : null))
+          : h('p', { class: 'pa-empty' }, 'None'))))
+    : h('p', { class: 'pa-empty' }, 'No core features listed yet — you can add them with “Edit Information”.');
+  const capabilities = (a.app_capabilities || []);
+  const featuresCard = card('Features',
+    featureBlock,
+    sub('User roles', has(a.user_roles) ? text(a.user_roles) : null),
+    sub('Sign-in', chips(a.login_methods)),
+    sub('Also needed', chips(capabilities)),
+    dl([['Payments', a.payment_details], ['AI features', a.ai_features],
+        ['Languages', [...(a.app_languages || []).filter(l => l !== 'Other'), a.app_language_other].filter(has)]]));
+
+  /* Integrations */
+  const integrations = (a.integrations || []).filter(i => i && has(i.name || i.url));
+  const integrationsCard = integrations.length ? card('Integrations',
+    h('ul', { class: 'pa-list' }, integrations.map(i => {
+      const u = safeUrl(i.url);
+      return h('li', null, h('strong', null, pick(i.name, 'Integration')), has(i.purpose) ? [' — ', i.purpose] : null,
+        u ? [h('br'), h('a', { href: u, target: '_blank', rel: 'noopener noreferrer' }, i.url)] : null);
+    }))) : null;
+
+  /* Design */
+  const swatches = [['Primary', p.primary_color], ['Secondary', p.secondary_color]].filter(([, c]) => validHex(c));
+  const refs = (a.design_references || []).filter(r => r && has(r.url || r.notes));
+  const thumbs = list => list.length ? h('ul', { class: 'pa-thumbs' }, list.map(f => h('li', null,
+    h('a', { href: f.url, target: '_blank', rel: 'noopener noreferrer' },
+      (f.type || '').startsWith('image/') ? h('img', { src: f.url, alt: '', loading: 'lazy' }) : h('span', { class: 'pa-file' }, 'FILE'),
+      h('span', null, f.name))))) : null;
+  const designCard = card('Design',
+    swatches.length ? h('div', { class: 'pa-swatches' }, swatches.map(([k, c]) => h('span', { class: 'pa-swatch' }, h('span', { style: { background: c }, 'aria-hidden': 'true' }), `${k} ${c.toUpperCase()}`))) : null,
+    dl([['Brand colours', p.brand_colors], ['Font style', p.font_style], ['Fonts in use', a.app_fonts],
+        ['Style', [...(p.design_styles || []).filter(s => s !== 'Other'), p.design_style_other].filter(has)], ['Tone & feel', a.app_tone]]),
+    sub('References', refs.length ? h('ul', { class: 'pa-list' }, refs.map(r => {
+      const u = safeUrl(r.url);
+      return h('li', null, u ? h('a', { href: u, target: '_blank', rel: 'noopener noreferrer' }, r.url) : (r.url || ''), has(r.notes) ? [u || r.url ? ' — ' : '', r.notes] : null);
+    })) : null),
+    sub('Reference screenshots', thumbs(files.filter(f => f.category === 'app_reference_images' && f.url))),
+    sub('Wireframes & sketches', thumbs(files.filter(f => f.category === 'wireframes' && f.url))));
+
+  /* The rest */
+  const ideaCard = card('The idea', dl([['Problem it solves', a.problem_solved], ['Target users', a.target_users], ['Similar apps', a.competitor_apps]]));
+  const timelineCard = card('Timeline & budget', dl([['Target launch', a.target_launch], ['Hard deadline', a.deadline_reason],
+    ['Budget range', a.budget_range], ['Maintenance', a.maintenance]]));
+  const buildCard = card('Platforms & build', dl([['Platforms', a.platforms], ['New or existing', a.build_type],
+    ['Store links', a.existing_store_links], ['Current technology', a.existing_tech], ['Offline use', a.offline_needed]]));
+  const adminCard = card('Admin & data', dl([['Admin dashboard', a.admin_dashboard], ['Admins manage', a.admin_manages],
+    ['Data to import', a.data_import], ['Analytics', a.analytics_needs]]));
+  const launchCard = card('Content & launch', dl([['Text & images', a.content_provider], ['Apple Developer', a.apple_developer_account],
+    ['Google Play', a.google_play_account], ['Privacy policy', a.privacy_policy_status], ['Anything else', p.anything_else]]));
+  const contactCard = card('Contact', dl([['Company', p.company_name], ['Contact', a.contact_name], ['Email', p.email], ['Phone', p.phone],
+    ['WhatsApp', p.whatsapp], ['LINE', p.line_id], ['Country', p.country], ['Preferred language', a.preferred_language]]));
+
+  const pair = (x, y) => (x && y) ? h('div', { class: 'pa-grid2' }, x, y) : (x || y);
+  const root = $('pv-site');
+  root.className = 'pa-site';                      // not the website template's .pv-site
+  root.replaceChildren(hero,
+    h('main', { class: 'container pa-body' },
+      ideaCard, featuresCard, integrationsCard, designCard,
+      pair(timelineCard, buildCard), pair(adminCard, launchCard), contactCard,
+      h('section', { class: 'pa-card pa-next', 'aria-label': 'What happens next' },
+        h('h2', null, 'What happens next'),
+        h('p', null, 'Plyndi will review your answers and contact you to confirm scope, timeline and price before any work starts. Need to change something? Use “Edit Information” above.'))),
+    h('p', { class: 'pa-foot' }, 'Summary generated by Plyndi from your answers.'));
 }
 
 /* Keep the client's sticky header just below the (variable-height) preview notice. */

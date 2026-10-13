@@ -29,7 +29,7 @@ img{ max-width: 100%; display: block; }
 .pv-nbtn-solid{ background: #20C1C4; border-color: #20C1C4; color: #0E3B3D; }
 .pv-nbtn[aria-disabled="true"]{ opacity: .45; pointer-events: none; }
 .pv-nbtn:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }
-.pv-toast{ margin: 0; padding: 9px 20px; background: #E4F6F6; color: #0E3B3D; font-weight: 700; font-size: .9rem; text-align: center; }
+.pv-toast{ margin: 0; max-width: none; padding: 9px 20px; background: #E4F6F6; color: #0E3B3D; font-weight: 700; font-size: .9rem; text-align: center; }
 
 .pv-state{ min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; color: #3B4B48; }
 .pv-state h1{ font-family: Georgia, serif; color: #0E3B3D; margin: 0 0 8px; }
@@ -265,4 +265,66 @@ img{ max-width: 100%; display: block; }
   .pv-form{ padding: 20px; }
   .pv-footer-grid{ grid-template-columns: 1fr; }
   .pv-logo{ max-width: 150px; height: 40px; }
+}
+
+/* =========================================================
+   App project summary (app links) — Plyndi styling.
+   client-preview.js loads /style.css in this mode only, so
+   these rules use its tokens (--teal, --paper, --ink …).
+   ========================================================= */
+.pa-site{ background: var(--paper); color: var(--ink); font-family: var(--font-body); line-height: 1.6; padding-bottom: 56px; }
+.pa-hero{ background: var(--teal-deep); color: var(--paper); padding: 48px 0 40px; }
+.pa-hero h1{ color: var(--white); margin: 4px 0 12px; overflow-wrap: anywhere; }
+.pa-hero .lede{ color: rgba(250,247,239,.88); max-width: 62ch; overflow-wrap: anywhere; }
+.pa-eyebrow{ font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); margin: 0; }
+.pa-logo{ height: 56px; width: auto; max-width: 180px; object-fit: contain; background: var(--white); border-radius: 10px; padding: 6px; margin-bottom: 18px; }
+.pa-chips{ list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; padding: 0; }
+.pa-chip{ font-size: .85rem; font-weight: 600; padding: 5px 12px; border-radius: 20px; background: var(--teal-tint); color: var(--teal-deep); overflow-wrap: anywhere; }
+.pa-chips-hero .pa-chip{ background: rgba(255,255,255,.1); color: var(--white); border: 1px solid rgba(255,255,255,.28); }
+.pa-facts{ display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 22px 0 0; }
+.pa-facts > div{ min-width: 0; }
+.pa-facts dt{ font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(250,247,239,.65); }
+.pa-facts dd{ margin: 2px 0 0; font-weight: 600; color: var(--white); overflow-wrap: anywhere; }
+
+.pa-site .pa-body{ display: grid; gap: 22px; padding-top: 30px; }   /* beats style.css .container padding */
+.pa-card{ background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 26px; min-width: 0; }
+.pa-card > h2{ font-size: 1.45rem; margin-bottom: 14px; }
+.pa-card h3{ font-size: 1.05rem; margin: 22px 0 8px; }
+.pa-text{ white-space: pre-line; overflow-wrap: anywhere; max-width: 75ch; }
+.pa-card a{ color: var(--teal-deep); font-weight: 600; overflow-wrap: anywhere; }
+.pa-grid2{ display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.pa-dl{ display: grid; grid-template-columns: minmax(130px, 190px) 1fr; gap: 8px 18px; margin: 0; font-size: .95rem; }
+.pa-dl dt{ font-weight: 600; color: var(--teal-deep); }
+.pa-dl dd{ margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+
+.pa-prio{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.pa-prio-col h3{ margin: 0 0 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
+.pa-count{ font: 700 .74rem var(--font-body); background: var(--paper-2); color: var(--teal-deep); border-radius: 10px; padding: 1px 8px; }
+.pa-feature{ border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 8px; padding: 11px 14px; background: var(--paper); margin-bottom: 10px; }
+.pa-prio-col.is-should .pa-feature{ border-left-color: var(--gold); }
+.pa-prio-col.is-nice .pa-feature, .pa-prio-col.is-none .pa-feature{ border-left-color: var(--paper-2); }
+.pa-feature strong{ display: block; color: var(--teal-deep); overflow-wrap: anywhere; }
+.pa-feature p{ margin: 4px 0 0; font-size: .92rem; color: var(--ink-soft); white-space: pre-line; overflow-wrap: anywhere; }
+.pa-empty{ color: var(--ink-soft); font-size: .92rem; margin: 0; }
+
+.pa-list{ list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.pa-list li{ padding: 11px 14px; border: 1px solid var(--line); border-radius: 8px; overflow-wrap: anywhere; }
+.pa-swatches{ display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+.pa-swatch{ display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 600; }
+.pa-swatch > span{ width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); display: inline-block; }
+.pa-thumbs{ list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.pa-thumbs a{ display: block; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--paper); text-decoration: none; }
+.pa-thumbs img, .pa-file{ width: 100%; height: 110px; object-fit: cover; }
+.pa-file{ display: flex !important; align-items: center; justify-content: center; background: var(--teal-tint); color: var(--teal-deep); font-weight: 700; font-size: .8rem; }
+.pa-thumbs a > span:last-child{ display: block; font-size: .78rem; font-weight: 500; padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-soft); }
+.pa-next{ background: var(--teal-tint); border-color: transparent; }
+.pa-next p{ margin: 0; }
+.pa-foot{ text-align: center; color: var(--ink-soft); font-size: .85rem; margin: 28px auto 0; }
+
+@media (max-width: 760px){
+  .pa-hero{ padding: 32px 0 28px; }
+  .pa-grid2{ grid-template-columns: 1fr; }
+  .pa-card{ padding: 20px 16px; }
+  .pa-dl{ grid-template-columns: 1fr; gap: 2px; }
+  .pa-dl dd{ margin-bottom: 8px; }
 }
