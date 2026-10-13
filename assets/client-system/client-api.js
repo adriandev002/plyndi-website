@@ -123,11 +123,12 @@ export const storageSafe = {
   remove(k) { try { localStorage.removeItem(k); } catch (_) {} }
 };
 
-/* Turn a saved submission (preview/admin API shape) back into form state — used by "Edit information". */
-export function submissionToState(data, schema) {
-  const { FIELD_KEYS, LISTS, emptyState } = schema;
-  const state = emptyState();
-  const p = data.project || {};
+/* Turn a saved submission (preview/admin API shape) back into form state — used by "Edit information".
+   App answers come from data.app (app lists are jsonb columns there, named by `column`). */
+export function submissionToState(data, schema, type) {
+  const { fieldKeys: FIELD_KEYS, lists: LISTS } = schema.schemaFor(type);
+  const state = schema.emptyState(type);
+  const p = { ...(data.project || {}), ...(data.app || {}) };
   for (const k of FIELD_KEYS) {
     const v = p[k];
     if (v === null || v === undefined || (Array.isArray(v) && !v.length)) continue;
@@ -138,7 +139,8 @@ export function submissionToState(data, schema) {
   const listCats = new Set();
   for (const [listKey, def] of Object.entries(LISTS)) {
     def.fields.filter(f => f.type === 'file').forEach(f => listCats.add(f.category));
-    state.lists[listKey] = (data.lists?.[listKey] || []).map(row => {
+    const rows = def.column ? data.app?.[def.column] : data.lists?.[listKey];
+    state.lists[listKey] = (rows || []).map(row => {
       const out = {};
       for (const f of def.fields) {
         if (f.type === 'file') out[f.key] = (row[f.key] || []).map(ref).filter(Boolean);

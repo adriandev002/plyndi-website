@@ -9,8 +9,14 @@
 import * as schema from './client-schema.js';
 import { api, ApiError, putFileWithProgress, guessMime, h, formatBytes, storageSafe, submissionToState } from './client-api.js';
 
-const { STEPS, LISTS, GROUPS, FILE_CATEGORIES, UPLOAD_LIMITS, emptyState, isFilled, isVisible, validateField, validateAll } = schema;
-const REVIEW_INDEX = STEPS.length;              // the step after the last form step
+const { FILE_CATEGORIES, UPLOAD_LIMITS, isFilled, isVisible, validateField } = schema;
+
+// Website steps by default; switched to the app steps when the invite is an app project.
+let projectType = 'website';
+let { steps: STEPS, lists: LISTS, groups: GROUPS } = schema.schemaFor(projectType);
+let REVIEW_INDEX = STEPS.length;              // the step after the last form step
+const emptyState = () => schema.emptyState(projectType);
+const validateAll = s => schema.validateAll(s, projectType);
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -42,6 +48,15 @@ async function init() {
     return blocked('We could not open the form', e.message, true);
   }
   $('cs-client-label').textContent = 'Project information · ' + invite.client_name;
+  // The type comes from the link (set by Plyndi). An older API without it means a website link.
+  projectType = schema.normalizeProjectType(invite.project_type);
+  if (projectType !== 'website') {
+    ({ steps: STEPS, lists: LISTS, groups: GROUPS } = schema.schemaFor(projectType));
+    REVIEW_INDEX = STEPS.length;
+    state = emptyState();
+    $('cs-form-title').textContent = 'Tell us about your app idea';
+    $('cs-confirm-note').textContent = 'You’ll see a summary of your app project straight away, and you can still send a revision afterwards.';
+  }
 
   loadDraft();
 
@@ -50,7 +65,7 @@ async function init() {
   if (editId) {
     try {
       const data = await api('/preview?id=' + encodeURIComponent(editId));
-      state = submissionToState(data, schema);
+      state = submissionToState(data, schema, projectType);
       for (const list of Object.values(state.lists)) list.forEach(row => Object.values(row).forEach(v => Array.isArray(v) && v.forEach(f => f && f.url && thumbs.set(f.id, f.url))));
       for (const arr of Object.values(state.files)) arr.forEach(f => f.url && thumbs.set(f.id, f.url));
       revisionOf = editId;
@@ -88,7 +103,7 @@ function blocked(title, msg, canRetry) {
 /* ---------------- Draft persistence (text only) ---------------- */
 function loadDraft() {
   const d = storageSafe.get(DRAFT_KEY);
-  if (!d || !d.state || d.invite !== inviteToken) return;
+  if (!d || !d.state || d.invite !== inviteToken || (d.type || 'website') !== projectType) return;
   state = Object.assign(emptyState(), d.state);
   state.lists = Object.assign(emptyState().lists, d.state.lists || {});
   current = Math.min(d.step || 0, REVIEW_INDEX);
@@ -105,7 +120,7 @@ function scheduleSave() {
 }
 function saveDraft(silent) {
   const clean = JSON.parse(JSON.stringify(state, (k, v) => (k === 'url' ? undefined : v)));
-  const ok = storageSafe.set(DRAFT_KEY, { invite: inviteToken, state: clean, step: current, maxVisited, draftId, revisionOf, savedAt: new Date().toISOString() });
+  const ok = storageSafe.set(DRAFT_KEY, { invite: inviteToken, type: projectType, state: clean, step: current, maxVisited, draftId, revisionOf, savedAt: new Date().toISOString() });
   if (!silent) setSaveStatus(ok ? 'saved' : 'failed');
   return ok;
 }
@@ -312,7 +327,7 @@ function renderField(f, bag, dataKey, onChange) {
         ...common, type, placeholder: f.placeholder || (f.type === 'url' ? 'https://' : null),
         inputmode: f.inputmode || (f.type === 'year' ? 'numeric' : null),
         maxlength: f.type === 'year' ? 4 : (f.max || 2000),
-        autocomplete: { email: 'email', tel: 'tel', company_name: 'organization', office_address: 'street-address', country: 'country-name', city: 'address-level2' }[f.type === 'email' || f.type === 'tel' ? f.type : f.key] || 'off'
+        autocomplete: { email: 'email', tel: 'tel', company_name: 'organization', office_address: 'street-address', country: 'country-name', city: 'address-level2', contact_name: 'name' }[f.type === 'email' || f.type === 'tel' ? f.type : f.key] || 'off'
       });
       control.value = val || '';
       control.addEventListener('input', () => commit(control.value));
