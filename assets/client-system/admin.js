@@ -4,7 +4,7 @@
    /api/client/admin/*, which only answers requests that carry a
    valid Cloudflare Access login (checked server-side).
    ========================================================= */
-import { STEPS, LISTS, FILE_CATEGORIES, isFilled } from './client-schema.js';
+import { FILE_CATEGORIES, PROJECT_TYPE_LABELS, isFilled, normalizeProjectType, schemaFor } from './client-schema.js';
 import { api, h, formatBytes, formatDate, safeUrl } from './client-api.js';
 
 const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
@@ -20,6 +20,7 @@ async function init() {
   STATUSES.forEach(s => $('ad-d-status').append(h('option', { value: s }, s)));
   $('ad-search').addEventListener('input', drawRows);
   $('ad-filter').addEventListener('change', drawRows);
+  $('ad-type-filter').addEventListener('change', drawRows);
   $('ad-refresh').addEventListener('click', loadList);
   $('ad-export-all').addEventListener('click', exportAllCsv);
   $('tab-subs').addEventListener('click', () => tab('subs'));
@@ -86,15 +87,16 @@ async function loadList() {
 function drawRows() {
   const q = $('ad-search').value.trim().toLowerCase();
   const st = $('ad-filter').value;
-  const rows = submissions.filter(s => (!st || s.status === st) &&
-    (!q || [s.company_name, s.email, s.ref, s.client_name].some(v => String(v || '').toLowerCase().includes(q))));
+  const type = $('ad-type-filter').value;
+  const rows = submissions.filter(s => (!st || s.status === st) && (!type || typeOf(s) === type) &&
+    (!q || [s.company_name, s.email, s.ref, s.client_name, s.app_name].some(v => String(v || '').toLowerCase().includes(q))));
   if (!rows.length) {
     $('ad-rows').replaceChildren(h('tr', null, h('td', { colspan: 6, class: 'ad-empty' }, submissions.length ? 'No submissions match.' : 'No submissions yet. Create a client link and send it to your client.')));
     return;
   }
   $('ad-rows').replaceChildren(...rows.map(s => h('tr', null,
-    h('td', { 'data-label': 'Submission' }, h('strong', null, s.ref), h('span', { class: 'ad-sub' }, `Rev ${s.revision_number} · ${s.file_count} file${s.file_count === 1 ? '' : 's'}`)),
-    h('td', { 'data-label': 'Company' }, s.company_name, h('span', { class: 'ad-sub' }, s.client_name)),
+    h('td', { 'data-label': 'Submission' }, h('strong', null, s.ref), h('span', { class: 'ad-sub' }, typeBadge(typeOf(s)), ` Rev ${s.revision_number} · ${s.file_count} file${s.file_count === 1 ? '' : 's'}`)),
+    h('td', { 'data-label': 'Company' }, s.company_name, h('span', { class: 'ad-sub' }, typeOf(s) === 'app' && s.app_name ? `${s.app_name} · ${s.client_name}` : s.client_name)),
     h('td', { 'data-label': 'Email' }, s.email ? h('a', { href: 'mailto:' + s.email }, s.email) : '—'),
     h('td', { 'data-label': 'Submitted' }, formatDate(s.submitted_at)),
     h('td', { 'data-label': 'Status' }, statusSelect(s)),
@@ -113,6 +115,9 @@ function statusSelect(s) {
   return sel;
 }
 const slug = s => String(s).toLowerCase().replace(/\s+/g, '-');
+// Rows from an API that predates project types count as websites.
+const typeOf = row => normalizeProjectType(row && row.project_type);
+const typeBadge = t => h('span', { class: 'ad-type is-' + t }, PROJECT_TYPE_LABELS[t]);
 function setStatus(token, status, owner_notes) {
   return api(`/admin/submissions/${encodeURIComponent(token)}`, { method: 'PATCH', body: { status, owner_notes } });
 }
@@ -124,9 +129,10 @@ async function loadDetail(token) {
   try { detail = await api(`/admin/submissions/${encodeURIComponent(token)}`); }
   catch (e) { if ([401, 403, 503].includes(e.status)) return fatal(e); $('ad-d-body').replaceChildren(h('p', null, e.message)); return; }
   const p = detail.project;
-  $('ad-d-ref').textContent = `${p.ref} · Revision ${p.revision_number}`;
+  $('ad-d-ref').replaceChildren(`${p.ref} · Revision ${p.revision_number} `, typeBadge(typeOf(p)));
   $('ad-d-title').textContent = p.company_name;
-  $('ad-d-meta').textContent = `Submitted ${formatDate(p.submitted_at)} · via link “${detail.invite.client_name}”${detail.invite.active ? '' : ' (closed)'}`;
+  $('ad-d-meta').textContent = `Submitted ${formatDate(p.submitted_at)} · via link “${detail.invite.client_name}”${detail.invite.active ? '' : ' (closed)'}` +
+    (detail.app && detail.app.app_name ? ` · App: ${detail.app.app_name}` : '');
   $('ad-d-status').value = p.status;
   $('ad-d-status').onchange = async () => { try { await setStatus(p.public_token, $('ad-d-status').value); p.status = $('ad-d-status').value; flash('Status updated.'); } catch (e) { flash(e.message, true); } };
   $('ad-d-reviewed').onclick = async () => { try { await setStatus(p.public_token, 'Reviewing'); p.status = 'Reviewing'; $('ad-d-status').value = 'Reviewing'; flash('Marked as Reviewing.'); } catch (e) { flash(e.message, true); } };
@@ -141,8 +147,20 @@ async function loadDetail(token) {
   renderDetailBody(detail);
 }
 
+/* A submission walked with the schema of its own type. App answers live in d.app
+   (lists as jsonb columns there); website lists in d.lists. */
+function shapeOf(d) {
+  const S = schemaFor(typeOf(d.project));
+  return {
+    type: S.type, steps: S.steps, lists: S.lists,
+    values: { ...d.project, ...(d.app || {}) },
+    rowsOf: key => (S.lists[key].column ? d.app && d.app[S.lists[key].column] : d.lists && d.lists[key]) || []
+  };
+}
+
 function renderDetailBody(d) {
   const p = d.project;
+  const { steps: STEPS, lists: LISTS, values, rowsOf } = shapeOf(d);
   const files = d.files || [];
   const byId = new Map(files.map(f => [f.id, f]));
   const out = [];
@@ -161,7 +179,7 @@ function renderDetailBody(d) {
     const seen = new Set();
     step.items.forEach(item => {
       if (item.key) {
-        const v = p[item.key];
+        const v = values[item.key];
         if (!isFilled(v)) return;
         any = true;
         dl.append(h('dt', null, item.label), h('dd', null, valueNode(item, v)));
@@ -173,7 +191,7 @@ function renderDetailBody(d) {
         dl.append(h('dt', null, FILE_CATEGORIES[item.files].label), h('dd', null, fileList(fs)));
       } else if (item.list) {
         const def = LISTS[item.list];
-        const rows = (d.lists && d.lists[item.list]) || [];
+        const rows = rowsOf(item.list);
         rows.forEach((row, i) => {
           any = true;
           const inner = h('dl', { class: 'cs-dl ad-subdl' });
@@ -210,7 +228,8 @@ function fileList(fs) {
 /* ---------------- Export ---------------- */
 function exportShape(d) {
   const files = (d.files || []).map(({ id, category, name, type, size }) => ({ id, category, name, type, size }));
-  return { exported_at: new Date().toISOString(), project: d.project, lists: d.lists, files, revisions: d.revisions };
+  const answers = typeOf(d.project) === 'app' ? { app: d.app || null } : { lists: d.lists };   // app: features, integrations, design_references inside
+  return { exported_at: new Date().toISOString(), project_type: typeOf(d.project), project: d.project, ...answers, files, revisions: d.revisions };
 }
 function csvCell(v) {
   let s = Array.isArray(v) ? v.join('; ') : (v === null || v === undefined ? '' : String(v));
@@ -220,11 +239,12 @@ function csvCell(v) {
 function detailCsv(d) {
   const rows = [['Section', 'Item', 'Field', 'Value']];
   const p = d.project;
-  rows.push(['Submission', '', 'Reference', p.ref], ['Submission', '', 'Status', p.status], ['Submission', '', 'Submitted at', p.submitted_at], ['Submission', '', 'Revision', p.revision_number]);
+  const { type, steps: STEPS, lists: LISTS, values, rowsOf } = shapeOf(d);
+  rows.push(['Submission', '', 'Reference', p.ref], ['Submission', '', 'Type', PROJECT_TYPE_LABELS[type]], ['Submission', '', 'Status', p.status], ['Submission', '', 'Submitted at', p.submitted_at], ['Submission', '', 'Revision', p.revision_number]);
   const byId = new Map((d.files || []).map(f => [f.id, f]));
   STEPS.forEach(step => step.items.forEach(item => {
-    if (item.key && isFilled(p[item.key])) rows.push([step.review, '', item.label, p[item.key]]);
-    if (item.list) (d.lists[item.list] || []).forEach((row, i) => LISTS[item.list].fields.forEach(f => {
+    if (item.key && isFilled(values[item.key])) rows.push([step.review, '', item.label, values[item.key]]);
+    if (item.list) rowsOf(item.list).forEach((row, i) => LISTS[item.list].fields.forEach(f => {
       const v = f.type === 'file' ? (row[f.key] || []).map(id => byId.get(id)?.name).filter(Boolean) : row[f.key];
       if (isFilled(v)) rows.push([step.review, `${LISTS[item.list].itemLabel} ${i + 1}`, f.label, v]);
     }));
@@ -233,8 +253,9 @@ function detailCsv(d) {
   return '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\r\n');
 }
 function exportAllCsv() {
-  const head = ['Reference', 'Company', 'Client link', 'Email', 'Country', 'Status', 'Submitted at', 'Revision', 'Files', 'Preview URL'];
-  const rows = submissions.map(s => [s.ref, s.company_name, s.client_name, s.email, s.country, s.status, s.submitted_at, s.revision_number, s.file_count, `${location.origin}/client-preview?id=${s.public_token}`]);
+  const head = ['Reference', 'Type', 'Company', 'Client link', 'Email', 'Country', 'Status', 'Submitted at', 'Revision', 'Files', 'App name', 'Platforms', 'Budget range', 'Target launch', 'Preview URL'];
+  const rows = submissions.map(s => [s.ref, PROJECT_TYPE_LABELS[typeOf(s)], s.company_name, s.client_name, s.email, s.country, s.status, s.submitted_at, s.revision_number, s.file_count,
+    s.app_name, s.platforms, s.budget_range, s.target_launch, `${location.origin}/client-preview?id=${s.public_token}`]);
   download(`client-submissions-${new Date().toISOString().slice(0, 10)}.csv`, '﻿' + [head, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n'), 'text/csv');
 }
 function download(name, text, type) {
@@ -252,9 +273,10 @@ async function loadInvites() {
   catch (e) { flash(e.message, true); }
 }
 function drawInvites() {
-  if (!invites.length) { $('inv-rows').replaceChildren(h('tr', null, h('td', { colspan: 5, class: 'ad-empty' }, 'No client links yet.'))); return; }
+  if (!invites.length) { $('inv-rows').replaceChildren(h('tr', null, h('td', { colspan: 6, class: 'ad-empty' }, 'No client links yet.'))); return; }
   $('inv-rows').replaceChildren(...invites.map(inv => h('tr', null,
     h('td', { 'data-label': 'Client' }, h('strong', null, inv.client_name), inv.notes ? h('span', { class: 'ad-sub' }, inv.notes) : null),
+    h('td', { 'data-label': 'Type' }, typeBadge(typeOf(inv))),
     h('td', { 'data-label': 'Created' }, formatDate(inv.created_at)),
     h('td', { 'data-label': 'Submissions' }, String(inv.submissions)),
     h('td', { 'data-label': 'Status' }, h('span', { class: 'ad-pill ' + (inv.active ? 'is-on' : 'is-off') }, inv.active ? 'Active' : 'Closed')),
@@ -270,16 +292,21 @@ async function createInvite(e) {
   e.preventDefault();
   const name = $('inv-name').value.trim();
   if (!name) { $('inv-name').focus(); return; }
+  const wanted = document.querySelector('input[name="inv-type"]:checked')?.value || 'website';
   $('inv-create').disabled = true;
   try {
-    const inv = await api('/admin/invites', { method: 'POST', body: { client_name: name, notes: $('inv-notes').value } });
+    const inv = await api('/admin/invites', { method: 'POST', body: { client_name: name, notes: $('inv-notes').value, project_type: wanted } });
+    const type = typeOf(inv);
     const url = inviteUrl(inv.token);
     const res = $('inv-result');
     res.hidden = false;
-    res.replaceChildren(h('p', null, h('strong', null, 'Link created for ' + inv.client_name + '. '), 'Send this private link to your client:'),
+    res.replaceChildren(h('p', null, h('strong', null, `${PROJECT_TYPE_LABELS[type]} link created for ${inv.client_name}. `), 'Send this private link to your client:'),
       h('div', { class: 'ad-copy-row' }, h('input', { readonly: true, value: url, 'aria-label': 'Client form link', onfocus: ev => ev.target.select() }),
         h('button', { type: 'button', class: 'btn btn-primary', onclick: () => copy(url) }, 'Copy')));
+    // An API that predates project types ignores the choice and makes a website link — say so.
+    if (wanted !== type) flash(`The server created a ${PROJECT_TYPE_LABELS[type]} link: app links need the updated API Worker. Close this link and create it again after deploying.`, true);
     $('inv-name').value = ''; $('inv-notes').value = '';
+    $('inv-type-website').checked = true;
     loadInvites();
   } catch (err) { flash(err.message, true); }
   finally { $('inv-create').disabled = false; }

@@ -50,6 +50,8 @@
           <input id="ad-search" type="search" placeholder="Search company, email or reference…">
           <label class="visually-hidden" for="ad-filter">Filter by status</label>
           <select id="ad-filter"><option value="">All statuses</option></select>
+          <label class="visually-hidden" for="ad-type-filter">Filter by project type</label>
+          <select id="ad-type-filter"><option value="">All types</option><option value="website">Website</option><option value="app">App</option></select>
           <button type="button" class="btn cs-btn-ghost" id="ad-refresh">Refresh</button>
           <button type="button" class="btn btn-outline" id="ad-export-all">Export CSV</button>
         </div>
@@ -80,14 +82,22 @@
           <div class="cs-grid">
             <div class="cs-field is-half"><label for="inv-name">Client name <span class="cs-req">*</span></label><input id="inv-name" required maxlength="200" placeholder="e.g. WanderAsia"></div>
             <div class="cs-field is-half"><label for="inv-notes">Internal notes</label><input id="inv-notes" maxlength="2000" placeholder="Optional"></div>
+            <fieldset class="cs-field ad-type-field" aria-describedby="inv-type-help">
+              <legend class="cs-label">Project type</legend>
+              <div class="cs-choices">
+                <label class="cs-choice" for="inv-type-website"><input type="radio" name="inv-type" id="inv-type-website" value="website" checked><span>Website</span></label>
+                <label class="cs-choice" for="inv-type-app"><input type="radio" name="inv-type" id="inv-type-app" value="app"><span>App</span></label>
+              </div>
+              <p class="cs-help" id="inv-type-help">Decides which form the client sees. It can&rsquo;t be changed by the client or after the link is created.</p>
+            </fieldset>
           </div>
           <div class="ad-invite-actions"><button class="btn btn-primary" type="submit" id="inv-create">Create link</button></div>
           <div id="inv-result" class="ad-invite-result" hidden></div>
         </form>
         <div class="cs-panel ad-table-wrap">
           <table class="ad-table">
-            <thead><tr><th scope="col">Client</th><th scope="col">Created</th><th scope="col">Submissions</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
-            <tbody id="inv-rows"><tr><td colspan="5" class="ad-empty">Loading…</td></tr></tbody>
+            <thead><tr><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Created</th><th scope="col">Submissions</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="inv-rows"><tr><td colspan="6" class="ad-empty">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
