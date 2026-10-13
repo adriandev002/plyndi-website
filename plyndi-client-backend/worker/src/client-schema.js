@@ -11,7 +11,17 @@
 
    Field `key`s match the database column names exactly.
    Contains NO secrets and NO client data — safe to be public.
+
+   Two project types (chosen by the owner per client link):
+     website — STEPS / LISTS / GROUPS below (the original form)
+     app     — APP_STEPS / APP_LISTS / APP_GROUPS further down
+   Use schemaFor(type) to get the right set.
    ========================================================= */
+
+/* ---------- Project types ---------- */
+export const PROJECT_TYPES = ['website', 'app'];
+export const PROJECT_TYPE_LABELS = { website: 'Website', app: 'App' };
+export function normalizeProjectType(t) { return PROJECT_TYPES.includes(t) ? t : 'website'; }
 
 const DESIGN_STYLES = ['Modern', 'Luxury', 'Minimal', 'Professional', 'Elegant', 'Friendly', 'Adventurous', 'Premium', 'Other'];
 const FONT_STYLES = ['Modern sans-serif', 'Classic serif', 'Elegant / luxury serif', 'Friendly / rounded', 'Bold / adventurous', 'Not sure — recommend one'];
@@ -55,7 +65,10 @@ export const FILE_CATEGORIES = {
   tour_images:        { label: 'Tour images', accept: IMG, multiple: true },
   destination_image:  { label: 'Destination image', accept: IMG, multiple: false },
   team_photo:         { label: 'Photo', accept: IMG, multiple: false },
-  review_photo:       { label: 'Customer photo', accept: IMG, multiple: false }
+  review_photo:       { label: 'Customer photo', accept: IMG, multiple: false },
+  // App projects
+  app_reference_images: { label: 'Reference screenshots', accept: IMG + ',application/pdf', multiple: true },
+  wireframes:           { label: 'Wireframes / sketches', accept: IMG + ',' + DOCS + ',.zip', multiple: true }
 };
 
 /* ---------- Repeatable groups (each one is its own database table) ---------- */
@@ -328,19 +341,206 @@ export const STEPS = [
   }
 ];
 
-/* ---------- Derived helpers ---------- */
+/* ---------- Derived helpers (website form) ---------- */
 export const FIELDS = STEPS.flatMap(s => s.items.filter(i => i.key));
 export const FIELD_KEYS = [...new Set(FIELDS.map(f => f.key))];
 export const ARRAY_FIELD_KEYS = FIELDS.filter(f => f.type === 'checkboxes').map(f => f.key);
 export const REQUIRED_KEYS = FIELDS.filter(f => f.required).map(f => f.key);
 export const URL_FIELD_KEYS = FIELDS.filter(f => f.type === 'url').map(f => f.key);
 
-export function emptyState() {
+/* =========================================================
+   App projects
+   ---------------------------------------------------------
+   Storage rule: an app field whose `key` is also a website field
+   (company_name, email, brand_colors, …) is saved in the same
+   client_projects column. Every other app field is a column of
+   app_project_details. App lists are saved as jsonb in the
+   app_project_details column named by `column`.
+   A new app field therefore needs a matching column in
+   app_project_details (see supabase/migrations).
+   ========================================================= */
+
+/* Budget options shown to app clients — edit freely (stored as plain text). */
+export const APP_BUDGET_RANGES = ['Under US$1,000', 'US$1,000–3,000', 'US$3,000–7,000', 'US$7,000–15,000', 'US$15,000+', 'Not sure yet'];
+
+export const FEATURE_PRIORITIES = ['Must have', 'Should have', 'Nice to have'];
+export const PLATFORMS = ['iOS (iPhone / iPad)', 'Android', 'Web app (in the browser)', 'Not sure — please advise'];
+const YES_NO = ['Yes', 'No', 'Not sure'];
+const BUILD_TYPES = ['New app', 'Existing app — improve or rebuild'];
+const OFFLINE = ['Yes — it must work offline', 'Partly — some screens', 'No', 'Not sure'];
+const LOGIN_METHODS = ['Email & password', 'Google', 'Apple', 'Phone (SMS code)', 'No login needed'];
+const APP_CAPABILITIES = ['Payments / subscriptions', 'Push notifications', 'Maps / location', 'Chat / messaging', 'Booking / scheduling', 'Photo / file upload', 'AI features'];
+const CONTENT_SOURCES = ['We’ll provide all text and images', 'We’ll provide some — we need help with the rest', 'We need Plyndi to create it', 'Not sure yet'];
+const STORE_ACCOUNT = ['We have one', 'We need help setting one up', 'Not needed', 'Not sure'];
+const PRIVACY_STATUS = ['We have one', 'We need one written', 'Not sure'];
+const MAINTENANCE = ['Yes — ongoing updates & support', 'Maybe — let’s discuss', 'No — launch only'];
+
+export const APP_LISTS = {
+  app_features: {
+    column: 'features', itemLabel: 'Feature', addLabel: '+ Add Another Feature', min: 0,
+    titleKey: 'name',
+    fields: [
+      { key: 'name', label: 'Feature name', type: 'text', placeholder: 'e.g. Book a guide', max: 160 },
+      { key: 'description', label: 'What should it do?', type: 'textarea', rows: 2, placeholder: 'e.g. Users pick a date, choose a guide and pay a deposit.' },
+      { key: 'priority', label: 'Priority', type: 'radio', options: FEATURE_PRIORITIES }
+    ]
+  },
+  app_integrations: {
+    column: 'integrations', itemLabel: 'Integration', addLabel: '+ Add Another Integration', min: 0,
+    titleKey: 'name',
+    fields: [
+      { key: 'name', label: 'Service or system', type: 'text', placeholder: 'e.g. Stripe, Google Calendar, your CRM', half: true },
+      { key: 'purpose', label: 'What it’s used for', type: 'text', half: true },
+      { key: 'url', label: 'Link (website or API docs)', type: 'url' }
+    ]
+  },
+  app_references: {
+    column: 'design_references', itemLabel: 'Reference', addLabel: '+ Add Another Reference', min: 0,
+    titleKey: 'url',
+    fields: [
+      { key: 'url', label: 'Link to an app or design you like', type: 'url' },
+      { key: 'notes', label: 'What do you like about it?', type: 'text' }
+    ]
+  }
+};
+
+export const APP_GROUPS = ['Contact', 'Idea', 'Platforms', 'Features', 'Admin & data', 'Design', 'Launch', 'Budget', 'Review', 'Submit'];
+
+export const APP_STEPS = [
+  {
+    id: 'app_contact', group: 'Contact', title: 'Contact & company', review: 'Contact & company',
+    intro: 'Who we’ll be working with. Only fields marked * are required — fill in what you have.',
+    items: [
+      { key: 'company_name', label: 'Company / organisation name', type: 'text', required: true, half: true, placeholder: 'Or your own name' },
+      { key: 'contact_name', label: 'Contact name', type: 'text', required: true, half: true },
+      { key: 'email', label: 'Email', type: 'email', required: true, half: true },
+      { key: 'country', label: 'Country', type: 'text', half: true },
+      { key: 'phone', label: 'Phone', type: 'tel', half: true },
+      { key: 'whatsapp', label: 'WhatsApp', type: 'tel', half: true },
+      { key: 'line_id', label: 'LINE', type: 'text', half: true, placeholder: 'LINE ID or link' },
+      { key: 'preferred_language', label: 'Preferred language', type: 'select', options: LANGUAGES, half: true }
+    ]
+  },
+  {
+    id: 'app_idea', group: 'Idea', title: 'Your app idea', review: 'App idea',
+    intro: 'Describe it in your own words — rough is fine. We’ll shape it together.',
+    items: [
+      { key: 'app_name', label: 'Working app name', type: 'text', placeholder: 'A working title is fine', max: 120 },
+      { key: 'app_summary', label: 'One-line summary', type: 'text', required: true, max: 200, placeholder: 'e.g. Book a local hiking guide in two taps' },
+      { key: 'problem_solved', label: 'What problem does it solve?', type: 'textarea', rows: 3 },
+      { key: 'target_users', label: 'Who are the target users?', type: 'textarea', rows: 3, placeholder: 'e.g. Travellers aged 25–45 visiting Taiwan, and the local guides they book' },
+      { key: 'competitor_apps', label: 'Similar apps or competitors', type: 'textarea', rows: 3, help: 'Paste App Store, Google Play or website links — one per line — and what you like or dislike about each.' }
+    ]
+  },
+  {
+    id: 'app_platforms', group: 'Platforms', title: 'Platforms', review: 'Platforms',
+    items: [
+      { key: 'platforms', label: 'Which platforms do you need?', type: 'checkboxes', options: PLATFORMS, required: true, help: 'Choose all that apply.' },
+      { key: 'build_type', label: 'Is this a new app or an existing one?', type: 'radio', options: BUILD_TYPES },
+      { key: 'existing_store_links', label: 'Store links for the existing app', type: 'textarea', rows: 2, placeholder: 'App Store / Google Play links', showIf: { key: 'build_type', equals: BUILD_TYPES[1] } },
+      { key: 'existing_tech', label: 'Current technology (if you know it)', type: 'text', placeholder: 'e.g. Flutter + Firebase, React Native, native Swift — or “not sure”', showIf: { key: 'build_type', equals: BUILD_TYPES[1] } },
+      { key: 'offline_needed', label: 'Does the app need to work offline?', type: 'radio', options: OFFLINE }
+    ]
+  },
+  {
+    id: 'app_features', group: 'Features', title: 'Features', review: 'Features',
+    intro: 'Start with the core features — the things the app must do — and mark how important each one is.',
+    items: [
+      { list: 'app_features' },
+      { heading: 'Accounts & users' },
+      { key: 'login_methods', label: 'How should users sign in?', type: 'checkboxes', options: LOGIN_METHODS, help: 'Choose all that apply.' },
+      { key: 'user_roles', label: 'User roles', type: 'textarea', rows: 2, placeholder: 'e.g. Customer, Guide, Admin — and what each one can do' },
+      { heading: 'What else does the app need?' },
+      { key: 'app_capabilities', label: 'Choose all that apply', type: 'checkboxes', options: APP_CAPABILITIES },
+      { key: 'payment_details', label: 'Payments / subscriptions — details', type: 'text', placeholder: 'e.g. monthly subscription, one-off bookings paid by card', showIf: { key: 'app_capabilities', includes: APP_CAPABILITIES[0] } },
+      { key: 'ai_features', label: 'Describe the AI features', type: 'textarea', rows: 3, placeholder: 'e.g. suggest a trip plan from the user’s answers; summarise reviews', showIf: { key: 'app_capabilities', includes: 'AI features' } },
+      { key: 'app_languages', label: 'App languages', type: 'checkboxes', options: LANGUAGES },
+      { key: 'app_language_other', label: 'Other language(s)', type: 'text', showIf: { key: 'app_languages', includes: 'Other' } },
+      { heading: 'Integrations & APIs' },
+      { list: 'app_integrations' }
+    ]
+  },
+  {
+    id: 'app_admin', group: 'Admin & data', title: 'Admin & data', review: 'Admin & data',
+    items: [
+      { key: 'admin_dashboard', label: 'Do you need an admin dashboard?', type: 'radio', options: YES_NO, help: 'A web page where your team manages users, content, orders and so on.' },
+      { key: 'admin_manages', label: 'What should admins be able to manage?', type: 'textarea', rows: 3, placeholder: 'e.g. approve guides, edit tours, refund bookings, see sign-ups' },
+      { key: 'data_import', label: 'Existing data to import', type: 'textarea', rows: 2, placeholder: 'e.g. 2,000 customers in a spreadsheet, products from Shopify — or none' },
+      { key: 'analytics_needs', label: 'Analytics & reporting', type: 'textarea', rows: 2, placeholder: 'e.g. daily sign-ups, revenue per month, most-used features' }
+    ]
+  },
+  {
+    id: 'app_design', group: 'Design', title: 'Design', review: 'Design',
+    intro: 'Your brand and the look you want. If you are not sure, leave it — we can recommend.',
+    items: [
+      { key: 'brand_colors', label: 'Brand colours', type: 'text', placeholder: 'e.g. Deep teal, sand, white — or hex codes' },
+      { key: 'primary_color', label: 'Preferred primary colour', type: 'color', half: true },
+      { key: 'secondary_color', label: 'Preferred secondary colour', type: 'color', half: true },
+      { key: 'font_style', label: 'Preferred font style', type: 'select', options: FONT_STYLES, half: true },
+      { key: 'app_fonts', label: 'Fonts you already use', type: 'text', half: true, placeholder: 'e.g. Inter, Noto Sans TC' },
+      { files: 'logo', help: 'PNG or SVG with a transparent background is ideal.' },
+      { key: 'design_styles', label: 'Style', type: 'checkboxes', options: DESIGN_STYLES, help: 'Choose all that fit.' },
+      { key: 'design_style_other', label: 'Other style (please describe)', type: 'text', showIf: { key: 'design_styles', includes: 'Other' } },
+      { key: 'app_tone', label: 'Tone & feel', type: 'textarea', rows: 2, placeholder: 'e.g. calm and trustworthy; playful with bright colours; minimal' },
+      { heading: 'References' },
+      { list: 'app_references' },
+      { files: 'app_reference_images', help: 'Screenshots of apps or designs you like.' },
+      { files: 'wireframes', help: 'Sketches, wireframes or mock-ups — photos of paper sketches are fine.' }
+    ]
+  },
+  {
+    id: 'app_launch', group: 'Launch', title: 'Content & launch', review: 'Content & launch',
+    items: [
+      { key: 'content_provider', label: 'Who will supply the text and images in the app?', type: 'radio', options: CONTENT_SOURCES },
+      { key: 'apple_developer_account', label: 'Apple Developer account', type: 'radio', options: STORE_ACCOUNT, help: 'Needed to publish on the App Store.' },
+      { key: 'google_play_account', label: 'Google Play developer account', type: 'radio', options: STORE_ACCOUNT, help: 'Needed to publish on Google Play.' },
+      { key: 'privacy_policy_status', label: 'Privacy policy for the app', type: 'radio', options: PRIVACY_STATUS, help: 'The App Store and Google Play both require one.' }
+    ]
+  },
+  {
+    id: 'app_budget', group: 'Budget', title: 'Budget & timeline', review: 'Budget & timeline',
+    intro: 'This helps us suggest the right scope — it is not a commitment.',
+    items: [
+      { key: 'budget_range', label: 'Budget range', type: 'select', options: APP_BUDGET_RANGES, half: true },
+      { key: 'target_launch', label: 'Target launch date', type: 'text', half: true, placeholder: 'e.g. March 2027' },
+      { key: 'deadline_reason', label: 'Is there a hard deadline? If so, why?', type: 'textarea', rows: 2, placeholder: 'e.g. a trade show, a funding milestone, peak season' },
+      { key: 'maintenance', label: 'Do you want ongoing maintenance after launch?', type: 'radio', options: MAINTENANCE },
+      { key: 'anything_else', label: 'Is there anything else you want us to know?', type: 'textarea', rows: 3 }
+    ]
+  }
+];
+
+/* ---------- Per-type schema ---------- */
+function build(type, steps, lists, groups) {
+  const fields = steps.flatMap(s => s.items.filter(i => i.key));
+  const fieldKeys = [...new Set(fields.map(f => f.key))];
+  return {
+    type, steps, lists, groups, fields, fieldKeys,
+    fieldByKey: Object.fromEntries(fields.map(f => [f.key, f])),
+    arrayFieldKeys: fields.filter(f => f.type === 'checkboxes').map(f => f.key),
+    // every upload category this form can use (top-level zones + file fields inside lists)
+    fileCategories: [...new Set([
+      ...steps.flatMap(s => s.items.filter(i => i.files).map(i => i.files)),
+      ...Object.values(lists).flatMap(l => l.fields.filter(f => f.type === 'file').map(f => f.category))
+    ])]
+  };
+}
+const SCHEMAS = {
+  website: build('website', STEPS, LISTS, GROUPS),
+  app: build('app', APP_STEPS, APP_LISTS, APP_GROUPS)
+};
+export function schemaFor(type) { return SCHEMAS[normalizeProjectType(type)]; }
+
+/* App field keys that live in client_projects (shared with the website form) vs. app_project_details */
+export const APP_PROJECT_KEYS = SCHEMAS.app.fieldKeys.filter(k => FIELD_KEYS.includes(k));
+export const APP_DETAIL_KEYS = SCHEMAS.app.fieldKeys.filter(k => !FIELD_KEYS.includes(k));
+
+export function emptyState(type) {
   return {
     version: 1,
     fields: {},
     files: {},                                  // category -> [{id,name,size,type}]
-    lists: Object.fromEntries(Object.keys(LISTS).map(k => [k, []]))
+    lists: Object.fromEntries(Object.keys(schemaFor(type).lists).map(k => [k, []]))
   };
 }
 
@@ -374,7 +574,8 @@ export function validateField(f, v) {
 }
 
 /* Returns [{stepIndex, key, message}] for everything blocking submission. */
-export function validateAll(state) {
+export function validateAll(state, type) {
+  const { steps: STEPS, lists: LISTS } = schemaFor(type);
   const errors = [];
   STEPS.forEach((step, stepIndex) => {
     step.items.forEach(item => {
