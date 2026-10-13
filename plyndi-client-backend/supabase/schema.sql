@@ -22,7 +22,8 @@ create table if not exists public.client_invites (
   client_name  text not null,
   notes        text,
   active       boolean not null default true,
-  created_at   timestamptz not null default now()
+  created_at   timestamptz not null default now(),
+  project_type text not null default 'website' check (project_type in ('website','app'))
 );
 
 -- ---------- Main submission row ----------
@@ -35,6 +36,7 @@ create table if not exists public.client_projects (
   revision_number int  not null default 1,
   status          text not null default 'New'
                   check (status in ('New','Reviewing','In Progress','Approved','Completed')),
+  project_type    text not null default 'website' check (project_type in ('website','app')),  -- copied from the link
   submitted_at    timestamptz not null default now(),
   updated_at      timestamptz not null default now(),
   owner_notes     text,
@@ -73,6 +75,10 @@ create table if not exists public.client_projects (
 );
 -- Added later: safe to re-run on an existing database
 alter table public.client_projects add column if not exists logo_status text;
+-- App projects (Oct 2026) — see migrations/2026-10-app-projects.sql
+alter table public.client_invites  add column if not exists project_type text not null default 'website' check (project_type in ('website','app'));
+alter table public.client_projects add column if not exists project_type text not null default 'website' check (project_type in ('website','app'));
+create index if not exists client_projects_type_idx on public.client_projects (project_type);
 
 create index if not exists client_projects_submitted_idx on public.client_projects (submitted_at desc);
 create index if not exists client_projects_invite_idx on public.client_projects (invite_id);
@@ -154,12 +160,45 @@ create index if not exists team_members_project_idx  on public.team_members (pro
 create index if not exists reviews_project_idx       on public.reviews (project_id);
 create index if not exists faqs_project_idx          on public.faqs (project_id);
 
+-- ---------- App projects: app-specific answers (one row per app submission) ----------
+-- Contact details, brand colours, fonts and styles are stored in
+-- client_projects (same columns as the website form).
+create table if not exists public.app_project_details (
+  project_id uuid primary key references public.client_projects(id) on delete cascade,
+  -- Contact & company
+  contact_name text, preferred_language text,
+  -- App idea
+  app_name text, app_summary text, problem_solved text, target_users text, competitor_apps text,
+  -- Platforms
+  platforms text[] not null default '{}', build_type text, existing_store_links text, existing_tech text,
+  offline_needed text,
+  -- Features
+  features jsonb not null default '[]'::jsonb,            -- [{name, description, priority}]
+  login_methods text[] not null default '{}', user_roles text,
+  app_capabilities text[] not null default '{}', payment_details text, ai_features text,
+  app_languages text[] not null default '{}', app_language_other text,
+  integrations jsonb not null default '[]'::jsonb,        -- [{name, purpose, url}]
+  -- Admin & data
+  admin_dashboard text, admin_manages text, data_import text, analytics_needs text,
+  -- Design
+  app_fonts text, app_tone text,
+  design_references jsonb not null default '[]'::jsonb,   -- [{url, notes}]
+  -- Content & launch
+  content_provider text, apple_developer_account text, google_play_account text, privacy_policy_status text,
+  -- Budget & timeline
+  budget_range text, target_launch text, deadline_reason text, maintenance text,
+  constraint app_project_details_lists_are_arrays check (
+    jsonb_typeof(features) = 'array' and jsonb_typeof(integrations) = 'array'
+    and jsonb_typeof(design_references) = 'array')
+);
+
 -- ---------- Lock everything down ----------
 do $$
 declare t text;
 begin
   foreach t in array array['client_invites','client_projects','uploaded_files','submission_files',
-                           'services','tour_examples','destinations','team_members','reviews','faqs']
+                           'services','tour_examples','destinations','team_members','reviews','faqs',
+                           'app_project_details']
   loop
     execute format('alter table public.%I enable row level security', t);
     execute format('revoke all on table public.%I from public', t);
@@ -184,14 +223,18 @@ end $$;
 -- Look up an active invite by its token
 create or replace function public.cp_get_invite(p_token text)
 returns jsonb language sql stable as $$
-  select jsonb_build_object('id', id, 'client_name', client_name)
+  select jsonb_build_object('id', id, 'client_name', client_name, 'project_type', project_type)
   from public.client_invites where token = p_token and active;
 $$;
 
-create or replace function public.cp_create_invite(p_token text, p_client_name text, p_notes text default null)
+-- New optional 4th argument. The old 3-argument version is dropped first so
+-- PostgREST never sees two candidates (calls without p_project_type still work).
+drop function if exists public.cp_create_invite(text, text, text);
+create or replace function public.cp_create_invite(p_token text, p_client_name text, p_notes text default null,
+                                                   p_project_type text default 'website')
 returns jsonb language sql as $$
-  insert into public.client_invites (token, client_name, notes)
-  values (p_token, p_client_name, nullif(p_notes, ''))
+  insert into public.client_invites (token, client_name, notes, project_type)
+  values (p_token, p_client_name, nullif(p_notes, ''), coalesce(nullif(p_project_type, ''), 'website'))
   returning to_jsonb(client_invites.*);
 $$;
 
@@ -247,18 +290,19 @@ returns jsonb language sql as $$
 $$;
 
 -- Save a whole submission in ONE transaction.
--- p_payload = { fields:{column:value}, lists:{services:[…],…}, files:[{file_id,category,position}] }
+-- p_payload = { fields:{column:value}, lists:{services:[…],…}, files:[{file_id,category,position}],
+--               app:{column:value, features:[…], integrations:[…], design_references:[…]} }   (app links only)
 -- The Worker has already whitelisted keys; jsonb_populate_record ignores anything unknown anyway,
--- and system columns (id, status, tokens…) are always overwritten below.
+-- and system columns (id, status, tokens, project_type…) are always overwritten below.
 create or replace function public.cp_submit_project(
   p_invite_token text, p_public_token text, p_revision_of text, p_payload jsonb)
 returns jsonb language plpgsql as $$
 declare
-  v_invite uuid; v_rev_of uuid; v_rev int := 1; v_id uuid := gen_random_uuid();
-  v_ref text; v_rec public.client_projects; f jsonb;
+  v_invite uuid; v_type text; v_rev_of uuid; v_rev int := 1; v_id uuid := gen_random_uuid();
+  v_ref text; v_rec public.client_projects; v_app public.app_project_details; f jsonb;
   v_fields jsonb := coalesce(p_payload->'fields', '{}'::jsonb);
 begin
-  select id into v_invite from public.client_invites where token = p_invite_token and active;
+  select id, project_type into v_invite, v_type from public.client_invites where token = p_invite_token and active;
   if v_invite is null then raise exception 'invalid_invite' using errcode = 'P0001'; end if;
   if coalesce(trim(v_fields->>'company_name'), '') = '' then
     raise exception 'missing_company_name' using errcode = 'P0001';
@@ -280,6 +324,7 @@ begin
   v_rec.id := v_id; v_rec.public_token := p_public_token; v_rec.ref := v_ref;
   v_rec.invite_id := v_invite; v_rec.revision_of := v_rev_of; v_rec.revision_number := v_rev;
   v_rec.status := 'New'; v_rec.submitted_at := now(); v_rec.updated_at := now(); v_rec.owner_notes := null;
+  v_rec.project_type := v_type;                                -- from the link, never from the client
   v_rec.design_styles := coalesce(v_rec.design_styles, '{}');
   v_rec.payment_methods := coalesce(v_rec.payment_methods, '{}');
   v_rec.website_languages := coalesce(v_rec.website_languages, '{}');
@@ -329,6 +374,20 @@ begin
   from jsonb_array_elements(coalesce(p_payload->'lists'->'faqs', '[]')) with ordinality e(j, ord),
        jsonb_populate_record(null::public.faqs, e.j) r;
 
+  -- App answers (app links only)
+  if v_type = 'app' then
+    v_app := jsonb_populate_record(null::public.app_project_details, coalesce(p_payload->'app', '{}'::jsonb));
+    v_app.project_id := v_id;
+    v_app.platforms := coalesce(v_app.platforms, '{}');
+    v_app.login_methods := coalesce(v_app.login_methods, '{}');
+    v_app.app_capabilities := coalesce(v_app.app_capabilities, '{}');
+    v_app.app_languages := coalesce(v_app.app_languages, '{}');
+    v_app.features := case when jsonb_typeof(v_app.features) = 'array' then v_app.features else '[]'::jsonb end;
+    v_app.integrations := case when jsonb_typeof(v_app.integrations) = 'array' then v_app.integrations else '[]'::jsonb end;
+    v_app.design_references := case when jsonb_typeof(v_app.design_references) = 'array' then v_app.design_references else '[]'::jsonb end;
+    insert into public.app_project_details select v_app.*;
+  end if;
+
   -- Link files — only files that belong to THIS invite and finished uploading are accepted.
   for f in select * from jsonb_array_elements(coalesce(p_payload->'files', '[]')) loop
     insert into public.submission_files (project_id, file_id, category, position)
@@ -340,10 +399,13 @@ begin
 
   return jsonb_build_object('id', v_id, 'ref', v_ref, 'public_token', p_public_token,
                             'submitted_at', now(), 'revision_number', v_rev,
-                            'company_name', v_rec.company_name, 'email', v_rec.email);
+                            'company_name', v_rec.company_name, 'email', v_rec.email,
+                            'project_type', v_type, 'app_name', v_app.app_name);
 end $$;
 
 -- Full submission as JSON (preview + admin detail). Returns null if not found.
+-- 'app' is null for website submissions.
+-- 'app' is null for website submissions.
 create or replace function public.cp_get_project(p_public_token text)
 returns jsonb language sql stable as $$
   select jsonb_build_object(
@@ -357,6 +419,7 @@ returns jsonb language sql stable as $$
       'reviews',      (select coalesce(jsonb_agg(to_jsonb(s) - 'project_id' - 'id' order by s.position), '[]') from public.reviews s where s.project_id = p.id),
       'faqs',         (select coalesce(jsonb_agg(to_jsonb(s) - 'project_id' - 'id' order by s.position), '[]') from public.faqs s where s.project_id = p.id)
     ),
+    'app', (select to_jsonb(a) - 'project_id' from public.app_project_details a where a.project_id = p.id),
     'files', (select coalesce(jsonb_agg(jsonb_build_object(
                  'id', u.id, 'category', sf.category, 'position', sf.position, 'name', u.original_name,
                  'type', u.mime_type, 'size', u.size_bytes, 'path', u.storage_path) order by sf.category, sf.position), '[]')
@@ -376,9 +439,12 @@ returns jsonb language sql stable as $$
     'id', p.id, 'ref', p.ref, 'public_token', p.public_token, 'company_name', p.company_name,
     'email', p.email, 'country', p.country, 'status', p.status, 'submitted_at', p.submitted_at,
     'revision_number', p.revision_number, 'client_name', i.client_name,
-    'file_count', (select count(*) from public.submission_files s where s.project_id = p.id)
+    'file_count', (select count(*) from public.submission_files s where s.project_id = p.id),
+    'project_type', p.project_type, 'app_name', a.app_name, 'platforms', a.platforms,
+    'budget_range', a.budget_range, 'target_launch', a.target_launch
   ) order by p.submitted_at desc), '[]'::jsonb)
-  from public.client_projects p join public.client_invites i on i.id = p.invite_id;
+  from public.client_projects p join public.client_invites i on i.id = p.invite_id
+  left join public.app_project_details a on a.project_id = p.id;
 $$;
 
 create or replace function public.cp_set_status(p_public_token text, p_status text, p_notes text default null)
