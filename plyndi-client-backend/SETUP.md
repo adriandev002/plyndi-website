@@ -178,3 +178,26 @@ To turn it on after pulling these changes:
 
 Adding a future service: copy one `<article class="svc-card">` in `services/index.html`
 (instructions are in the comment above the cards). Coming-soon cards get `is-soon` and no button.
+
+## 13. App projects (added Oct 2026)
+
+When you create a client link (**Admin → Client links**) you choose **Website** or **App**. The type is
+stored on the link: the client can't change it, and every submission from that link gets the same type
+(set by the database, never from the browser).
+
+- **Website links** work exactly as before.
+- **App links** show the app steps (contact & company, app idea, platforms, features, admin & data, design,
+  content & launch, budget & timeline, review). After submitting, the client sees an **App project summary**
+  instead of a website preview.
+- The admin list shows a Website / App badge and can filter by type; JSON and CSV exports include the app answers.
+
+To turn it on:
+1. Supabase → **SQL Editor** → paste all of `supabase/migrations/2026-10-app-projects.sql` → **Run**
+   (safe to re-run; the current Worker keeps working after it).
+2. `cd plyndi-client-backend/worker && npm install && npx wrangler deploy`
+3. Push the website.
+
+Editing app questions: `APP_STEPS` in `assets/client-system/client-schema.js` (budget options are
+`APP_BUDGET_RANGES` at the top of the app section). Then `npm run sync-schema` and redeploy the Worker.
+A new app field whose key isn't already a website field also needs a column:
+`alter table public.app_project_details add column if not exists my_field text;`
