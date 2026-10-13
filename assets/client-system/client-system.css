@@ -276,6 +276,7 @@
 
 /* Inquiries tab */
 .ad-count{ display: inline-block; min-width: 20px; padding: 1px 6px; margin-left: 4px; border-radius: 10px; background: var(--gold); color: var(--teal-deep); font-size: .74rem; line-height: 1.4; }
+.ad-count[hidden]{ display: none; }
 .ad-pill.is-new{ background: #FFF3D6; color: #7A5A12; }
 .ad-inq-intro{ margin: 0 0 14px; }
 .ad-inq-form td{ background: var(--paper); }
