@@ -15,7 +15,8 @@
    ========================================================= */
 
 import {
-  FIELD_KEYS, ARRAY_FIELD_KEYS, LISTS, FILE_CATEGORIES, STEPS, UPLOAD_LIMITS, validateAll
+  FIELD_KEYS, ARRAY_FIELD_KEYS, LISTS, FILE_CATEGORIES, STEPS, UPLOAD_LIMITS, validateAll,
+  PROJECT_TYPES, normalizeProjectType, schemaFor
 } from './client-schema.js';
 
 const API = '/api/client';
@@ -31,6 +32,9 @@ const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
 const TOP_LEVEL_CATEGORIES = [...new Set(STEPS.flatMap(s => s.items.filter(i => i.files).map(i => i.files)))];
 const LIST_FILE_FIELDS = Object.fromEntries(Object.entries(LISTS).map(([k, l]) => [k, l.fields.filter(f => f.type === 'file')]));
 const LIST_FIELD_KEYS = Object.fromEntries(Object.entries(LISTS).map(([k, l]) => [k, l.fields.map(f => f.key)]));
+/* Upload categories each project type may use (the type comes from the invite, never the client) */
+const UPLOAD_CATEGORIES = Object.fromEntries(PROJECT_TYPES.map(t => [t, new Set(schemaFor(t).fileCategories)]));
+const HEX_RE = /^#[0-9a-f]{6}$/i;
 
 class HttpError extends Error {
   constructor(status, message, extra) { super(message); this.status = status; this.extra = extra; }
@@ -100,14 +104,14 @@ async function route(request, env, ctx, url) {
 /* ---------------- Client endpoints ---------------- */
 async function getInvite(env, token) {
   const invite = await loadInvite(env, token);
-  return json({ client_name: invite.client_name, upload_limits: UPLOAD_LIMITS });
+  return json({ client_name: invite.client_name, project_type: normalizeProjectType(invite.project_type), upload_limits: UPLOAD_LIMITS });
 }
 
 async function createUpload(request, env) {
   const b = await readJson(request);
   const invite = await loadInvite(env, b.invite);
   const cat = FILE_CATEGORIES[b.category];
-  if (!cat) throw new HttpError(400, 'Unknown upload category.');
+  if (!cat || !UPLOAD_CATEGORIES[normalizeProjectType(invite.project_type)].has(b.category)) throw new HttpError(400, 'Unknown upload category.');
   const name = String(b.name || '').slice(0, 200);
   const size = Number(b.size);
   const type = String(b.type || '').slice(0, 120);
@@ -167,8 +171,10 @@ async function submit(request, env, ctx) {
   const state = b.state;
   if (!state || typeof state !== 'object') throw new HttpError(400, 'Form data missing.');
 
-  const clean = sanitizeState(state);
-  const errors = validateAll(clean.forValidation);
+  // Which form applies is decided by the invite — anything the client sends about it is ignored.
+  const type = normalizeProjectType(invite.project_type);
+  const clean = type === 'app' ? sanitizeAppState(state) : sanitizeState(state);
+  const errors = validateAll(clean.forValidation, type);
   if (errors.length) throw new HttpError(422, 'Some required information is missing or invalid.', { errors });
 
   const publicToken = randomToken(32);
@@ -205,6 +211,7 @@ async function preview(env, id) {
   delete project.id; delete project.owner_notes; delete project.revision_of;
   return json({
     project, lists: data.lists, files,
+    ...(data.app ? { app: data.app } : {}),                   // app projects only
     invite: data.invite.active ? data.invite.token : null,   // lets the client open "Edit information"
     revisions: data.revisions
   });
@@ -233,8 +240,10 @@ async function adminCreateInvite(request, env) {
   const b = await readJson(request);
   const name = String(b.client_name || '').trim().slice(0, 200);
   if (!name) throw new HttpError(400, 'Client name is required.');
+  if (b.project_type !== undefined && !PROJECT_TYPES.includes(b.project_type)) throw new HttpError(400, 'Unknown project type.');
   const row = await rpc(env, 'cp_create_invite', {
-    p_token: randomToken(24), p_client_name: name, p_notes: String(b.notes || '').slice(0, 2000)
+    p_token: randomToken(24), p_client_name: name, p_notes: String(b.notes || '').slice(0, 2000),
+    p_project_type: normalizeProjectType(b.project_type)
   });
   return json(row, 201);
 }
@@ -307,6 +316,63 @@ function dedupeFiles(files) {
   return files.filter(f => { const k = f.file_id + '|' + f.category; if (seen.has(k)) return false; seen.add(k); return true; });
 }
 
+/* App links. Same whitelisting idea, against the app schema. Keys shared with the website form are
+   client_projects columns (`fields`); all other keys, and the app lists as jsonb, go to
+   app_project_details (`app`). Choice fields only keep values that are one of their options. */
+function sanitizeAppState(state) {
+  const S = schemaFor('app');
+  const obj = v => (v && typeof v === 'object') ? v : {};
+  const inFields = obj(state.fields);
+  const all = {}, fields = {}, app = {};
+  for (const key of S.fieldKeys) {
+    if (!(key in inFields)) continue;
+    const v = cleanValue(S.fieldByKey[key], inFields[key]);
+    if (v === null) continue;
+    all[key] = v;
+    (FIELD_KEYS.includes(key) ? fields : app)[key] = v;
+  }
+
+  const files = [];
+  const pushFiles = (category, ids) => ids.forEach((file_id, position) => files.push({ file_id, category, position }));
+  const inFiles = obj(state.files);
+  const topFiles = {};
+  const topCategories = [...new Set(S.steps.flatMap(s => s.items.filter(i => i.files).map(i => i.files)))];
+  for (const cat of topCategories) { topFiles[cat] = fileIds(inFiles[cat]); pushFiles(cat, topFiles[cat]); }
+
+  const lists = {};
+  const inLists = obj(state.lists);
+  for (const [listKey, def] of Object.entries(S.lists)) {
+    const rows = Array.isArray(inLists[listKey]) ? inLists[listKey].slice(0, MAX_LIST_ITEMS) : [];
+    lists[listKey] = rows
+      .filter(r => r && typeof r === 'object')
+      .map(r => {
+        const out = {};
+        for (const f of def.fields) {
+          if (f.type === 'file') { out[f.key] = fileIds(r[f.key]); pushFiles(f.category, out[f.key]); continue; }
+          const v = cleanValue(f, r[f.key]);
+          if (v !== null) out[f.key] = v;
+        }
+        return out;
+      })
+      .filter(out => Object.values(out).some(v => Array.isArray(v) ? v.length : v));
+    app[def.column] = lists[listKey];
+  }
+
+  const forValidation = { fields: all, lists, files: topFiles };
+  return { payload: { fields, app, files: dedupeFiles(files) }, forValidation };
+}
+function cleanValue(f, raw) {
+  if (f.type === 'checkboxes') {
+    const arr = Array.isArray(raw) ? raw : [];
+    return [...new Set(arr.map(cleanText).filter(v => v && f.options.includes(v)))];
+  }
+  const v = cleanText(raw);
+  if (v === null) return null;
+  if ((f.type === 'radio' || f.type === 'select') && !f.options.includes(v)) return null;
+  if (f.type === 'color' && !HEX_RE.test(v)) return null;
+  return v;
+}
+
 /* ---------------- Supabase helpers ---------------- */
 function bucket(env) { return env.STORAGE_BUCKET || 'client-uploads'; }
 function sbHeaders(env) {
@@ -373,6 +439,7 @@ async function notifyOwner(env, request, result, invite) {
       <table style="border-collapse:collapse;font-size:14px">
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Reference</td><td><strong>${e(result.ref)}</strong> (revision ${e(result.revision_number)})</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Company</td><td>${e(result.company_name)}</td></tr>
+        ${result.project_type === 'app' ? `<tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Project</td><td>App${result.app_name ? ' — ' + e(result.app_name) : ''}</td></tr>` : ''}
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Client link</td><td>${e(invite.client_name)}</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Email</td><td>${e(result.email || '—')}</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Submitted</td><td>${e(new Date(result.submitted_at).toUTCString())}</td></tr>
@@ -389,7 +456,7 @@ async function notifyOwner(env, request, result, invite) {
     body: JSON.stringify({
       from: env.NOTIFY_FROM || 'Plyndi Client Forms <forms@plyndi.com>',
       to: env.OWNER_EMAIL.split(',').map(s => s.trim()).filter(Boolean),
-      subject: `New project info: ${result.company_name} (${result.ref})`,
+      subject: `New ${result.project_type === 'app' ? 'app ' : ''}project info: ${result.company_name} (${result.ref})`,
       html
     })
   });
@@ -563,7 +630,8 @@ async function adminInviteFromInquiry(request, env, url, id) {
   if (!inq) throw new HttpError(404, 'Inquiry not found.');
   const name = String(b.client_name || '').trim().slice(0, 200) || inq.email;
   const invite = await rpc(env, 'cp_create_invite', {
-    p_token: randomToken(24), p_client_name: name, p_notes: `From website inquiry (${inq.email})`
+    p_token: randomToken(24), p_client_name: name, p_notes: `From website inquiry (${inq.email})`,
+    p_project_type: normalizeProjectType(inq.service)   // inquiry services are named after project types
   });
   await rpc(env, 'cp_update_inquiry', { p_id: id, p_status: 'Invited', p_invite_id: invite.id, p_notes: null });
   const siteOrigin = (env.SITE_ORIGINS || '').split(',')[0].trim() || url.origin;   // public site, e.g. https://plyndi.com
