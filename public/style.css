@@ -632,7 +632,7 @@ section{ padding: 64px 0; }
    ========================================================= */
 @media (max-width: 960px){
   .hero-grid{ grid-template-columns: 1fr; }
-  .hero-map{ order: -1; max-width: 420px; }
+  .hero-map{ display: none; } /* on phones, lead with the message, not the decorative map */
   .planner-card{ grid-template-columns: 1fr; }
   .guides-grid{ grid-template-columns: 1fr; }
   .guide-card.is-feature{ grid-row: auto; }
@@ -993,4 +993,41 @@ section{ padding: 64px 0; }
 @media (max-width: 640px){
   .dest-row{ grid-template-columns: 1fr; }
   .dest-row strong{ padding-top: 0; }
+}
+
+/* =========================================================
+   Homepage "three doors" — Services / App / Guides
+   ========================================================= */
+section.doors{ padding: 8px 0 24px; }
+.doors-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.door-card{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 26px 24px 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--teal);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.door-card:nth-child(2){ border-top-color: var(--gold); }
+.door-card:nth-child(3){ border-top-color: var(--teal-deep); }
+.door-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow); }
+.door-card:focus-visible{ outline: 3px solid var(--teal); outline-offset: 3px; }
+.door-kicker{
+  font-size: 0.78rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.door-card h3{ margin: 0; }
+.door-card p{ margin: 0; color: var(--ink-soft); font-size: 0.97rem; flex: 1; }
+.door-link{ font-weight: 700; color: var(--teal-deep); margin-top: 6px; }
+@media (max-width: 860px){
+  .doors-grid{ grid-template-columns: 1fr; }
 }
