@@ -9,7 +9,7 @@ import { api } from '/assets/client-system/client-api.js';
 
 const dialog = document.getElementById('sp-dialog');
 const EMAIL_RE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[a-z]{2,}$/i;
-const SERVICE = 'website';
+const SERVICE = (dialog && dialog.dataset.service === 'app') ? 'app' : 'website';
 
 if (dialog) init();
 
@@ -33,6 +33,7 @@ function init() {
     input.setAttribute('aria-invalid', msg ? 'true' : 'false');
   };
   const open = e => {
+    e.preventDefault();                 // links fall back to the contact page when JavaScript is off
     opener = e.currentTarget;
     form.reset(); setError('');
     show('intro');
@@ -69,6 +70,8 @@ function init() {
       sent.textContent = res.confirmation_email ? `We’ve sent a confirmation to ${email}.` : '';
       show('done');
     } catch (err) {
+      // An older API that doesn't know this service yet: send them to the contact page instead.
+      if (err.status === 400 && SERVICE !== 'website') { sending = false; location.assign('/contact.html'); return; }
       setError(err.status === 429 ? 'Too many attempts — please wait a minute and try again.'
         : err.status === 422 ? err.message
         : 'Something went wrong and your request was not sent. Please try again, or email contact@plyndi.com.');
