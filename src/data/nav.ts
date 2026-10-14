@@ -1,6 +1,6 @@
 // Site navigation — edit this one file to change the menu on every page.
 // Business first: what we sell, then the app, then the guides that bring readers in.
-// Portfolio lives on the Services page (/services/#work), not in its own menu item.
+// The Services page shows our work (project cards) and links to Website / App Development.
 export const nav = [
   { key: 'home', label: 'Home', href: '/index.html' },
   { key: 'services', label: 'Services', href: '/services/' },
