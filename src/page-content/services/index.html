@@ -51,4 +51,60 @@
       <p class="svc-more">More services will be added here as they launch. Have a different project in mind? <a href="/contact.html">Get in touch</a>.</p>
     </div>
   </section>
+
+  <section class="svc-section" id="work" aria-labelledby="work-title">
+    <div class="container">
+      <div class="svc-head">
+        <h2 id="work-title">Recent work</h2>
+        <p class="lede">Real projects, live or in active development, and the stack behind each one.</p>
+      </div>
+      <div class="svc-grid work-grid">
+
+        <!-- ============================================================
+             PROJECT CARD — copy one <article> to add a project.
+             status-pill is-done = live, is-next = in progress.
+             Only name a client here once they've agreed to it.
+             ============================================================ -->
+
+        <article class="svc-card">
+          <div class="svc-card-top">
+            <span class="svc-num" aria-hidden="true">App</span>
+            <span class="status-pill is-next">In development</span>
+          </div>
+          <h3 class="svc-title">The Plyndi app</h3>
+          <p class="svc-desc">A native iOS life-planning app: daily briefing, multi-currency budgets with an AI analyst, AI workout plans, trip itineraries and receipt scanning. Built end to end, with its own backend and a private admin dashboard.</p>
+          <ul class="work-tags" aria-label="Stack">
+            <li>SwiftUI</li><li>Backend API</li><li>Admin dashboard</li><li>AI features</li><li>Cloudflare</li>
+          </ul>
+          <a class="btn btn-primary svc-cta" href="/app.html">See the app &rarr;</a>
+        </article>
+
+        <article class="svc-card">
+          <div class="svc-card-top">
+            <span class="svc-num" aria-hidden="true">Website</span>
+            <span class="status-pill is-done">Live</span>
+          </div>
+          <h3 class="svc-title">plyndi.com + client system</h3>
+          <p class="svc-desc">This site: 30 long-form travel guides, a trip-skeleton tool and the service pages, plus a private client-intake system where clients submit project details, get an instant preview, and we manage requests from an admin dashboard.</p>
+          <ul class="work-tags" aria-label="Stack">
+            <li>Astro</li><li>Cloudflare Workers</li><li>Supabase</li><li>SEO</li>
+          </ul>
+          <a class="btn btn-primary svc-cta" href="/blog.html">See the guides &rarr;</a>
+        </article>
+
+        <article class="svc-card">
+          <div class="svc-card-top">
+            <span class="svc-num" aria-hidden="true">Client</span>
+            <span class="status-pill is-next">In progress</span>
+          </div>
+          <h3 class="svc-title">Travel agency website</h3>
+          <p class="svc-desc">A business website for a travel agency client, currently in build. The full case study and link go up at launch.</p>
+          <ul class="work-tags" aria-label="Stack">
+            <li>Business website</li><li>Travel</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
 </main>
