@@ -507,7 +507,7 @@ function initBlogFilters(){
     buttons.forEach(b => b.classList.toggle('is-active', b.dataset.filter === filter));
     let shown = 0;
     cards.forEach(card => {
-      const show = filter === 'all' || (filter === 'trending' ? card.dataset.trending === 'true' : card.dataset.category === filter);
+      const show = filter === 'all' || (filter === 'trending' ? card.dataset.trending === 'true' : card.dataset.category.split(' ').includes(filter));
       card.style.display = show ? '' : 'none';
       if (show) shown++;
     });
