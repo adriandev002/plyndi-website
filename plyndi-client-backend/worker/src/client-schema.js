@@ -456,7 +456,7 @@ const APP_BUILD_TYPES = ['A new app from scratch', 'Improve or rebuild an existi
 const APP_LOGIN = ['Email & password', 'Sign in with Google', 'Sign in with Apple', 'Phone number (SMS code)', 'No login needed', 'Not sure'];
 const APP_PAYMENTS = ['No payments', 'One-time purchases', 'Subscriptions', 'Both', 'Not sure'];
 // Budget ranges — edit freely; the server accepts whatever is listed here.
-const APP_BUDGETS = ['Under NT$30,000', 'NT$30,000 – 100,000', 'NT$100,000 – 250,000', 'NT$250,000 +', 'Not sure yet'];
+const APP_BUDGETS = ['Under US$1,000', 'US$1,000 – 3,000', 'US$3,000 – 8,000', 'US$8,000 – 20,000', 'US$20,000 +', 'Not sure yet'];
 const APP_YES_NO = ['Yes', 'No', 'Not sure'];
 const APP_EXTRA_FEATURES = ['Push notifications', 'Maps & location', 'Chat / messaging', 'Booking / scheduling', 'Photo & file upload',
   'Camera / QR scanning', 'Works offline', 'Calendar sync', 'Social sharing', 'Reviews & ratings', 'Other'];
@@ -522,7 +522,8 @@ export const APP_STEPS = [
     id: 'app_budget', group: 'Budget & timeline', title: 'Budget & timeline', review: 'Budget & timeline',
     intro: 'A rough range helps us suggest the right first version. It’s not a commitment.',
     items: [
-      { key: 'app_budget', label: 'Budget range', type: 'select', options: APP_BUDGETS, required: true, half: true },
+      { key: 'app_budget', label: 'Budget range (US dollars)', type: 'select', options: APP_BUDGETS, required: true, half: true,
+        help: 'A rough figure is fine. Prefer to talk in your own currency? Add it under “Anything else”.' },
       { key: 'app_launch_date', label: 'When would you like to launch?', type: 'text', half: true, placeholder: 'e.g. March 2027' },
       { key: 'app_deadline_reason', label: 'Is there a fixed deadline? Why?', type: 'text', placeholder: 'e.g. Must be ready for our summer season' },
       { key: 'app_maintenance', label: 'Would you like ongoing support after launch?', type: 'radio', options: APP_YES_NO },
