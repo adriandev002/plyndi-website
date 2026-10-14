@@ -150,3 +150,7 @@
   .sp-actions{ flex-direction: column-reverse; }
   .sp-actions .btn{ width: 100%; justify-content: center; }
 }
+
+/* ---------- Work page (/work.html) ---------- */
+.work-tags{ list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: -8px 0 24px; }
+.work-tags li{ font-size: .8rem; font-weight: 600; color: var(--teal-deep); background: var(--teal-tint); padding: 4px 10px; border-radius: 20px; }
