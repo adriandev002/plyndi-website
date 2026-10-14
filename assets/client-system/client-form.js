@@ -9,8 +9,11 @@
 import * as schema from './client-schema.js';
 import { api, ApiError, putFileWithProgress, guessMime, h, formatBytes, storageSafe, submissionToState } from './client-api.js';
 
-const { STEPS, LISTS, GROUPS, FILE_CATEGORIES, UPLOAD_LIMITS, emptyState, isFilled, isVisible, validateField, validateAll } = schema;
-const REVIEW_INDEX = STEPS.length;              // the step after the last form step
+const { STEPS, LISTS, GROUPS, FILE_CATEGORIES, UPLOAD_LIMITS, STYLE_SWATCHES, QUICK_STEP_COUNT, SCHEMA_VERSION,
+        emptyState, isFilled, isVisible, validateField, validateAll } = schema;
+const REVIEW_INDEX = STEPS.length;              // the Review page (after all steps)
+const LAST_QUICK = QUICK_STEP_COUNT - 1;        // quick-start steps are STEPS[0..LAST_QUICK]; the rest are optional
+const isOptional = i => i < REVIEW_INDEX && !!STEPS[i].optional;
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -91,8 +94,9 @@ function loadDraft() {
   if (!d || !d.state || d.invite !== inviteToken) return;
   state = Object.assign(emptyState(), d.state);
   state.lists = Object.assign(emptyState().lists, d.state.lists || {});
-  current = Math.min(d.step || 0, REVIEW_INDEX);
-  maxVisited = Math.min(Math.max(d.maxVisited || 0, current), REVIEW_INDEX);
+  const sameLayout = d.schemaVersion === SCHEMA_VERSION;     // older drafts used a different step order
+  current = sameLayout ? Math.min(d.step || 0, REVIEW_INDEX) : 0;
+  maxVisited = sameLayout ? Math.min(Math.max(d.maxVisited || 0, current), REVIEW_INDEX) : 0;
   draftId = d.draftId || '';
   revisionOf = d.revisionOf || null;
 }
@@ -105,7 +109,7 @@ function scheduleSave() {
 }
 function saveDraft(silent) {
   const clean = JSON.parse(JSON.stringify(state, (k, v) => (k === 'url' ? undefined : v)));
-  const ok = storageSafe.set(DRAFT_KEY, { invite: inviteToken, state: clean, step: current, maxVisited, draftId, revisionOf, savedAt: new Date().toISOString() });
+  const ok = storageSafe.set(DRAFT_KEY, { invite: inviteToken, schemaVersion: SCHEMA_VERSION, state: clean, step: current, maxVisited, draftId, revisionOf, savedAt: new Date().toISOString() });
   if (!silent) setSaveStatus(ok ? 'saved' : 'failed');
   return ok;
 }
@@ -121,7 +125,7 @@ function setSaveStatus(kind) {
 /* ---------------- Navigation ---------------- */
 function wireNav() {
   $('cs-form').addEventListener('submit', e => { e.preventDefault(); next(); });
-  $('cs-back').addEventListener('click', () => go(current - 1));
+  $('cs-back').addEventListener('click', back);
   window.addEventListener('beforeunload', e => { if (uploads.size) { e.preventDefault(); e.returnValue = ''; } });
 }
 
@@ -129,7 +133,14 @@ function next() {
   if (current === REVIEW_INDEX) return confirmSubmit();
   const errs = stepErrors(current);
   if (errs.length) return showErrors(errs);
-  go(current + 1);
+  // Quick start runs step by step; optional sections always return to Review
+  go(isOptional(current) || current >= LAST_QUICK ? REVIEW_INDEX : current + 1);
+}
+
+function back() {
+  if (isOptional(current)) return go(REVIEW_INDEX);
+  if (current === REVIEW_INDEX) return go(LAST_QUICK);
+  go(current - 1);
 }
 
 function go(i, focusKey) {
@@ -153,9 +164,12 @@ function render() {
   renderStepper();
   const isReview = current === REVIEW_INDEX;
   const step = STEPS[current];
-  $('cs-step-count').textContent = isReview ? `Final step · Review` : `Step ${current + 1} of ${STEPS.length} · ${step.group}`;
-  $('cs-step-title').textContent = isReview ? 'Review your information' : step.title;
-  $('cs-step-intro').textContent = isReview ? 'Check everything below. Use “Edit” to change any section, then submit.' : (step.intro || '');
+  const optional = isOptional(current);
+  $('cs-step-count').textContent = isReview ? 'Last step · Review & submit'
+    : optional ? 'Optional · Add more details'
+    : `Step ${current + 1} of ${QUICK_STEP_COUNT} · ${step.group}`;
+  $('cs-step-title').textContent = isReview ? 'Review & submit' : step.title;
+  $('cs-step-intro').textContent = isReview ? 'That’s everything we need to get started. Check your answers, add more details if you like, then submit.' : (step.intro || '');
   $('cs-step-intro').hidden = !$('cs-step-intro').textContent;
   const notice = $('cs-step-notice');
   notice.hidden = isReview || !step.notice;
@@ -166,16 +180,18 @@ function render() {
   body.replaceChildren(isReview ? renderReview() : renderStep(step));
 
   $('cs-back').hidden = current === 0;
+  $('cs-back').textContent = optional ? '← Back to review' : '← Back';
   const nextBtn = $('cs-next');
   nextBtn.innerHTML = '';
-  nextBtn.append(isReview ? 'Submit Project Information' : (current === STEPS.length - 1 ? 'Review answers →' : 'Next →'));
+  nextBtn.append(isReview ? 'Submit Project Information' : optional ? 'Save & return to review' : (current === LAST_QUICK ? 'Review & submit →' : 'Next →'));
   nextBtn.classList.toggle('btn-gold', isReview);
+  document.querySelector('.cs-nav').classList.toggle('is-review', isReview);
   updateSubmitState();
 }
 
 function renderStepper() {
   const list = $('cs-stepper-list');
-  const currentGroup = submitting ? 'Submit' : (current === REVIEW_INDEX ? 'Review' : STEPS[current].group);
+  const currentGroup = submitting ? 'Submit' : (current === REVIEW_INDEX || isOptional(current) ? 'Review' : STEPS[current].group);
   const groupFirstStep = g => g === 'Review' ? REVIEW_INDEX : STEPS.findIndex(s => s.group === g);
   const curIdx = GROUPS.indexOf(currentGroup);
   list.replaceChildren(...GROUPS.map((g, gi) => {
@@ -188,14 +204,14 @@ function renderStepper() {
         ? h('button', { type: 'button', onclick: () => tryJump(target), 'aria-label': `${g}${status === 'done' ? ' (completed)' : ''}` }, label)
         : h('span', { 'aria-current': status === 'current' ? 'step' : null }, label));
   }));
-  const pct = submitting ? 100 : Math.round((current / REVIEW_INDEX) * 100);
+  const pct = submitting ? 100 : (current === REVIEW_INDEX || isOptional(current)) ? 90 : Math.round((current / QUICK_STEP_COUNT) * 85);
   $('cs-progress-bar').style.width = Math.max(4, pct) + '%';
   const active = list.querySelector('.is-current');
   if (active && list.scrollWidth > list.clientWidth) active.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
 
 function tryJump(target) {
-  if (target > current) {
+  if (target > current && !isOptional(current)) {
     const errs = stepErrors(current);
     if (errs.length) return showErrors(errs);
   }
@@ -206,10 +222,10 @@ function renderStep(step) {
   const frag = h('div', { class: 'cs-grid' });
   for (const item of step.items) {
     if (item.heading) { frag.append(h('h3', { class: 'cs-subhead' }, item.heading)); continue; }
-    if (item.list) { frag.append(renderList(item.list)); continue; }
+    if (item.list) { frag.append(renderList(item.list, item.fields)); continue; }
     if (item.files) {
       frag.append(renderUploader({
-        category: item.files, help: item.help, compact: item.compact, requiredIf: item.requiredIf,
+        category: item.files, label: item.label, help: item.help, compact: item.compact, requiredIf: item.requiredIf,
         get: () => state.files[item.files] || [],
         set: arr => { state.files[item.files] = arr; }
       }));
@@ -284,7 +300,10 @@ function renderField(f, bag, dataKey, onChange) {
             if (multi) commit([...control.querySelectorAll('input:checked')].map(i => i.value));
             else commit(input.value);
           });
-          return h('label', { class: 'cs-choice', for: oid }, input, h('span', null, o));
+          const sw = f.swatches && STYLE_SWATCHES[o];
+          return h('label', { class: 'cs-choice' + (sw ? ' has-swatch' : ''), for: oid }, input,
+            sw ? h('span', { class: 'cs-swatch', 'aria-hidden': 'true' }, sw.map(c => h('i', { style: { background: c } }))) : null,
+            h('span', null, o));
         }));
       // for fieldsets the visible label is a legend-like element
       wrap.append(h('p', { class: 'cs-label', id: legendId }, f.label, f.required ? h('span', { class: 'cs-req', 'aria-hidden': 'true' }, ' *') : null), help || '', control, err);
@@ -339,10 +358,14 @@ function setFieldError(dataKey, msg) {
 }
 
 /* ---------------- Repeaters (services, tours, …) ---------------- */
-function renderList(listKey) {
+function renderList(listKey, showOnly) {
   const def = LISTS[listKey];
   const container = h('div', { class: 'cs-list', 'data-list': listKey });
   const rows = state.lists[listKey];
+  // Quick start shows only the essentials; the rest of each item sits behind "More details"
+  const mainFields = showOnly ? def.fields.filter(f => showOnly.includes(f.key)) : def.fields;
+  const extraFields = showOnly ? def.fields.filter(f => !showOnly.includes(f.key)) : [];
+  if (showOnly && !rows.length) rows.push({});     // start with one ready-to-fill item
 
   const draw = (focusIndex) => {
     container.replaceChildren();
@@ -370,8 +393,7 @@ function renderList(listKey) {
         draw(Math.max(0, idx - 1));
       });
 
-      const grid = h('div', { class: 'cs-grid' });
-      def.fields.forEach(f => {
+      const fieldInto = (grid, f) => {
         const dataKey = `${listKey}.${idx}.${f.key}`;
         if (f.type === 'file') {
           grid.append(renderUploader({
@@ -381,9 +403,18 @@ function renderList(listKey) {
         } else {
           grid.append(renderField(f, row, dataKey, () => { if (f.key === def.titleKey) title.textContent = titleText(); }));
         }
-      });
+      };
+      const grid = h('div', { class: 'cs-grid' });
+      mainFields.forEach(f => fieldInto(grid, f));
+      let more = null;
+      if (extraFields.length) {
+        const moreGrid = h('div', { class: 'cs-grid' });
+        extraFields.forEach(f => fieldInto(moreGrid, f));
+        const hasExtra = extraFields.some(f => Array.isArray(row[f.key]) ? row[f.key].length : isFilled(row[f.key]));
+        more = h('details', { class: 'cs-more', open: hasExtra }, h('summary', null, 'More details (optional)'), moreGrid);
+      }
       container.append(h('section', { class: 'cs-item', 'aria-labelledby': title.id },
-        h('div', { class: 'cs-item-head' }, title, removeBtn), grid));
+        h('div', { class: 'cs-item-head' }, title, removeBtn), grid, more));
     });
     const add = h('button', { type: 'button', class: 'btn btn-outline cs-add' }, rows.length ? def.addLabel : `+ Add ${def.itemLabel}`);
     add.addEventListener('click', () => {
@@ -567,6 +598,7 @@ function renderReview() {
   }
 
   STEPS.forEach((step, i) => {
+    if (step.optional) return;
     const card = h('section', { class: 'cs-review-card', 'aria-labelledby': `rv-${step.id}` });
     const editBtn = h('button', { type: 'button', class: 'btn cs-btn-ghost cs-edit', onclick: () => go(i), 'aria-label': `Edit ${step.review}` }, 'Edit');
     card.append(h('div', { class: 'cs-review-head' }, h('h3', { id: `rv-${step.id}` }, step.review), editBtn));
@@ -603,8 +635,33 @@ function renderReview() {
     card.append(dl);
     wrap.append(card);
   });
+
+  // Optional extra sections — never required
+  const extras = STEPS.map((step, i) => ({ step, i })).filter(x => x.step.optional);
+  wrap.append(h('section', { class: 'cs-extras', 'aria-labelledby': 'rv-extras' },
+    h('div', { class: 'cs-extras-head' },
+      h('h3', { id: 'rv-extras' }, 'Add more details ', h('span', { class: 'cs-extras-tag' }, 'Optional')),
+      h('p', null, 'Not needed to get started — skip these and we’ll fill in the gaps with you later. Add anything you already have ready.')),
+    h('ul', { class: 'cs-extras-list' }, extras.map(({ step, i }) => {
+      const n = answersIn(step);
+      return h('li', null,
+        h('button', { type: 'button', class: 'cs-extra' + (n ? ' has-content' : ''), onclick: () => go(i), 'aria-label': `${n ? 'Edit' : 'Add'} ${step.title}` },
+          h('span', { class: 'cs-extra-text' },
+            h('strong', null, step.title),
+            h('span', null, n ? `${n} added ✓` : step.summary || '')),
+          h('span', { class: 'cs-extra-action', 'aria-hidden': 'true' }, n ? 'Edit' : 'Add +')));
+    }))));
   wrap.append(h('p', { class: 'cs-help cs-submit-reason', id: 'cs-submit-reason', 'aria-live': 'polite' }));
   return wrap;
+}
+function answersIn(step) {
+  let n = 0;
+  for (const item of step.items) {
+    if (item.key && isFilled(state.fields[item.key])) n++;
+    else if (item.files) n += (state.files[item.files] || []).length;
+    else if (item.list) n += (state.lists[item.list] || []).filter(r => Object.values(r).some(v => Array.isArray(v) ? v.length : isFilled(v))).length;
+  }
+  return n;
 }
 function truncate(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 

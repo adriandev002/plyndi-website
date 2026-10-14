@@ -187,6 +187,7 @@ function renderDetailBody(d) {
         });
       }
     });
+    if (!any && step.optional) return;          // skipped optional section — keep the dashboard short
     if (!any) dl.append(h('dd', { class: 'cs-muted' }, 'Nothing provided.'));
     out.push(h('section', { class: 'cs-review-card' }, h('div', { class: 'cs-review-head' }, h('h3', null, step.review)), dl));
   });

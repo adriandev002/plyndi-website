@@ -40,7 +40,7 @@ create table if not exists public.client_projects (
   owner_notes     text,
 
   -- Step 1 — Company
-  company_name text not null, official_name text, tagline text, company_description text,
+  company_name text not null, existing_links text, official_name text, tagline text, company_description text,
   year_established text, years_experience text, founder_background text, mission text, vision text,
   company_values text, office_address text, country text, city text, phone text, email text,
   whatsapp text, line_id text, business_hours text, google_maps_url text, facebook_url text,
@@ -73,6 +73,7 @@ create table if not exists public.client_projects (
 );
 -- Added later: safe to re-run on an existing database
 alter table public.client_projects add column if not exists logo_status text;
+alter table public.client_projects add column if not exists existing_links text;
 
 create index if not exists client_projects_submitted_idx on public.client_projects (submitted_at desc);
 create index if not exists client_projects_invite_idx on public.client_projects (invite_id);

@@ -126,7 +126,8 @@
   display: inline !important; margin: 0 !important; cursor: pointer;
   color: var(--teal-deep) !important; text-decoration: underline; text-underline-offset: 3px; font-size: 1rem !important;
 }
-.cs-file-input{ position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.cs-drop{ position: relative; }
+.cs-file-input{ position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip: rect(0 0 0 0); }
 .cs-file-input:focus-visible + *, .cs-drop:focus-within{ outline: 2px solid var(--teal-deep); outline-offset: 3px; }
 .cs-files, .cs-files-pending{ list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
 .cs-files:empty, .cs-files-pending:empty{ display: none; }
@@ -293,4 +294,57 @@
   .ad-table td[data-label]::before{ content: attr(data-label); display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
   .ad-actions{ text-align: left; padding-top: 10px !important; }
   .ad-copy-row{ flex-direction: column; }
+}
+
+
+/* =========================================================
+   Quick Start (Oct 2026): style swatches, "More details",
+   optional "Add more details" sections on the Review page
+   ========================================================= */
+.cs-call-note{ font-size: .92rem; color: var(--ink-soft); margin: -10px 0 0; }
+.cs-call-note a{ color: var(--teal-deep); font-weight: 600; }
+.cs-intro .lede strong{ color: var(--teal-deep); }
+
+.cs-choice.has-swatch{ padding-left: 10px; }
+.cs-swatch{ display: inline-flex; border-radius: 50%; overflow: hidden; width: 22px; height: 22px; box-shadow: 0 0 0 1px rgba(0,0,0,.08); flex: none; }
+.cs-swatch i{ display: block; width: 50%; height: 100%; }
+
+.cs-more{ margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.cs-more summary{ cursor: pointer; font-weight: 700; font-size: .88rem; color: var(--teal-deep); padding: 4px 0; }
+.cs-more[open] summary{ margin-bottom: 12px; }
+
+.cs-extras{ margin-top: 10px; border: 1.5px dashed rgba(14,59,61,.25); border-radius: 12px; padding: 20px; background: var(--paper); }
+.cs-extras-head h3{ margin: 0 0 4px; font-size: 1.1rem; }
+.cs-extras-head p{ margin: 0 0 14px; font-size: .9rem; color: var(--ink-soft); max-width: none; }
+.cs-extras-tag{ font: 700 .66rem var(--font-body); letter-spacing: .07em; text-transform: uppercase; background: var(--paper-2); color: var(--ink-soft); padding: 3px 8px; border-radius: 999px; vertical-align: middle; }
+.cs-extras-list{ list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cs-extra{
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left;
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--white);
+  font-family: var(--font-body); cursor: pointer; color: var(--ink);
+}
+.cs-extra:hover{ border-color: var(--teal); }
+.cs-extra-text{ display: grid; gap: 1px; min-width: 0; }
+.cs-extra-text strong{ font-size: .92rem; color: var(--teal-deep); }
+.cs-extra-text span{ font-size: .8rem; color: var(--ink-soft); }
+.cs-extra.has-content{ border-color: var(--teal); background: var(--teal-tint); }
+.cs-extra.has-content .cs-extra-text span{ color: var(--teal-deep); font-weight: 600; }
+.cs-extra-action{ flex: none; font-weight: 700; font-size: .82rem; color: var(--teal-deep); }
+@media (max-width: 720px){
+  .cs-extras{ padding: 16px 14px; }
+  .cs-extras-list{ grid-template-columns: 1fr; }
+  .cs-call-note{ margin-top: -6px; }
+}
+
+@media (max-width: 720px){
+  .cs-nav-right{ flex: 1 1 auto; min-width: 0; }
+  .cs-save-status{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .cs-nav.is-review .cs-save-status{ display: none; }   /* make room for "Submit Project Information" */
+}
+@media (max-width: 720px){
+  /* Review step: full-width Submit button, Back underneath */
+  .cs-nav.is-review{ flex-wrap: wrap; gap: 8px; }
+  .cs-nav.is-review .cs-nav-right{ flex-basis: 100%; order: -1; }
+  .cs-nav.is-review #cs-next{ width: 100%; justify-content: center; }
+  .cs-nav.is-review #cs-back{ border: 0; padding: 4px 0; margin: 0 auto; }
 }
