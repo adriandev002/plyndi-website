@@ -1,0 +1,9 @@
+{
+  // Cloudflare Workers static site. Astro builds into ./dist and only ./dist is uploaded,
+  // so source files, the client backend and zips are never public.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "plyndi",
+  "compatibility_date": "2026-10-01",
+  "build": { "command": "npm run build" },
+  "assets": { "directory": "./dist" }
+}
