@@ -4,7 +4,7 @@
    /api/client/admin/*, which only answers requests that carry a
    valid Cloudflare Access login (checked server-side).
    ========================================================= */
-import { STEPS, LISTS, FILE_CATEGORIES, isFilled } from './client-schema.js';
+import { FILE_CATEGORIES, isFilled, schemaFor, PROJECT_TYPE_LABELS } from './client-schema.js';
 import { api, h, formatBytes, formatDate, safeUrl } from './client-api.js';
 
 const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
@@ -12,6 +12,20 @@ const $ = id => document.getElementById(id);
 let submissions = [];
 let invites = [];
 let detail = null;
+const typeOf = x => (x && x.project_type === 'app') ? 'app' : 'website';
+const typePill = x => h('span', { class: 'ad-type is-' + typeOf(x) }, PROJECT_TYPE_LABELS[typeOf(x)]);
+/* Values for one submission, whichever type it is: website answers live in columns,
+   app answers mostly in project.app_details = { fields, lists }. */
+function projectView(d) {
+  const p = d.project || {};
+  const S = schemaFor(typeOf(p));
+  const ad = (p.app_details && typeof p.app_details === 'object') ? p.app_details : {};
+  const values = { ...(ad.fields || {}) };
+  for (const k of S.FIELD_KEYS) if (isFilled(p[k])) values[k] = p[k];
+  const lists = {};
+  for (const k of Object.keys(S.LISTS)) lists[k] = (d.lists && d.lists[k]) || (ad.lists && ad.lists[k]) || [];
+  return { S, p, values, lists };
+}
 
 init();
 
@@ -20,6 +34,7 @@ async function init() {
   STATUSES.forEach(s => $('ad-d-status').append(h('option', { value: s }, s)));
   $('ad-search').addEventListener('input', drawRows);
   $('ad-filter').addEventListener('change', drawRows);
+  $('ad-type').addEventListener('change', drawRows);
   $('ad-refresh').addEventListener('click', loadList);
   $('ad-export-all').addEventListener('click', exportAllCsv);
   $('tab-subs').addEventListener('click', () => tab('subs'));
@@ -86,14 +101,15 @@ async function loadList() {
 function drawRows() {
   const q = $('ad-search').value.trim().toLowerCase();
   const st = $('ad-filter').value;
-  const rows = submissions.filter(s => (!st || s.status === st) &&
+  const ty = $('ad-type').value;
+  const rows = submissions.filter(s => (!st || s.status === st) && (!ty || typeOf(s) === ty) &&
     (!q || [s.company_name, s.email, s.ref, s.client_name].some(v => String(v || '').toLowerCase().includes(q))));
   if (!rows.length) {
     $('ad-rows').replaceChildren(h('tr', null, h('td', { colspan: 6, class: 'ad-empty' }, submissions.length ? 'No submissions match.' : 'No submissions yet. Create a client link and send it to your client.')));
     return;
   }
   $('ad-rows').replaceChildren(...rows.map(s => h('tr', null,
-    h('td', { 'data-label': 'Submission' }, h('strong', null, s.ref), h('span', { class: 'ad-sub' }, `Rev ${s.revision_number} · ${s.file_count} file${s.file_count === 1 ? '' : 's'}`)),
+    h('td', { 'data-label': 'Submission' }, h('strong', null, s.ref), ' ', typePill(s), h('span', { class: 'ad-sub' }, `Rev ${s.revision_number} · ${s.file_count} file${s.file_count === 1 ? '' : 's'}`)),
     h('td', { 'data-label': 'Company' }, s.company_name, h('span', { class: 'ad-sub' }, s.client_name)),
     h('td', { 'data-label': 'Email' }, s.email ? h('a', { href: 'mailto:' + s.email }, s.email) : '—'),
     h('td', { 'data-label': 'Submitted' }, formatDate(s.submitted_at)),
@@ -124,7 +140,7 @@ async function loadDetail(token) {
   try { detail = await api(`/admin/submissions/${encodeURIComponent(token)}`); }
   catch (e) { if ([401, 403, 503].includes(e.status)) return fatal(e); $('ad-d-body').replaceChildren(h('p', null, e.message)); return; }
   const p = detail.project;
-  $('ad-d-ref').textContent = `${p.ref} · Revision ${p.revision_number}`;
+  $('ad-d-ref').textContent = `${PROJECT_TYPE_LABELS[typeOf(p)]} project · ${p.ref} · Revision ${p.revision_number}`;
   $('ad-d-title').textContent = p.company_name;
   $('ad-d-meta').textContent = `Submitted ${formatDate(p.submitted_at)} · via link “${detail.invite.client_name}”${detail.invite.active ? '' : ' (closed)'}`;
   $('ad-d-status').value = p.status;
@@ -142,7 +158,8 @@ async function loadDetail(token) {
 }
 
 function renderDetailBody(d) {
-  const p = d.project;
+  const { S, p, values, lists } = projectView(d);
+  const { STEPS, LISTS } = S;
   const files = d.files || [];
   const byId = new Map(files.map(f => [f.id, f]));
   const out = [];
@@ -161,7 +178,7 @@ function renderDetailBody(d) {
     const seen = new Set();
     step.items.forEach(item => {
       if (item.key) {
-        const v = p[item.key];
+        const v = values[item.key];
         if (!isFilled(v)) return;
         any = true;
         dl.append(h('dt', null, item.label), h('dd', null, valueNode(item, v)));
@@ -173,7 +190,7 @@ function renderDetailBody(d) {
         dl.append(h('dt', null, FILE_CATEGORIES[item.files].label), h('dd', null, fileList(fs)));
       } else if (item.list) {
         const def = LISTS[item.list];
-        const rows = (d.lists && d.lists[item.list]) || [];
+        const rows = lists[item.list] || [];
         rows.forEach((row, i) => {
           any = true;
           const inner = h('dl', { class: 'cs-dl ad-subdl' });
@@ -211,7 +228,11 @@ function fileList(fs) {
 /* ---------------- Export ---------------- */
 function exportShape(d) {
   const files = (d.files || []).map(({ id, category, name, type, size }) => ({ id, category, name, type, size }));
-  return { exported_at: new Date().toISOString(), project: d.project, lists: d.lists, files, revisions: d.revisions };
+  const { S, lists } = projectView(d);
+  const { app_details, ...project } = d.project;
+  const out = { exported_at: new Date().toISOString(), project_type: S.type, project, lists: S.type === 'app' ? lists : d.lists, files, revisions: d.revisions };
+  if (S.type === 'app') out.app_answers = (app_details && app_details.fields) || {};
+  return out;
 }
 function csvCell(v) {
   let s = Array.isArray(v) ? v.join('; ') : (v === null || v === undefined ? '' : String(v));
@@ -220,12 +241,13 @@ function csvCell(v) {
 }
 function detailCsv(d) {
   const rows = [['Section', 'Item', 'Field', 'Value']];
-  const p = d.project;
-  rows.push(['Submission', '', 'Reference', p.ref], ['Submission', '', 'Status', p.status], ['Submission', '', 'Submitted at', p.submitted_at], ['Submission', '', 'Revision', p.revision_number]);
+  const { S, p, values, lists } = projectView(d);
+  const { STEPS, LISTS } = S;
+  rows.push(['Submission', '', 'Reference', p.ref], ['Submission', '', 'Type', PROJECT_TYPE_LABELS[S.type]], ['Submission', '', 'Status', p.status], ['Submission', '', 'Submitted at', p.submitted_at], ['Submission', '', 'Revision', p.revision_number]);
   const byId = new Map((d.files || []).map(f => [f.id, f]));
   STEPS.forEach(step => step.items.forEach(item => {
-    if (item.key && isFilled(p[item.key])) rows.push([step.review, '', item.label, p[item.key]]);
-    if (item.list) (d.lists[item.list] || []).forEach((row, i) => LISTS[item.list].fields.forEach(f => {
+    if (item.key && isFilled(values[item.key])) rows.push([step.review, '', item.label, values[item.key]]);
+    if (item.list) (lists[item.list] || []).forEach((row, i) => LISTS[item.list].fields.forEach(f => {
       const v = f.type === 'file' ? (row[f.key] || []).map(id => byId.get(id)?.name).filter(Boolean) : row[f.key];
       if (isFilled(v)) rows.push([step.review, `${LISTS[item.list].itemLabel} ${i + 1}`, f.label, v]);
     }));
@@ -234,8 +256,8 @@ function detailCsv(d) {
   return '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\r\n');
 }
 function exportAllCsv() {
-  const head = ['Reference', 'Company', 'Client link', 'Email', 'Country', 'Status', 'Submitted at', 'Revision', 'Files', 'Preview URL'];
-  const rows = submissions.map(s => [s.ref, s.company_name, s.client_name, s.email, s.country, s.status, s.submitted_at, s.revision_number, s.file_count, `${location.origin}/client-preview?id=${s.public_token}`]);
+  const head = ['Reference', 'Type', 'Company', 'Client link', 'Email', 'Country', 'Status', 'Submitted at', 'Revision', 'Files', 'Preview URL'];
+  const rows = submissions.map(s => [s.ref, PROJECT_TYPE_LABELS[typeOf(s)], s.company_name, s.client_name, s.email, s.country, s.status, s.submitted_at, s.revision_number, s.file_count, `${location.origin}/client-preview?id=${s.public_token}`]);
   download(`client-submissions-${new Date().toISOString().slice(0, 10)}.csv`, '﻿' + [head, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n'), 'text/csv');
 }
 function download(name, text, type) {
@@ -255,7 +277,7 @@ async function loadInvites() {
 function drawInvites() {
   if (!invites.length) { $('inv-rows').replaceChildren(h('tr', null, h('td', { colspan: 5, class: 'ad-empty' }, 'No client links yet.'))); return; }
   $('inv-rows').replaceChildren(...invites.map(inv => h('tr', null,
-    h('td', { 'data-label': 'Client' }, h('strong', null, inv.client_name), inv.notes ? h('span', { class: 'ad-sub' }, inv.notes) : null),
+    h('td', { 'data-label': 'Client' }, h('strong', null, inv.client_name), ' ', typePill(inv), inv.notes ? h('span', { class: 'ad-sub' }, inv.notes) : null),
     h('td', { 'data-label': 'Created' }, formatDate(inv.created_at)),
     h('td', { 'data-label': 'Submissions' }, String(inv.submissions)),
     h('td', { 'data-label': 'Status' }, h('span', { class: 'ad-pill ' + (inv.active ? 'is-on' : 'is-off') }, inv.active ? 'Active' : 'Closed')),
@@ -273,11 +295,12 @@ async function createInvite(e) {
   if (!name) { $('inv-name').focus(); return; }
   $('inv-create').disabled = true;
   try {
-    const inv = await api('/admin/invites', { method: 'POST', body: { client_name: name, notes: $('inv-notes').value } });
+    const type = $('inv-type').value === 'app' ? 'app' : 'website';
+    const inv = await api('/admin/invites', { method: 'POST', body: { client_name: name, notes: $('inv-notes').value, project_type: type } });
     const url = inviteUrl(inv.token);
     const res = $('inv-result');
     res.hidden = false;
-    res.replaceChildren(h('p', null, h('strong', null, 'Link created for ' + inv.client_name + '. '), 'Send this private link to your client:'),
+    res.replaceChildren(h('p', null, h('strong', null, `${PROJECT_TYPE_LABELS[typeOf(inv)]} link created for ${inv.client_name}. `), 'Send this private link to your client:'),
       h('div', { class: 'ad-copy-row' }, h('input', { readonly: true, value: url, 'aria-label': 'Client form link', onfocus: ev => ev.target.select() }),
         h('button', { type: 'button', class: 'btn btn-primary', onclick: () => copy(url) }, 'Copy')));
     $('inv-name').value = ''; $('inv-notes').value = '';
@@ -292,7 +315,7 @@ async function copy(text) {
 
 /* ---------------- Inquiries (public "Start Your Project" requests) ---------------- */
 let inquiries = [];
-const INQ_SERVICE = { website: 'Website Development' };
+const INQ_SERVICE = { website: 'Website Development', app: 'App Development' };
 
 async function loadInquiries() {
   $('inq-rows').replaceChildren(h('tr', null, h('td', { colspan: 5, class: 'ad-empty' }, 'Loading…')));

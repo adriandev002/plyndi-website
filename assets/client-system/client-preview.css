@@ -266,3 +266,34 @@ img{ max-width: 100%; display: block; }
   .pv-footer-grid{ grid-template-columns: 1fr; }
   .pv-logo{ max-width: 150px; height: 40px; }
 }
+
+/* ---------- App project summary ---------- */
+.pv-app{ --app-accent: #0E3B3D; --app-on-accent: #FAF7EF; background: #FAF7EF; min-height: 70vh; padding-bottom: 48px; color: #14211F; font-family: 'Karla', system-ui, sans-serif; line-height: 1.6; }
+.pva-wrap{ max-width: 920px; margin: 0 auto; padding: 0 20px; }
+.pva-hero{ background: var(--app-accent); color: var(--app-on-accent); padding: 48px 0 40px; margin-bottom: 28px; }
+.pva-hero h1{ font-family: Georgia, serif; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; margin: 0 0 10px; overflow-wrap: anywhere; }
+.pva-kicker{ margin: 0 0 6px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: .78rem; opacity: .8; }
+.pva-lede{ font-size: 1.1rem; max-width: 60ch; margin: 0 0 16px; overflow-wrap: anywhere; }
+.pva-logo{ max-height: 56px; width: auto; margin-bottom: 16px; background: #fff; border-radius: 8px; padding: 6px; }
+.pva-chips{ list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; }
+.pva-chips li{ border: 1.5px solid currentColor; border-radius: 20px; padding: 3px 12px; font-weight: 700; font-size: .85rem; }
+.pva-grid{ display: grid; gap: 18px; }
+.pva-card{ background: #fff; border: 1px solid #E5E1D6; border-radius: 12px; padding: 22px 22px 14px; }
+.pva-card h2{ font-family: Georgia, serif; color: #0E3B3D; font-size: 1.35rem; margin: 0 0 12px; }
+.pva-prio h3{ font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: #3B4B48; margin: 14px 0 6px; }
+.pva-prio ul{ margin: 0 0 6px; padding-left: 1.1em; }
+.pva-prio li{ margin-bottom: 6px; overflow-wrap: anywhere; }
+.pva-prio li span{ display: block; color: #3B4B48; }
+.pva-dl{ display: grid; grid-template-columns: minmax(140px, 32%) 1fr; gap: 6px 18px; margin: 0; }
+.pva-dl dt{ font-weight: 700; color: #3B4B48; }
+.pva-dl dd{ margin: 0 0 8px; white-space: pre-line; overflow-wrap: anywhere; }
+.pva-dl a{ color: #0E3B3D; }
+.pva-files{ list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.pva-files img{ width: 110px; height: 110px; object-fit: cover; border-radius: 8px; border: 1px solid #E5E1D6; }
+.pva-file{ display: inline-block; background: #F2EFE6; border-radius: 6px; padding: 4px 10px; font-size: .9rem; }
+.pva-next ol{ margin: 0 0 10px; padding-left: 1.2em; }
+.pva-muted{ color: #3B4B48; font-size: .9rem; }
+@media (max-width: 600px){
+  .pva-dl{ grid-template-columns: 1fr; gap: 2px; }
+  .pva-dl dd{ margin-bottom: 12px; }
+}

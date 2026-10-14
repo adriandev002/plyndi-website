@@ -50,6 +50,8 @@
           <input id="ad-search" type="search" placeholder="Search company, email or reference…">
           <label class="visually-hidden" for="ad-filter">Filter by status</label>
           <select id="ad-filter"><option value="">All statuses</option></select>
+          <label class="visually-hidden" for="ad-type">Filter by type</label>
+          <select id="ad-type"><option value="">All types</option><option value="website">Website</option><option value="app">App</option></select>
           <button type="button" class="btn cs-btn-ghost" id="ad-refresh">Refresh</button>
           <button type="button" class="btn btn-outline" id="ad-export-all">Export CSV</button>
         </div>
@@ -79,7 +81,8 @@
           <h2>Create a private client form link</h2>
           <div class="cs-grid">
             <div class="cs-field is-half"><label for="inv-name">Client name <span class="cs-req">*</span></label><input id="inv-name" required maxlength="200" placeholder="e.g. WanderAsia"></div>
-            <div class="cs-field is-half"><label for="inv-notes">Internal notes</label><input id="inv-notes" maxlength="2000" placeholder="Optional"></div>
+            <div class="cs-field is-half"><label for="inv-type">Project type</label><select id="inv-type"><option value="website">Website &mdash; website questions + website preview</option><option value="app">App &mdash; app questions + project summary</option></select></div>
+            <div class="cs-field"><label for="inv-notes">Internal notes</label><input id="inv-notes" maxlength="2000" placeholder="Optional"></div>
           </div>
           <div class="ad-invite-actions"><button class="btn btn-primary" type="submit" id="inv-create">Create link</button></div>
           <div id="inv-result" class="ad-invite-result" hidden></div>

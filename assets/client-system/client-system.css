@@ -348,3 +348,8 @@
   .cs-nav.is-review #cs-next{ width: 100%; justify-content: center; }
   .cs-nav.is-review #cs-back{ border: 0; padding: 4px 0; margin: 0 auto; }
 }
+
+/* Website / App type badge (admin) */
+.ad-type{ display: inline-block; vertical-align: middle; font-weight: 700; font-size: .72rem; letter-spacing: .03em; padding: 2px 8px; border-radius: 20px; }
+.ad-type.is-website{ background: #E4F6F6; color: #0E3B3D; }
+.ad-type.is-app{ background: #EDE7FB; color: #4A3A86; }

@@ -128,8 +128,11 @@ export function submissionToState(data, schema) {
   const { FIELD_KEYS, LISTS, emptyState } = schema;
   const state = emptyState();
   const p = data.project || {};
+  // App projects keep most answers in project.app_details = { fields, lists }
+  const appFields = (p.app_details && p.app_details.fields) || {};
+  const appLists = (p.app_details && p.app_details.lists) || {};
   for (const k of FIELD_KEYS) {
-    const v = p[k];
+    const v = (p[k] !== null && p[k] !== undefined) ? p[k] : appFields[k];
     if (v === null || v === undefined || (Array.isArray(v) && !v.length)) continue;
     state.fields[k] = v;
   }
@@ -138,7 +141,7 @@ export function submissionToState(data, schema) {
   const listCats = new Set();
   for (const [listKey, def] of Object.entries(LISTS)) {
     def.fields.filter(f => f.type === 'file').forEach(f => listCats.add(f.category));
-    state.lists[listKey] = (data.lists?.[listKey] || []).map(row => {
+    state.lists[listKey] = (data.lists?.[listKey] || appLists[listKey] || []).map(row => {
       const out = {};
       for (const f of def.fields) {
         if (f.type === 'file') out[f.key] = (row[f.key] || []).map(ref).filter(Boolean);

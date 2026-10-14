@@ -4,6 +4,8 @@
 -- ---------------------------------------------------------
 -- Run this ONCE in Supabase: Dashboard -> SQL Editor -> New query
 -- -> paste the whole file -> Run. Safe to re-run (idempotent).
+-- THEN run every file in migrations/ in date order
+-- (2026-10-14-app-projects.sql adds App projects).
 --
 -- Security model
 --   * Row Level Security is ON for every table with NO policies,

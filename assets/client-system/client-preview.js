@@ -5,6 +5,7 @@
    textContent (never innerHTML) and links are http(s)-only.
    ========================================================= */
 import { api, h, safeUrl } from './client-api.js';
+import { schemaFor, FILE_CATEGORIES, isFilled, isVisible } from './client-schema.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -21,8 +22,9 @@ async function init() {
     if (e.status === 404) return showState('Preview not found', 'This preview link is not valid. If you just submitted, please use the link from that page or contact contact@plyndi.com.');
     return showState('Preview unavailable', e.message, true);
   }
-  setupNotice(data);
-  renderSite(data);
+  const isApp = data.project && data.project.project_type === 'app';
+  setupNotice(data, isApp);
+  if (isApp) renderAppSummary(data); else renderSite(data);
   $('pv-state').hidden = true;
   $('pv-site').hidden = false;
 }
@@ -34,8 +36,13 @@ function showState(title, msg, retry) {
     retry ? h('button', { type: 'button', class: 'pv-nbtn pv-nbtn-solid', onclick: () => location.reload() }, 'Try again') : null);
 }
 
-function setupNotice(data) {
+function setupNotice(data, isApp) {
   const p = data.project;
+  if (isApp) {
+    document.title = 'App Project Summary — Plyndi';
+    document.querySelector('.pv-badge').textContent = 'App Project Summary';
+    document.querySelector('.pv-notice-desc').textContent = 'A summary of the app project information you provided. We’ll use it to plan scope, design and price with you before anything is built.';
+  }
   $('pv-ref').textContent = `Ref ${p.ref} · Revision ${p.revision_number} · ${new Date(p.submitted_at).toLocaleDateString()}`;
   if (data.invite) {
     const base = `/client-form?invite=${encodeURIComponent(data.invite)}`;
@@ -48,7 +55,7 @@ function setupNotice(data) {
   if (params.get('new') === '1') {
     const t = $('pv-toast');
     t.hidden = false;
-    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). Here is a first preview of your website.`;
+    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). ${isApp ? 'Here is a summary of your app project.' : 'Here is a first preview of your website.'}`;
     history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(id));
     setTimeout(() => { t.hidden = true; }, 9000);
   }
@@ -377,3 +384,75 @@ function tourCard(t, i, image, ctaText) {
 const noticeEl = document.querySelector('.pv-notice');
 const syncNotice = () => document.documentElement.style.setProperty('--notice-h', noticeEl.offsetHeight + 'px');
 if (noticeEl) { syncNotice(); if ('ResizeObserver' in window) new ResizeObserver(syncNotice).observe(noticeEl); }
+
+/* =========================================================
+   App projects — a clean project summary (no fake screens).
+   Answers come from project columns + project.app_details.
+   ========================================================= */
+function renderAppSummary(data) {
+  const S = schemaFor('app');
+  const p = data.project || {};
+  const ad = (p.app_details && typeof p.app_details === 'object') ? p.app_details : {};
+  const fields = { ...(ad.fields || {}) };
+  for (const k of S.FIELD_KEYS) if (isFilled(p[k])) fields[k] = p[k];
+  const features = ((ad.lists && ad.lists.app_features) || []).filter(f => f && isFilled(f.name));
+  const files = data.files || [];
+  const val = v => Array.isArray(v) ? v.join(', ') : String(v);
+
+  const root = $('pv-site');
+  root.classList.add('pv-app');
+  const color = validHex(p.primary_color);
+  if (color) { root.style.setProperty('--app-accent', color); root.style.setProperty('--app-on-accent', readableOn(color)); }
+
+  const logo = files.find(f => f.category === 'logo' && (f.type || '').startsWith('image/') && f.url);
+  const hero = h('header', { class: 'pva-hero' },
+    h('div', { class: 'pva-wrap' },
+      logo ? h('img', { class: 'pva-logo', src: logo.url, alt: (p.company_name || 'Client') + ' logo' }) : null,
+      h('p', { class: 'pva-kicker' }, p.company_name || ''),
+      h('h1', null, fields.app_name || 'Your app'),
+      fields.app_summary ? h('p', { class: 'pva-lede' }, fields.app_summary) : null,
+      isFilled(fields.app_platforms) ? h('ul', { class: 'pva-chips', 'aria-label': 'Platforms' }, fields.app_platforms.map(x => h('li', null, x))) : null));
+
+  const blocks = [];
+  // Features grouped by priority
+  if (features.length) {
+    const order = ['Must have', 'Should have', 'Nice to have', ''];
+    const groups = order.map(pr => ({ pr, items: features.filter(f => (f.priority || '') === pr) })).filter(g => g.items.length);
+    blocks.push(h('section', { class: 'pva-card pva-features' }, h('h2', null, 'Features'),
+      groups.map(g => h('div', { class: 'pva-prio' },
+        h('h3', null, g.pr || 'Priority not set'),
+        h('ul', null, g.items.map(f => h('li', null, h('strong', null, f.name), f.description ? h('span', null, f.description) : null)))))));
+  }
+  // Every other answer, in the same order as the form
+  S.STEPS.forEach(step => {
+    const dl = h('dl', { class: 'pva-dl' });
+    let any = false;
+    step.items.forEach(item => {
+      if (item.key) {
+        if (['company_name', 'app_name', 'app_summary', 'app_platforms', 'primary_color'].includes(item.key)) return;
+        if (!isVisible(item, fields) || !isFilled(fields[item.key])) return;
+        any = true;
+        const v = fields[item.key];
+        const link = item.type === 'url' ? safeUrl(v) : null;
+        dl.append(h('dt', null, item.label), h('dd', null, link ? h('a', { href: link, target: '_blank', rel: 'noopener noreferrer' }, v) : val(v)));
+      } else if (item.files) {
+        const fs = files.filter(f => f.category === item.files);
+        if (!fs.length) return;
+        any = true;
+        dl.append(h('dt', null, FILE_CATEGORIES[item.files].label), h('dd', null, h('ul', { class: 'pva-files' }, fs.map(f =>
+          h('li', null, (f.type || '').startsWith('image/') && f.url ? h('img', { src: f.url, alt: f.name, loading: 'lazy' }) : h('span', { class: 'pva-file' }, f.name))))));
+      }
+    });
+    if (any) blocks.push(h('section', { class: 'pva-card' }, h('h2', null, step.review), dl));
+  });
+
+  const next = h('section', { class: 'pva-card pva-next' },
+    h('h2', null, 'What happens next'),
+    h('ol', null,
+      h('li', null, 'We review your answers and may ask a few follow-up questions.'),
+      h('li', null, 'We suggest a first version — the features that matter most — with a timeline and price.'),
+      h('li', null, 'Nothing is built until you agree to the plan.')),
+    h('p', { class: 'pva-muted' }, 'Questions? Email contact@plyndi.com.'));
+
+  root.replaceChildren(hero, h('main', { class: 'pva-wrap pva-grid' }, ...blocks, next));
+}

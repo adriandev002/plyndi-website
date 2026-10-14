@@ -9,10 +9,17 @@
 import * as schema from './client-schema.js';
 import { api, ApiError, putFileWithProgress, guessMime, h, formatBytes, storageSafe, submissionToState } from './client-api.js';
 
-const { STEPS, LISTS, GROUPS, FILE_CATEGORIES, UPLOAD_LIMITS, STYLE_SWATCHES, QUICK_STEP_COUNT, SCHEMA_VERSION,
-        emptyState, isFilled, isVisible, validateField, validateAll } = schema;
-const REVIEW_INDEX = STEPS.length;              // the Review page (after all steps)
-const LAST_QUICK = QUICK_STEP_COUNT - 1;        // quick-start steps are STEPS[0..LAST_QUICK]; the rest are optional
+const { FILE_CATEGORIES, UPLOAD_LIMITS, STYLE_SWATCHES, isFilled, isVisible, validateField } = schema;
+/* The question set depends on the link type (website or app). It is chosen once the
+   invite has been checked; until then the website set is used (it renders nothing). */
+let S, STEPS, LISTS, GROUPS, QUICK_STEP_COUNT, SCHEMA_VERSION, REVIEW_INDEX, LAST_QUICK, emptyState, validateAll;
+function useSchema(type) {
+  S = schema.schemaFor(type);
+  ({ STEPS, LISTS, GROUPS, QUICK_STEP_COUNT, SCHEMA_VERSION, emptyState, validateAll } = S);
+  REVIEW_INDEX = STEPS.length;              // the Review page (after all steps)
+  LAST_QUICK = QUICK_STEP_COUNT - 1;        // quick-start steps are STEPS[0..LAST_QUICK]; the rest are optional
+}
+useSchema('website');
 const isOptional = i => i < REVIEW_INDEX && !!STEPS[i].optional;
 
 const $ = id => document.getElementById(id);
@@ -44,7 +51,13 @@ async function init() {
     if (e.status === 403) return blocked('This link is not valid', e.message);
     return blocked('We could not open the form', e.message, true);
   }
-  $('cs-client-label').textContent = 'Project information · ' + invite.client_name;
+  useSchema(invite.project_type);
+  state = emptyState();
+  $('cs-client-label').textContent = (S.type === 'app' ? 'App project · ' : 'Project information · ') + invite.client_name;
+  if (S.type === 'app') {
+    $('cs-intro-title').textContent = 'Tell us about your app';
+    $('cs-confirm-note').textContent = 'You’ll see a summary of your app project straight away, and you can still send a revision afterwards.';
+  }
 
   loadDraft();
 
@@ -53,7 +66,7 @@ async function init() {
   if (editId) {
     try {
       const data = await api('/preview?id=' + encodeURIComponent(editId));
-      state = submissionToState(data, schema);
+      state = submissionToState(data, S);
       for (const list of Object.values(state.lists)) list.forEach(row => Object.values(row).forEach(v => Array.isArray(v) && v.forEach(f => f && f.url && thumbs.set(f.id, f.url))));
       for (const arr of Object.values(state.files)) arr.forEach(f => f.url && thumbs.set(f.id, f.url));
       revisionOf = editId;

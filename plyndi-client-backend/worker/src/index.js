@@ -15,7 +15,7 @@
    ========================================================= */
 
 import {
-  FIELD_KEYS, ARRAY_FIELD_KEYS, LISTS, FILE_CATEGORIES, STEPS, UPLOAD_LIMITS, validateAll
+  FILE_CATEGORIES, UPLOAD_LIMITS, PROJECT_TYPES, COLUMN_KEYS, schemaFor
 } from './client-schema.js';
 
 const API = '/api/client';
@@ -27,10 +27,11 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const TOKEN_RE = /^[A-Za-z0-9_-]{32,128}$/;
 const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
 
-/* Which categories are allowed for top-level uploads vs. inside list items */
-const TOP_LEVEL_CATEGORIES = [...new Set(STEPS.flatMap(s => s.items.filter(i => i.files).map(i => i.files)))];
-const LIST_FILE_FIELDS = Object.fromEntries(Object.entries(LISTS).map(([k, l]) => [k, l.fields.filter(f => f.type === 'file')]));
-const LIST_FIELD_KEYS = Object.fromEntries(Object.entries(LISTS).map(([k, l]) => [k, l.fields.map(f => f.key)]));
+/* Which categories are allowed for top-level uploads, per project type (website / app) */
+const TOP_LEVEL_CATEGORIES = Object.fromEntries(PROJECT_TYPES.map(t => [t,
+  [...new Set(schemaFor(t).STEPS.flatMap(s => s.items.filter(i => i.files).map(i => i.files)))]]));
+const COLUMN_KEY_SET = new Set(COLUMN_KEYS);
+const projectType = v => PROJECT_TYPES.includes(v) ? v : 'website';
 
 class HttpError extends Error {
   constructor(status, message, extra) { super(message); this.status = status; this.extra = extra; }
@@ -100,7 +101,7 @@ async function route(request, env, ctx, url) {
 /* ---------------- Client endpoints ---------------- */
 async function getInvite(env, token) {
   const invite = await loadInvite(env, token);
-  return json({ client_name: invite.client_name, upload_limits: UPLOAD_LIMITS });
+  return json({ client_name: invite.client_name, project_type: projectType(invite.project_type), upload_limits: UPLOAD_LIMITS });
 }
 
 async function createUpload(request, env) {
@@ -167,8 +168,9 @@ async function submit(request, env, ctx) {
   const state = b.state;
   if (!state || typeof state !== 'object') throw new HttpError(400, 'Form data missing.');
 
-  const clean = sanitizeState(state);
-  const errors = validateAll(clean.forValidation);
+  const S = schemaFor(projectType(invite.project_type));   // the link decides the type, never the client
+  const clean = sanitizeState(state, S);
+  const errors = S.validateAll(clean.forValidation);
   if (errors.length) throw new HttpError(422, 'Some required information is missing or invalid.', { errors });
 
   const publicToken = randomToken(32);
@@ -233,10 +235,23 @@ async function adminCreateInvite(request, env) {
   const b = await readJson(request);
   const name = String(b.client_name || '').trim().slice(0, 200);
   if (!name) throw new HttpError(400, 'Client name is required.');
-  const row = await rpc(env, 'cp_create_invite', {
-    p_token: randomToken(24), p_client_name: name, p_notes: String(b.notes || '').slice(0, 2000)
-  });
+  if (b.project_type !== undefined && !PROJECT_TYPES.includes(b.project_type)) throw new HttpError(400, 'Unknown project type.');
+  const row = await createInvite(env, name, String(b.notes || '').slice(0, 2000), projectType(b.project_type));
   return json(row, 201);
+}
+
+// project_type is only sent for app links, so website links also work on a database
+// that has not been migrated yet (the column then defaults to 'website').
+async function createInvite(env, name, notes, type) {
+  const args = { p_token: randomToken(24), p_client_name: name, p_notes: notes };
+  if (type !== 'website') args.p_project_type = type;
+  try {
+    const row = await rpc(env, 'cp_create_invite', args);
+    return { ...row, project_type: projectType(row && row.project_type) };
+  } catch (e) {
+    if (type !== 'website' && /cp_create_invite/.test(e.message)) throw new HttpError(503, 'App links need the database update (supabase/migrations/2026-10-14-app-projects.sql). Run it in Supabase, then try again.');
+    throw e;
+  }
 }
 
 /* ---------------- Sanitising the submitted form ---------------- */
@@ -250,7 +265,8 @@ function fileIds(refs) {
   return [...new Set(refs.map(r => (r && typeof r === 'object') ? r.id : r).filter(id => UUID_RE.test(String(id || ''))))].slice(0, 100);
 }
 
-function sanitizeState(state) {
+function sanitizeState(state, S) {
+  const { FIELD_KEYS, ARRAY_FIELD_KEYS, LISTS } = S;
   const inFields = (state.fields && typeof state.fields === 'object') ? state.fields : {};
   const fields = {};
   for (const key of FIELD_KEYS) {
@@ -271,7 +287,7 @@ function sanitizeState(state) {
 
   const inFiles = (state.files && typeof state.files === 'object') ? state.files : {};
   const topFiles = {};
-  for (const cat of TOP_LEVEL_CATEGORIES) { topFiles[cat] = fileIds(inFiles[cat]); pushFiles(cat, topFiles[cat]); }
+  for (const cat of TOP_LEVEL_CATEGORIES[S.type]) { topFiles[cat] = fileIds(inFiles[cat]); pushFiles(cat, topFiles[cat]); }
 
   const lists = {};
   const inLists = (state.lists && typeof state.lists === 'object') ? state.lists : {};
@@ -281,15 +297,15 @@ function sanitizeState(state) {
       .filter(r => r && typeof r === 'object')
       .map(r => {
         const out = {};
-        for (const k of LIST_FIELD_KEYS[listKey]) {
-          const f = def.fields.find(x => x.key === k);
+        for (const f of def.fields) {
+          const k = f.key;
           if (f.type === 'file') {
             const ids = fileIds(r[k]);
             out[k] = ids;
             pushFiles(f.category, ids);
           } else {
             const v = cleanText(r[k]);
-            if (v !== null) out[k] = v;
+            if (v !== null && (!f.options || f.options.includes(v))) out[k] = v;
           }
         }
         return out;
@@ -300,7 +316,15 @@ function sanitizeState(state) {
 
   // Validation runs on the same shape the browser validated
   const forValidation = { fields, lists, files: topFiles };
-  return { payload: { fields, lists, files: dedupeFiles(files) }, forValidation };
+  if (S.type === 'website') return { payload: { fields, lists, files: dedupeFiles(files) }, forValidation };
+
+  // App projects: shared answers go to the normal columns, the rest to app_details (jsonb)
+  const columns = {}, appFields = {};
+  for (const [k, v] of Object.entries(fields)) (COLUMN_KEY_SET.has(k) ? columns : appFields)[k] = v;
+  return {
+    payload: { fields: columns, lists: {}, app_details: { fields: appFields, lists }, files: dedupeFiles(files) },
+    forValidation
+  };
 }
 function dedupeFiles(files) {
   const seen = new Set();
@@ -369,7 +393,7 @@ async function notifyOwner(env, request, result, invite) {
   const e = escapeHtml;
   const html = `
     <div style="font-family:Arial,sans-serif;color:#14211F;max-width:560px">
-      <h2 style="color:#0E3B3D;margin:0 0 12px">New client project submission</h2>
+      <h2 style="color:#0E3B3D;margin:0 0 12px">New ${invite.project_type === 'app' ? 'app' : 'website'} project submission</h2>
       <table style="border-collapse:collapse;font-size:14px">
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Reference</td><td><strong>${e(result.ref)}</strong> (revision ${e(result.revision_number)})</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Company</td><td>${e(result.company_name)}</td></tr>
@@ -389,7 +413,7 @@ async function notifyOwner(env, request, result, invite) {
     body: JSON.stringify({
       from: env.NOTIFY_FROM || 'Plyndi Client Forms <forms@plyndi.com>',
       to: env.OWNER_EMAIL.split(',').map(s => s.trim()).filter(Boolean),
-      subject: `New project info: ${result.company_name} (${result.ref})`,
+      subject: `New ${invite.project_type === 'app' ? 'app' : 'website'} project info: ${result.company_name} (${result.ref})`,
       html
     })
   });
@@ -513,7 +537,7 @@ function escapeHtml(v) {
 }
 
 /* ---------------- Public project inquiries (Services pages) ---------------- */
-const INQUIRY_SERVICES = { website: 'Website Development' };
+const INQUIRY_SERVICES = { website: 'Website Development', app: 'App Development' };
 const INQUIRY_STATUSES = ['New', 'Invited', 'Declined'];
 const INQUIRY_EMAIL_RE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[a-z]{2,}$/i;
 
@@ -562,15 +586,14 @@ async function adminInviteFromInquiry(request, env, url, id) {
   const inq = await rpc(env, 'cp_get_inquiry', { p_id: id });
   if (!inq) throw new HttpError(404, 'Inquiry not found.');
   const name = String(b.client_name || '').trim().slice(0, 200) || inq.email;
-  const invite = await rpc(env, 'cp_create_invite', {
-    p_token: randomToken(24), p_client_name: name, p_notes: `From website inquiry (${inq.email})`
-  });
+  const type = inq.service === 'app' ? 'app' : 'website';
+  const invite = await createInvite(env, name, `From website inquiry (${inq.email})`, type);
   await rpc(env, 'cp_update_inquiry', { p_id: id, p_status: 'Invited', p_invite_id: invite.id, p_notes: null });
   const siteOrigin = (env.SITE_ORIGINS || '').split(',')[0].trim() || url.origin;   // public site, e.g. https://plyndi.com
   const link = `${siteOrigin}/client-form?invite=${encodeURIComponent(invite.token)}`;
   let emailed = false;
   if (b.send_email) {
-    emailed = await sendEmail(env, { to: [inq.email], subject: 'Your Plyndi project form', html: inviteEmailHtml(name, link) })
+    emailed = await sendEmail(env, { to: [inq.email], subject: 'Your Plyndi project form', html: inviteEmailHtml(name, link, type) })
       .catch(e => { console.error('invite email failed', e.message); return false; });
   }
   return json({ invite, link, emailed, email_configured: !!env.RESEND_API_KEY }, 201);
@@ -613,12 +636,12 @@ function inquiryOwnerHtml(email, serviceLabel, origin) {
     <p><strong>${e(email)}</strong> asked for a project form.</p>
     <p><a href="${e(origin)}/admin/client-submissions#inquiries" style="background:#0E3B3D;color:#fff;padding:10px 18px;border-radius:6px;text-decoration:none;font-weight:bold">Review in admin</a></p>`);
 }
-function inviteEmailHtml(name, link) {
+function inviteEmailHtml(name, link, type) {
   const e = escapeHtml;
   return emailShell(`
     <h1 style="font-size:20px;color:#0E3B3D;margin:0 0 12px">Your project form is ready</h1>
     <p>Hi ${e(name)},</p>
-    <p>Thanks for your patience. Here is your personal Plyndi project form. It takes about 20–40 minutes, saves automatically on your device, and you can upload your logo, photos and documents as you go.</p>
+    <p>Thanks for your patience. Here is your personal Plyndi project form. The first part takes about 5 minutes, saves automatically on your device, and you can upload ${type === 'app' ? 'sketches, screenshots and documents' : 'your logo, photos and documents'} as you go.</p>
     <p style="margin:22px 0"><a href="${e(link)}" style="background:#0E3B3D;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-weight:bold">Open my project form</a></p>
-    <p style="font-size:13px;color:#3B4B48">This link is private to your project — please don’t share it publicly. When you submit, you’ll immediately see a first preview of your website.</p>`);
+    <p style="font-size:13px;color:#3B4B48">This link is private to your project — please don’t share it publicly. When you submit, you’ll immediately see ${type === 'app' ? 'a summary of your app project' : 'a first preview of your website'}.</p>`);
 }
