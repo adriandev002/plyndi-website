@@ -1,0 +1,3 @@
+# Old URLs that moved — Cloudflare applies these before serving files
+/work.html /services/#work 301
+/work /services/#work 301
