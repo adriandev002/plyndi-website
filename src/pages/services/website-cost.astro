@@ -1,0 +1,8 @@
+---
+import Base from '../../layouts/Base.astro';
+import head from '../../page-content/services/website-cost.head.html?raw';
+import body from '../../page-content/services/website-cost.html?raw';
+---
+<Base active="services" head={head}>
+  <Fragment set:html={body} />
+</Base>

@@ -1,0 +1,19 @@
+---
+import { nav, navCta } from '../data/nav';
+const { active = '' } = Astro.props;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/index.html">
+      <span class="brand-mark"><img decoding="async" src="/assets/logo.png" alt="" width="34" height="34"></span>
+      <span class="brand-word">Plyndi</span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+    <nav class="main-nav" aria-label="Primary">
+      {nav.map((item) => (
+        <a href={item.href} class={item.key === active ? 'is-active' : undefined} aria-current={item.key === active ? 'page' : undefined}>{item.label}</a>
+      ))}
+      <a class="btn btn-primary nav-cta" href={navCta.href}>{navCta.label}</a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,8 @@
+---
+import Base from '../layouts/Base.astro';
+import head from '../page-content/blog-seoul.head.html?raw';
+import body from '../page-content/blog-seoul.html?raw';
+---
+<Base active="guides" head={head}>
+  <Fragment set:html={body} />
+</Base>

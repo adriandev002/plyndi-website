@@ -1,0 +1,33 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+// head: page-specific <title>, meta, canonical and JSON-LD (raw HTML string)
+const { active = '', head = '' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/favicon-180.png">
+<meta name="theme-color" content="#0E3B3D">
+<link rel="stylesheet" href="/style.css">
+<Fragment set:html={head} />
+<slot name="head" />
+</head>
+<body>
+
+<a class="visually-hidden" href="#main">Skip to content</a>
+
+<Header active={active} />
+
+<slot />
+
+<Footer />
+
+<script is:inline src="/config.js"></script>
+<script is:inline src="/script.js"></script>
+</body>
+</html>
