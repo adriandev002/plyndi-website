@@ -26,6 +26,7 @@ const FEATURES = ['Tour listing', 'Tour detail pages', 'Booking', 'Contact form'
 const IMG = 'image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif,image/heic';
 const DOCS = 'application/pdf,.doc,.docx,.ppt,.pptx,.txt';
 const VIDEO = 'video/mp4,video/quicktime,video/webm';
+const SHEETS = '.csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 /* Upload limits (keep in step with the storage bucket settings in schema.sql) */
 export const UPLOAD_LIMITS = {
@@ -60,7 +61,11 @@ export const FILE_CATEGORIES = {
   review_photo:       { label: 'Customer photo', accept: IMG, multiple: false },
   // App projects
   app_references:     { label: 'Screenshots of apps you like', accept: IMG + ',application/pdf', multiple: true },
-  app_wireframes:     { label: 'Sketches, wireframes or mockups', accept: IMG + ',' + DOCS + ',.zip', multiple: true }
+  app_wireframes:     { label: 'Sketches, wireframes or mockups', accept: IMG + ',' + DOCS + ',.zip', multiple: true },
+  // CMS projects
+  cms_data_files:     { label: 'Spreadsheets or documents with your content', accept: SHEETS + ',' + DOCS + ',.zip', multiple: true },
+  cms_current_screens:{ label: 'Screenshots of your current website or admin', accept: IMG + ',application/pdf', multiple: true },
+  cms_references:     { label: 'Screenshots of admin systems or features you like', accept: IMG + ',application/pdf', multiple: true }
 };
 
 /* ---------- Repeatable groups (each one is its own database table) ---------- */
@@ -579,6 +584,146 @@ export const APP_STEPS = [
   }
 ];
 
+/* =========================================================
+   CMS PROJECTS
+   ---------------------------------------------------------
+   Used when the private link was created as a "CMS" link
+   (client_invites.project_type = 'cms'): a client tells Plyndi
+   what they want to manage on their website — a new CMS, or
+   additions and changes to the one they have.
+
+   Storage works like app projects: company_name, email, phone
+   and anything_else go to client_projects columns; every other
+   answer is kept in client_projects.app_details (jsonb) as
+   { fields: {...}, lists: { cms_content_types: [...] } }.
+   ========================================================= */
+const CMS_REQUEST_TYPES = ['A new CMS for my website', 'Add to or change my current CMS', 'Fix a problem in my current CMS', 'Not sure — let’s talk'];
+const CMS_MANAGE = ['Tours / products / packages', 'Services', 'Prices & availability', 'Blog / news / articles', 'Photos & gallery',
+  'Team / staff', 'Customer reviews', 'FAQ', 'Banners / ads / announcements', 'Page text (About, Contact…)',
+  'Inquiries from visitors', 'Bookings / orders', 'Other'];
+// Budget ranges — edit freely; the server accepts whatever is listed here.
+const CMS_BUDGETS = ['Under US$300', 'US$300 – 1,000', 'US$1,000 – 3,000', 'US$3,000 +', 'Not sure yet'];
+const CMS_EDITORS = ['Just me', '2 – 5 people', '6 – 20 people', 'More than 20'];
+const CMS_ROLES = ['Everyone can do everything', 'Some people should only edit, not publish', 'Not sure'];
+const CMS_LOGINS = ['One shared password is fine', 'Each person needs their own login', 'Not sure'];
+const CMS_FORMS = ['Inquiry / contact', 'Booking request', 'Newsletter sign-up', 'Job application', 'Feedback / review', 'None', 'Other'];
+
+export const CMS_LISTS = {
+  cms_content_types: {
+    table: null, itemLabel: 'Content type', addLabel: '+ Add Another Content Type', min: 0,
+    titleKey: 'name',
+    fields: [
+      { key: 'name', label: 'What is it?', type: 'text', placeholder: 'e.g. Tours', max: 200 },
+      { key: 'priority', label: 'Priority', type: 'select', options: APP_PRIORITIES, half: true },
+      { key: 'details', label: 'What details does each one have?', type: 'textarea', rows: 2, max: 2000,
+        placeholder: 'e.g. Title, price, duration, photos, description, meeting point' },
+      { key: 'amount', label: 'Roughly how many?', type: 'text', half: true, max: 100, placeholder: 'e.g. 10 now, 30 next year' },
+      { key: 'update_often', label: 'How often do they change?', type: 'text', half: true, max: 100, placeholder: 'e.g. Every week' }
+    ]
+  }
+};
+
+export const CMS_GROUPS = ['About you', 'What you need', 'Your content', 'Budget & timeline', 'Review', 'Submit'];
+
+export const CMS_STEPS = [
+  /* ================= QUICK START ================= */
+  {
+    id: 'cms_about', group: 'About you', title: 'About you', review: 'About you',
+    intro: 'Just the basics. You can skip anything that isn’t marked *.',
+    items: [
+      { key: 'company_name', label: 'Company name', type: 'text', required: true, half: true, placeholder: 'e.g. WanderAsia' },
+      { key: 'cms_contact_name', label: 'Your name', type: 'text', half: true, max: 120 },
+      { key: 'email', label: 'Email', type: 'email', required: true, half: true, help: 'We use this to contact you about the project.' },
+      { key: 'phone', label: 'Phone / WhatsApp / LINE', type: 'text', half: true },
+      { key: 'cms_website_url', label: 'Your website', type: 'url', help: 'Leave empty if you don’t have one yet.', placeholder: 'https://…' }
+    ]
+  },
+  {
+    id: 'cms_need', group: 'What you need', title: 'What you need', review: 'What you need',
+    intro: 'Plain words are perfect — no technical language needed.',
+    items: [
+      { key: 'cms_request_type', label: 'What would you like?', type: 'radio', options: CMS_REQUEST_TYPES, required: true },
+      { key: 'cms_current_system', label: 'What do you use to update your website now?', type: 'text', max: 200,
+        placeholder: 'e.g. Plyndi CMS, WordPress, Wix, we ask our developer, nothing yet' },
+      { key: 'cms_summary', label: 'Describe what you need', type: 'textarea', rows: 3, required: true, max: 3000,
+        placeholder: 'e.g. We want to add new tours and change prices ourselves, and see all customer inquiries in one place.' },
+      { key: 'cms_manage', label: 'What do you want to manage yourself?', type: 'checkboxes', options: CMS_MANAGE, required: true,
+        help: 'Tick everything you’d like to add, edit or remove without asking a developer.' },
+      { key: 'cms_manage_other', label: 'Other things to manage', type: 'text', showIf: { key: 'cms_manage', includes: 'Other' } }
+    ]
+  },
+  {
+    id: 'cms_content', group: 'Your content', title: 'Your content', review: 'Your content',
+    intro: 'For the most important things you ticked, tell us what each one contains. One or two is plenty — we’ll work out the rest with you.',
+    items: [
+      { list: 'cms_content_types' },
+      { key: 'cms_languages', label: 'Which languages must the content be in?', type: 'checkboxes', options: LANGUAGES },
+      { key: 'cms_language_other', label: 'Other language(s)', type: 'text', showIf: { key: 'cms_languages', includes: 'Other' } }
+    ]
+  },
+  {
+    id: 'cms_budget', group: 'Budget & timeline', title: 'Budget & timeline', review: 'Budget & timeline',
+    intro: 'A rough range helps us suggest the right first step. It’s not a commitment.',
+    items: [
+      { key: 'cms_budget', label: 'Budget range (US dollars)', type: 'select', options: CMS_BUDGETS, required: true, half: true,
+        help: 'A rough figure is fine. Prefer to talk in your own currency? Add it under “Anything else”.' },
+      { key: 'cms_launch_date', label: 'When would you like it ready?', type: 'text', half: true, placeholder: 'e.g. December 2026' },
+      { key: 'cms_deadline_reason', label: 'Is there a fixed deadline? Why?', type: 'text', placeholder: 'e.g. Before our new season starts' },
+      { key: 'anything_else', label: 'Anything else we should know?', type: 'textarea', rows: 3 }
+    ]
+  },
+
+  /* ================= OPTIONAL — "Add more details" ================= */
+  {
+    id: 'cms_people', optional: true, title: 'People & access', review: 'People & access',
+    summary: 'Who edits, who publishes, logins',
+    items: [
+      { key: 'cms_editor_count', label: 'How many people will update the website?', type: 'select', options: CMS_EDITORS, half: true },
+      { key: 'cms_roles', label: 'Who can publish changes?', type: 'radio', options: CMS_ROLES },
+      { key: 'cms_logins', label: 'How should people sign in?', type: 'radio', options: CMS_LOGINS },
+      { key: 'cms_people_notes', label: 'Anything else about your team?', type: 'textarea', rows: 2, placeholder: 'e.g. Our sales team only needs to see inquiries.' }
+    ]
+  },
+  {
+    id: 'cms_forms', optional: true, title: 'Visitor forms & notifications', review: 'Forms & notifications',
+    summary: 'Forms visitors fill in, who gets an email',
+    items: [
+      { key: 'cms_visitor_forms', label: 'Which forms should visitors be able to send?', type: 'checkboxes', options: CMS_FORMS },
+      { key: 'cms_forms_other', label: 'Other form(s)', type: 'text', showIf: { key: 'cms_visitor_forms', includes: 'Other' } },
+      { key: 'cms_form_questions', label: 'What should the forms ask?', type: 'textarea', rows: 2, placeholder: 'e.g. Name, email, travel date, number of guests, message' },
+      { key: 'cms_notify', label: 'Who should get an email when a form is sent?', type: 'text', placeholder: 'e.g. sales@yourcompany.com' },
+      { key: 'cms_reply_language', label: 'Which language do you reply in?', type: 'text', half: true, placeholder: 'e.g. English and Chinese' }
+    ]
+  },
+  {
+    id: 'cms_data', optional: true, title: 'Existing content & data', review: 'Existing content',
+    summary: 'Spreadsheets, documents or an old system to move in',
+    items: [
+      { key: 'cms_existing_data', label: 'Content we should move into the CMS', type: 'textarea', rows: 2,
+        help: 'Tour lists, price sheets, blog posts, an old website or system…' },
+      { files: 'cms_data_files', help: 'Excel, CSV, Word or PDF. Up to 50 MB per file.' }
+    ]
+  },
+  {
+    id: 'cms_today', optional: true, title: 'How it works today', review: 'How it works today',
+    summary: 'What’s slow or difficult now, what success looks like',
+    items: [
+      { key: 'cms_current_process', label: 'How do you update your website today?', type: 'textarea', rows: 2 },
+      { key: 'cms_pain_points', label: 'What is slow or difficult?', type: 'textarea', rows: 2 },
+      { key: 'cms_success', label: 'What would make the CMS a success for you?', type: 'textarea', rows: 2 },
+      { files: 'cms_current_screens' }
+    ]
+  },
+  {
+    id: 'cms_examples', optional: true, title: 'Examples you like', review: 'Examples',
+    summary: 'Screenshots of admin systems or features you like',
+    items: [
+      { key: 'cms_examples_notes', label: 'Systems or features you like', type: 'textarea', rows: 2, placeholder: 'e.g. Shopify’s product editor, or how Airbnb shows bookings' },
+      { files: 'cms_references' }
+    ]
+  }
+];
+
 /* ---------- One object per project type ---------- */
 function buildSchema(type, steps, lists, groups, version) {
   const fields = steps.flatMap(s => s.items.filter(i => i.key));
@@ -598,13 +743,14 @@ function buildSchema(type, steps, lists, groups, version) {
   return Object.freeze(S);
 }
 
-export const PROJECT_TYPES = ['website', 'app'];
-export const PROJECT_TYPE_LABELS = { website: 'Website', app: 'App' };
+export const PROJECT_TYPES = ['website', 'app', 'cms'];
+export const PROJECT_TYPE_LABELS = { website: 'Website', app: 'App', cms: 'CMS' };
 export const SCHEMAS = {
   website: buildSchema('website', STEPS, LISTS, GROUPS, SCHEMA_VERSION),
-  app: buildSchema('app', APP_STEPS, APP_LISTS, APP_GROUPS, 1)
+  app: buildSchema('app', APP_STEPS, APP_LISTS, APP_GROUPS, 1),
+  cms: buildSchema('cms', CMS_STEPS, CMS_LISTS, CMS_GROUPS, 1)
 };
 /* Unknown or missing type (e.g. an older API) → website, which is how every link worked before. */
 export function schemaFor(type) { return SCHEMAS[type] || SCHEMAS.website; }
-/* Website answer keys are real client_projects columns; anything else from an app form goes to app_details. */
+/* Website answer keys are real client_projects columns; anything else from an app or CMS form goes to app_details. */
 export const COLUMN_KEYS = SCHEMAS.website.FIELD_KEYS;

@@ -27,11 +27,12 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 const TOKEN_RE = /^[A-Za-z0-9_-]{32,128}$/;
 const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
 
-/* Which categories are allowed for top-level uploads, per project type (website / app) */
+/* Which categories are allowed for top-level uploads, per project type (website / app / cms) */
 const TOP_LEVEL_CATEGORIES = Object.fromEntries(PROJECT_TYPES.map(t => [t,
   [...new Set(schemaFor(t).STEPS.flatMap(s => s.items.filter(i => i.files).map(i => i.files)))]]));
 const COLUMN_KEY_SET = new Set(COLUMN_KEYS);
 const projectType = v => PROJECT_TYPES.includes(v) ? v : 'website';
+const TYPE_WORD = { website: 'website', app: 'app', cms: 'CMS' };
 
 class HttpError extends Error {
   constructor(status, message, extra) { super(message); this.status = status; this.extra = extra; }
@@ -240,7 +241,7 @@ async function adminCreateInvite(request, env) {
   return json(row, 201);
 }
 
-// project_type is only sent for app links, so website links also work on a database
+// project_type is only sent for app and CMS links, so website links also work on a database
 // that has not been migrated yet (the column then defaults to 'website').
 async function createInvite(env, name, notes, type) {
   const args = { p_token: randomToken(24), p_client_name: name, p_notes: notes };
@@ -249,6 +250,8 @@ async function createInvite(env, name, notes, type) {
     const row = await rpc(env, 'cp_create_invite', args);
     return { ...row, project_type: projectType(row && row.project_type) };
   } catch (e) {
+    // Every failure message names the function, so check the more specific CMS case first
+    if (type === 'cms' && /project_type_check/.test(e.message)) throw new HttpError(503, 'CMS links need the database update (supabase/migrations/2026-10-18-cms-projects.sql). Run it in Supabase, then try again.');
     if (type !== 'website' && /cp_create_invite/.test(e.message)) throw new HttpError(503, 'App links need the database update (supabase/migrations/2026-10-14-app-projects.sql). Run it in Supabase, then try again.');
     throw e;
   }
@@ -318,7 +321,7 @@ function sanitizeState(state, S) {
   const forValidation = { fields, lists, files: topFiles };
   if (S.type === 'website') return { payload: { fields, lists, files: dedupeFiles(files) }, forValidation };
 
-  // App projects: shared answers go to the normal columns, the rest to app_details (jsonb)
+  // App and CMS projects: shared answers go to the normal columns, the rest to app_details (jsonb)
   const columns = {}, appFields = {};
   for (const [k, v] of Object.entries(fields)) (COLUMN_KEY_SET.has(k) ? columns : appFields)[k] = v;
   return {
@@ -393,7 +396,7 @@ async function notifyOwner(env, request, result, invite) {
   const e = escapeHtml;
   const html = `
     <div style="font-family:Arial,sans-serif;color:#14211F;max-width:560px">
-      <h2 style="color:#0E3B3D;margin:0 0 12px">New ${invite.project_type === 'app' ? 'app' : 'website'} project submission</h2>
+      <h2 style="color:#0E3B3D;margin:0 0 12px">New ${TYPE_WORD[projectType(invite.project_type)]} project submission</h2>
       <table style="border-collapse:collapse;font-size:14px">
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Reference</td><td><strong>${e(result.ref)}</strong> (revision ${e(result.revision_number)})</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#3B4B48">Company</td><td>${e(result.company_name)}</td></tr>
@@ -413,7 +416,7 @@ async function notifyOwner(env, request, result, invite) {
     body: JSON.stringify({
       from: env.NOTIFY_FROM || 'Plyndi Client Forms <forms@plyndi.com>',
       to: env.OWNER_EMAIL.split(',').map(s => s.trim()).filter(Boolean),
-      subject: `New ${invite.project_type === 'app' ? 'app' : 'website'} project info: ${result.company_name} (${result.ref})`,
+      subject: `New ${TYPE_WORD[projectType(invite.project_type)]} project info: ${result.company_name} (${result.ref})`,
       html
     })
   });

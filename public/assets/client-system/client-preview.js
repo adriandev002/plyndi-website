@@ -22,9 +22,10 @@ async function init() {
     if (e.status === 404) return showState('Preview not found', 'This preview link is not valid. If you just submitted, please use the link from that page or contact contact@plyndi.com.');
     return showState('Preview unavailable', e.message, true);
   }
-  const isApp = data.project && data.project.project_type === 'app';
-  setupNotice(data, isApp);
-  if (isApp) renderAppSummary(data); else renderSite(data);
+  const type = data.project && data.project.project_type;
+  const summary = SUMMARIES[type];
+  setupNotice(data, summary);
+  if (summary) renderSummary(data, type, summary); else renderSite(data);
   $('pv-state').hidden = true;
   $('pv-site').hidden = false;
 }
@@ -36,12 +37,12 @@ function showState(title, msg, retry) {
     retry ? h('button', { type: 'button', class: 'pv-nbtn pv-nbtn-solid', onclick: () => location.reload() }, 'Try again') : null);
 }
 
-function setupNotice(data, isApp) {
+function setupNotice(data, summary) {
   const p = data.project;
-  if (isApp) {
-    document.title = 'App Project Summary — Plyndi';
-    document.querySelector('.pv-badge').textContent = 'App Project Summary';
-    document.querySelector('.pv-notice-desc').textContent = 'A summary of the app project information you provided. We’ll use it to plan scope, design and price with you before anything is built.';
+  if (summary) {
+    document.title = summary.badge + ' — Plyndi';
+    document.querySelector('.pv-badge').textContent = summary.badge;
+    document.querySelector('.pv-notice-desc').textContent = summary.notice;
   }
   $('pv-ref').textContent = `Ref ${p.ref} · Revision ${p.revision_number} · ${new Date(p.submitted_at).toLocaleDateString()}`;
   if (data.invite) {
@@ -55,7 +56,7 @@ function setupNotice(data, isApp) {
   if (params.get('new') === '1') {
     const t = $('pv-toast');
     t.hidden = false;
-    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). ${isApp ? 'Here is a summary of your app project.' : 'Here is a first preview of your website.'}`;
+    t.textContent = `Thank you — your information was submitted (reference ${p.ref}). ${summary ? summary.thanks : 'Here is a first preview of your website.'}`;
     history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(id));
     setTimeout(() => { t.hidden = true; }, 9000);
   }
@@ -386,16 +387,40 @@ const syncNotice = () => document.documentElement.style.setProperty('--notice-h'
 if (noticeEl) { syncNotice(); if ('ResizeObserver' in window) new ResizeObserver(syncNotice).observe(noticeEl); }
 
 /* =========================================================
-   App projects — a clean project summary (no fake screens).
+   App and CMS projects — a clean project summary (no fake screens).
    Answers come from project columns + project.app_details.
    ========================================================= */
-function renderAppSummary(data) {
-  const S = schemaFor('app');
+const SUMMARIES = {
+  app: {
+    badge: 'App Project Summary',
+    notice: 'A summary of the app project information you provided. We’ll use it to plan scope, design and price with you before anything is built.',
+    thanks: 'Here is a summary of your app project.',
+    titleKey: 'app_name', fallbackTitle: 'Your app', ledeKey: 'app_summary', chipsKey: 'app_platforms', chipsLabel: 'Platforms',
+    list: 'app_features', listTitle: 'Features', descKey: 'description',
+    next: ['We review your answers and may ask a few follow-up questions.',
+      'We suggest a first version — the features that matter most — with a timeline and price.',
+      'Nothing is built until you agree to the plan.']
+  },
+  cms: {
+    badge: 'CMS Request Summary',
+    notice: 'A summary of what you’d like to manage on your website. We’ll use it to plan the CMS, timeline and price with you before anything is built.',
+    thanks: 'Here is a summary of your CMS request.',
+    titleKey: null, fallbackTitle: 'Your CMS request', ledeKey: 'cms_summary', chipsKey: 'cms_manage', chipsLabel: 'Things to manage',
+    list: 'cms_content_types', listTitle: 'Content to manage', descKey: 'details',
+    extraKeys: ['amount', 'update_often'],
+    next: ['We review your answers and may ask a few follow-up questions.',
+      'We suggest what to build first, with a timeline and price.',
+      'Nothing is built until you agree to the plan. Your website keeps working as it is in the meantime.']
+  }
+};
+
+function renderSummary(data, type, cfg) {
+  const S = schemaFor(type);
   const p = data.project || {};
   const ad = (p.app_details && typeof p.app_details === 'object') ? p.app_details : {};
   const fields = { ...(ad.fields || {}) };
   for (const k of S.FIELD_KEYS) if (isFilled(p[k])) fields[k] = p[k];
-  const features = ((ad.lists && ad.lists.app_features) || []).filter(f => f && isFilled(f.name));
+  const features = ((ad.lists && ad.lists[cfg.list]) || []).filter(f => f && isFilled(f.name));
   const files = data.files || [];
   const val = v => Array.isArray(v) ? v.join(', ') : String(v);
 
@@ -409,19 +434,22 @@ function renderAppSummary(data) {
     h('div', { class: 'pva-wrap' },
       logo ? h('img', { class: 'pva-logo', src: logo.url, alt: (p.company_name || 'Client') + ' logo' }) : null,
       h('p', { class: 'pva-kicker' }, p.company_name || ''),
-      h('h1', null, fields.app_name || 'Your app'),
-      fields.app_summary ? h('p', { class: 'pva-lede' }, fields.app_summary) : null,
-      isFilled(fields.app_platforms) ? h('ul', { class: 'pva-chips', 'aria-label': 'Platforms' }, fields.app_platforms.map(x => h('li', null, x))) : null));
+      h('h1', null, (cfg.titleKey && fields[cfg.titleKey]) || cfg.fallbackTitle),
+      fields[cfg.ledeKey] ? h('p', { class: 'pva-lede' }, fields[cfg.ledeKey]) : null,
+      isFilled(fields[cfg.chipsKey]) ? h('ul', { class: 'pva-chips', 'aria-label': cfg.chipsLabel }, fields[cfg.chipsKey].map(x => h('li', null, x))) : null));
 
   const blocks = [];
   // Features grouped by priority
   if (features.length) {
     const order = ['Must have', 'Should have', 'Nice to have', ''];
     const groups = order.map(pr => ({ pr, items: features.filter(f => (f.priority || '') === pr) })).filter(g => g.items.length);
-    blocks.push(h('section', { class: 'pva-card pva-features' }, h('h2', null, 'Features'),
+    const listDef = S.LISTS[cfg.list];
+    const extra = f => (cfg.extraKeys || []).filter(k => isFilled(f[k]))
+      .map(k => h('span', null, `${listDef.fields.find(x => x.key === k).label} ${f[k]}`));
+    blocks.push(h('section', { class: 'pva-card pva-features' }, h('h2', null, cfg.listTitle),
       groups.map(g => h('div', { class: 'pva-prio' },
         h('h3', null, g.pr || 'Priority not set'),
-        h('ul', null, g.items.map(f => h('li', null, h('strong', null, f.name), f.description ? h('span', null, f.description) : null)))))));
+        h('ul', null, g.items.map(f => h('li', null, h('strong', null, f.name), f[cfg.descKey] ? h('span', null, f[cfg.descKey]) : null, extra(f))))))));
   }
   // Every other answer, in the same order as the form
   S.STEPS.forEach(step => {
@@ -429,7 +457,7 @@ function renderAppSummary(data) {
     let any = false;
     step.items.forEach(item => {
       if (item.key) {
-        if (['company_name', 'app_name', 'app_summary', 'app_platforms', 'primary_color'].includes(item.key)) return;
+        if (['company_name', 'primary_color', cfg.titleKey, cfg.ledeKey, cfg.chipsKey].includes(item.key)) return;
         if (!isVisible(item, fields) || !isFilled(fields[item.key])) return;
         any = true;
         const v = fields[item.key];
@@ -448,10 +476,7 @@ function renderAppSummary(data) {
 
   const next = h('section', { class: 'pva-card pva-next' },
     h('h2', null, 'What happens next'),
-    h('ol', null,
-      h('li', null, 'We review your answers and may ask a few follow-up questions.'),
-      h('li', null, 'We suggest a first version — the features that matter most — with a timeline and price.'),
-      h('li', null, 'Nothing is built until you agree to the plan.')),
+    h('ol', null, cfg.next.map(t => h('li', null, t))),
     h('p', { class: 'pva-muted' }, 'Questions? Email contact@plyndi.com.'));
 
   root.replaceChildren(hero, h('main', { class: 'pva-wrap pva-grid' }, ...blocks, next));

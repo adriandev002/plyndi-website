@@ -4,7 +4,7 @@
    /api/client/admin/*, which only answers requests that carry a
    valid Cloudflare Access login (checked server-side).
    ========================================================= */
-import { FILE_CATEGORIES, isFilled, schemaFor, PROJECT_TYPE_LABELS } from './client-schema.js';
+import { FILE_CATEGORIES, isFilled, schemaFor, PROJECT_TYPES, PROJECT_TYPE_LABELS } from './client-schema.js';
 import { api, h, formatBytes, formatDate, safeUrl } from './client-api.js';
 
 const STATUSES = ['New', 'Reviewing', 'In Progress', 'Approved', 'Completed'];
@@ -12,10 +12,10 @@ const $ = id => document.getElementById(id);
 let submissions = [];
 let invites = [];
 let detail = null;
-const typeOf = x => (x && x.project_type === 'app') ? 'app' : 'website';
+const typeOf = x => (x && PROJECT_TYPES.includes(x.project_type)) ? x.project_type : 'website';
 const typePill = x => h('span', { class: 'ad-type is-' + typeOf(x) }, PROJECT_TYPE_LABELS[typeOf(x)]);
 /* Values for one submission, whichever type it is: website answers live in columns,
-   app answers mostly in project.app_details = { fields, lists }. */
+   app and CMS answers mostly in project.app_details = { fields, lists }. */
 function projectView(d) {
   const p = d.project || {};
   const S = schemaFor(typeOf(p));
@@ -230,8 +230,8 @@ function exportShape(d) {
   const files = (d.files || []).map(({ id, category, name, type, size }) => ({ id, category, name, type, size }));
   const { S, lists } = projectView(d);
   const { app_details, ...project } = d.project;
-  const out = { exported_at: new Date().toISOString(), project_type: S.type, project, lists: S.type === 'app' ? lists : d.lists, files, revisions: d.revisions };
-  if (S.type === 'app') out.app_answers = (app_details && app_details.fields) || {};
+  const out = { exported_at: new Date().toISOString(), project_type: S.type, project, lists: S.type === 'website' ? d.lists : lists, files, revisions: d.revisions };
+  if (S.type !== 'website') out[S.type + '_answers'] = (app_details && app_details.fields) || {};
   return out;
 }
 function csvCell(v) {
@@ -295,7 +295,7 @@ async function createInvite(e) {
   if (!name) { $('inv-name').focus(); return; }
   $('inv-create').disabled = true;
   try {
-    const type = $('inv-type').value === 'app' ? 'app' : 'website';
+    const type = PROJECT_TYPES.includes($('inv-type').value) ? $('inv-type').value : 'website';
     const inv = await api('/admin/invites', { method: 'POST', body: { client_name: name, notes: $('inv-notes').value, project_type: type } });
     const url = inviteUrl(inv.token);
     const res = $('inv-result');

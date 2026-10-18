@@ -62,7 +62,8 @@ const EXT_MIME = {
   avif: 'image/avif', heic: 'image/heic', pdf: 'application/pdf', doc: 'application/msword',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  txt: 'text/plain', mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', zip: 'application/zip'
+  txt: 'text/plain', mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', zip: 'application/zip',
+  csv: 'text/csv', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 };
 export function guessMime(file) {
   if (file.type) return file.type;
@@ -128,7 +129,7 @@ export function submissionToState(data, schema) {
   const { FIELD_KEYS, LISTS, emptyState } = schema;
   const state = emptyState();
   const p = data.project || {};
-  // App projects keep most answers in project.app_details = { fields, lists }
+  // App and CMS projects keep most answers in project.app_details = { fields, lists }
   const appFields = (p.app_details && p.app_details.fields) || {};
   const appLists = (p.app_details && p.app_details.lists) || {};
   for (const k of FIELD_KEYS) {

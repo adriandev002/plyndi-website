@@ -53,10 +53,15 @@ async function init() {
   }
   useSchema(invite.project_type);
   state = emptyState();
-  $('cs-client-label').textContent = (S.type === 'app' ? 'App project · ' : 'Project information · ') + invite.client_name;
+  const LABELS = { app: 'App project · ', cms: 'CMS project · ' };
+  $('cs-client-label').textContent = (LABELS[S.type] || 'Project information · ') + invite.client_name;
   if (S.type === 'app') {
     $('cs-intro-title').textContent = 'Tell us about your app';
     $('cs-confirm-note').textContent = 'You’ll see a summary of your app project straight away, and you can still send a revision afterwards.';
+  }
+  if (S.type === 'cms') {
+    $('cs-intro-title').textContent = 'Tell us what you want to manage';
+    $('cs-confirm-note').textContent = 'You’ll see a summary of your CMS request straight away, and you can still send a revision afterwards.';
   }
 
   loadDraft();

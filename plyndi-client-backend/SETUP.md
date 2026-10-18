@@ -178,3 +178,21 @@ To turn it on after pulling these changes:
 
 Adding a future service: copy one `<article class="svc-card">` in `services/index.html`
 (instructions are in the comment above the cards). Coming-soon cards get `is-soon` and no button.
+
+## 13. CMS links (added 18 Oct 2026)
+
+A third link type for clients who want a CMS, or changes to the one they have: what they want to manage
+themselves, what each kind of content contains, languages, budget and timeline, plus optional sections on
+people and logins, visitor forms and notifications, existing content (Excel/CSV/Word/PDF uploads), what's hard
+today, and examples they like.
+
+1. **Supabase → SQL Editor → New query →** paste all of
+   `plyndi-client-backend/supabase/migrations/2026-10-18-cms-projects.sql` **→ Run**
+   (after `2026-10-14-app-projects.sql`; safe to re-run). It allows the `cms` type, stores CMS answers in
+   `app_details` like app answers, and lets the bucket accept spreadsheets.
+2. Deploy the Worker (`cd plyndi-client-backend/worker && npx wrangler deploy`), then the website.
+3. Admin → **Client links** → Project type **CMS** → Create link. Submissions show a **CMS** tag, and the
+   client sees a "CMS Request Summary" instead of a website preview.
+
+The questions are `CMS_STEPS` / `CMS_LISTS` in `client-schema.js`. After editing them, run
+`npm run sync-schema` in `plyndi-client-backend/worker` and deploy both.
