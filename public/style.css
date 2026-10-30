@@ -1046,3 +1046,35 @@ section.doors{ padding: 8px 0 24px; }
 .sources-box ul{ margin: 8px 0 0; padding-left: 18px; }
 .sources-box li{ margin-bottom: 4px; }
 .article-content{ min-width: 0; } /* lets wide tables scroll inside the column on phones */
+
+/* =========================================================
+   "Our clients" strip — home + /services/websites
+   ========================================================= */
+.clients-strip{ padding: 8px 0 28px; }
+.clients-inner{
+  display: flex; align-items: center; gap: 18px 28px; flex-wrap: wrap;
+  padding-top: 20px; padding-bottom: 20px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.clients-label{
+  margin: 0; font-family: inherit; font-size: .78rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
+}
+.clients-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; flex: 1; }
+.client-item{
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 16px; border-radius: 10px; text-decoration: none;
+  background: var(--teal-tint); border-left: 3px solid var(--teal);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.client-item:hover{ transform: translateY(-2px); box-shadow: var(--shadow); }
+.client-item:focus-visible{ outline: 3px solid var(--teal); outline-offset: 3px; }
+.client-name{ font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; color: var(--teal-deep); }
+.client-meta{ font-size: .85rem; color: var(--ink-soft); }
+.clients-more{ font-weight: 700; color: var(--teal-deep); text-decoration: none; white-space: nowrap; }
+.clients-more:hover{ text-decoration: underline; }
+.svc-section + .clients-strip, .page-hero + .clients-strip{ padding-top: 24px; }
+@media (max-width: 640px){
+  .clients-inner{ flex-direction: column; align-items: flex-start; }
+  .clients-list, .client-item{ width: 100%; }
+}
