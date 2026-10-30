@@ -621,7 +621,10 @@ section{ padding: 64px 0; }
 .contact-card{ background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 28px; }
 .contact-card .field-row{ margin-bottom: 16px; }
 
-.about-hero{ display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; padding: 48px 0; }
+/* The section is only the band; the two-column layout lives on the inner container
+   (.about-hero-grid), so single-column heroes like Careers aren't squeezed into column 1. */
+.about-hero{ padding: 48px 0; }
+.about-hero-grid{ display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; }
 .about-hero .avatar-mark{ width: 180px; height: 180px; font-size: 3.4rem; }
 .stat-row{ display: flex; gap: 32px; margin-top: 26px; flex-wrap: wrap; }
 .stat-row div strong{ display: block; font-family: var(--font-display); font-size: 1.6rem; color: var(--teal-deep); }
@@ -641,7 +644,8 @@ section{ padding: 64px 0; }
   .article-body{ grid-template-columns: 1fr; }
   .article-sidebar{ position: static; }
   .footer-grid{ grid-template-columns: 1fr 1fr; }
-  .about-hero{ grid-template-columns: 1fr; }
+  .about-hero-grid{ grid-template-columns: 1fr; gap: 28px; }
+  .about-hero .avatar-mark{ width: 120px; height: 120px; font-size: 2.4rem; }
   .contact-grid{ grid-template-columns: 1fr; }
 }
 
@@ -1080,4 +1084,89 @@ section.doors{ padding: 8px 0 24px; }
 @media (max-width: 760px){
   .client-card{ grid-template-columns: 1fr; gap: 18px; padding: 20px; }
   .client-thanks{ font-size: 1.08rem; }
+}
+
+/* =========================================================
+   Homepage, app-first (Oct 2026)
+   Hero with inline launch-list form, build strip, module cards,
+   3-guide teaser, studio band.
+   ========================================================= */
+.hero-app{ padding: 48px 0 40px; }
+.hero-app .hero-grid{ grid-template-columns: 1fr 1fr; gap: 44px; }
+.hero-app .lede{ max-width: 34em; }
+.hero-shot{ margin: 0; }
+.hero-shot img{
+  width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover;
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+
+/* Signup form (hero, footer, guides hub) */
+.newsletter-form.signup-form{ flex-direction: column; gap: 8px; max-width: 440px; }
+.signup-row{ display: flex; gap: 10px; }
+.signup-row input{ flex: 1; min-width: 0; min-height: 48px; }
+.signup-row .btn{ min-height: 48px; }
+.hero-app .signup-row input{ border: 1px solid var(--line); background: var(--white); }
+.signup-platform{
+  border: 0; margin: 2px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px;
+  font-size: 0.9rem; color: var(--ink-soft);
+}
+.signup-platform legend{ float: left; padding: 0; margin-right: 4px; line-height: 32px; font-weight: 600; color: var(--teal-deep); }
+.signup-platform legend span{ font-weight: 400; color: var(--ink-soft); }
+.signup-platform label{ display: inline-flex; align-items: center; gap: 6px; min-height: 32px; cursor: pointer; }
+.signup-platform input{ accent-color: var(--teal-deep); width: 18px; height: 18px; margin: 0; }
+.signup-note{ font-size: 0.86rem; color: var(--ink-soft); margin: 0; }
+.signup-note a{ color: var(--teal-deep); font-weight: 600; }
+.newsletter-card .signup-platform, .newsletter-card .signup-platform legend,
+.newsletter-card .signup-platform legend span, .newsletter-card .signup-note{ color: var(--teal-deep); }
+.hero-app .form-status{ color: var(--teal-deep); font-size: 0.92rem; font-weight: 600; }
+.hero-textlink{
+  display: inline-block; margin-top: 18px; font-weight: 600; color: var(--teal-deep);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* Build strip */
+section.build-strip{ padding: 26px 0; background: var(--white); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.build-title{ font-size: 1.05rem; margin-bottom: 12px; }
+.build-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 0.95rem; }
+.build-list li{ display: inline-flex; align-items: center; gap: 8px; }
+.build-list .status-pill{ margin-top: 0; }
+.build-foot{ margin: 12px 0 0; font-size: 0.88rem; color: var(--ink-soft); }
+.build-foot a{ color: var(--teal-deep); font-weight: 600; }
+
+/* Module cards on the homepage: 2 x 2 */
+.home-modules{ grid-template-columns: repeat(2, 1fr); }
+.home-modules .feature-card{ padding: 0; }
+.home-modules .feature-body{ padding: 20px 22px 24px; }
+
+/* Three guides */
+.home-guides{ grid-template-columns: repeat(3, 1fr); }
+#trending .dest-chips{ margin-top: 28px; }
+
+/* Trip sketch hand-off */
+.planner-handoff{
+  margin: 16px 0 0; padding: 14px 16px; border-radius: var(--radius);
+  background: var(--teal-tint); color: var(--teal-deep); font-size: 0.92rem;
+}
+.planner-handoff a{ font-weight: 700; color: var(--teal-deep); }
+
+/* Studio band */
+section.studio-band{ background: var(--paper-2); }
+.studio-grid{ display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+.studio-grid .hero-actions{ margin-bottom: 0; }
+
+@media (max-width: 960px){
+  .hero-app .hero-grid{ grid-template-columns: 1fr; gap: 28px; }
+  .hero-app .hero-shot{ order: 2; }
+  .home-guides{ grid-template-columns: 1fr 1fr; }
+  .studio-grid{ grid-template-columns: 1fr; }
+}
+@media (max-width: 720px){
+  .hero-app{ padding: 28px 0 32px; }
+  .home-modules, .home-guides{ grid-template-columns: 1fr; }
+  .home-guides .guide-card:nth-child(n+2) .guide-media{ display: none; }
+}
+@media (max-width: 480px){
+  .signup-row{ flex-direction: column; }
+  .signup-row .btn{ justify-content: center; }
 }

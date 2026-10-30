@@ -421,7 +421,7 @@ function initPlanner(){
     const pace = form.pace.value;
 
     if (!destination || !TRIP_TEMPLATES[destination]) {
-      output.innerHTML = '<p class="planner-empty">Pick a destination to generate a starter skeleton.</p>';
+      output.innerHTML = '<p class="planner-empty">Pick a destination to sketch a trip.</p>';
       return;
     }
 
@@ -439,7 +439,7 @@ function initPlanner(){
     }
 
     output.innerHTML = `
-      <p class="box-title">Your ${days}-day ${trip.label} skeleton (${pace} pace)</p>
+      <p class="box-title">Your ${days}-day ${trip.label} sketch (${pace} pace)</p>
       <ol>${items.join('')}</ol>
       <p class="planner-disclaimer">
         This is a starting frame, not a booked plan — swap items around and leave
@@ -447,50 +447,55 @@ function initPlanner(){
         <a href="${trip.guideUrl}"><strong>${trip.label} guide</strong></a> for opening hours,
         ticket prices, and how to get between these places.
       </p>
+      <p class="planner-handoff">
+        <strong>Keep this trip in Plyndi.</strong> The app holds the itinerary, the budget in any currency
+        and the packing list together. <a href="#join" data-source="generator">Join the launch list &rarr;</a>
+      </p>
     `;
   });
 }
 
-/* ---------- Newsletter form (Formspree) ---------- */
+/* ---------- Signup forms (Formspree) ----------
+   Works for every <form class="newsletter-form"> on a page (hero + footer on the homepage,
+   the app page, the guides hub). Each form says which list it is via a hidden "list" field,
+   and where it sits via a hidden "source" field. Optional data-success sets the thank-you text. */
 function initNewsletterForm(){
-  const form = document.getElementById('newsletter-form');
-  if (!form) return;
-  const status = form.parentElement.querySelector('.form-status');
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalBtnText = submitBtn ? submitBtn.textContent : 'Subscribe';
-  const listField = form.querySelector('input[name="list"]');
-  const isAppLaunch = !!listField && listField.value === 'app-launch';
+  const forms = document.querySelectorAll('form.newsletter-form');
+  forms.forEach((form) => {
+    const status = form.querySelector('.form-status') || form.parentElement.querySelector('.form-status');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.textContent : 'Subscribe';
+    const listField = form.querySelector('input[name="list"]');
+    const isAppLaunch = !!listField && listField.value === 'app-launch';
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isAppLaunch ? 'Sending…' : 'Subscribing…'; }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = isAppLaunch ? 'Sending…' : 'Subscribing…'; }
 
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' },
-      });
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' },
+        });
+        if (!response.ok) throw new Error('Submission failed');
 
-      if (response.ok) {
         form.reset();
         if (status) {
           status.style.display = 'block';
-          status.textContent = isAppLaunch
+          status.textContent = form.dataset.success || (isAppLaunch
             ? "You're on the launch list — we'll email you once, the day Plyndi is live."
-            : "You're on the list — you'll hear from us when a new guide goes up.";
+            : "You're on the list — you'll hear from us when a new guide goes up.");
         }
-      } else {
-        throw new Error('Submission failed');
+      } catch (err) {
+        if (status) {
+          status.style.display = 'block';
+          status.textContent = 'Something went wrong — please try again in a moment.';
+        }
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
       }
-    } catch (err) {
-      if (status) {
-        status.style.display = 'block';
-        status.textContent = 'Something went wrong subscribing — please try again in a moment.';
-      }
-    } finally {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalBtnText; }
-    }
+    });
   });
 }
 
@@ -676,3 +681,14 @@ function initBookingLinks(){
   }, { threshold: 0.15 });
   cards.forEach(function (c) { io.observe(c); });
 })();
+
+/* =========================================================
+   Launch-list links that carry a source (e.g. the trip sketch):
+   tag the footer signup so we can see which part of the page sent people.
+   ========================================================= */
+document.addEventListener('click', function (e) {
+  var link = e.target.closest && e.target.closest('a[data-source][href="#join"]');
+  if (!link) return;
+  var field = document.querySelector('#join input[name="source"]');
+  if (field) field.value = link.getAttribute('data-source');
+});

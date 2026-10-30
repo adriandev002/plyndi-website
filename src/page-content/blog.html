@@ -455,14 +455,25 @@
       </div>
     </div>
   </section>
-  <section class="section-alt">
+  <section id="subscribe" class="section-alt">
     <div class="container">
       <div class="newsletter-card">
         <div>
-          <h2>Planning the trip, not just reading about it?</h2>
-          <p class="lede">Plyndi&rsquo;s iOS app holds the itinerary, the budget and the packing list together &mdash; in development, launching soon.</p>
+          <h2>New guides, by email</h2>
+          <p class="lede">One email when a new guide goes up. No drip campaigns.</p>
         </div>
-        <a class="btn btn-primary" href="app.html">See the app</a>
+        <form class="newsletter-form signup-form" action="https://formspree.io/f/mwlkgqol" method="POST" data-success="You&rsquo;re on the list &mdash; you&rsquo;ll hear from us when a new guide goes up.">
+          <div class="signup-row">
+            <label for="email-guides" class="visually-hidden">Email address</label>
+            <input type="email" id="email-guides" name="email" placeholder="you@email.com" autocomplete="email" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <input type="hidden" name="_subject" value="New Plyndi guides subscriber">
+          <input type="hidden" name="list" value="guides">
+          <input type="hidden" name="source" value="guides-hub">
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+          <p class="form-status form-note" role="status" style="display:none"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -477,7 +488,7 @@
         </div>
         <div class="hero-actions">
           <a class="btn btn-primary" href="app.html">See what&rsquo;s built</a>
-          <a class="btn btn-outline" href="app.html#waitlist">Join the launch list</a>
+          <a class="btn btn-outline" href="index.html#join">Join the launch list</a>
         </div>
       </div>
     </div>
