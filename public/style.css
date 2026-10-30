@@ -1048,33 +1048,36 @@ section.doors{ padding: 8px 0 24px; }
 .article-content{ min-width: 0; } /* lets wide tables scroll inside the column on phones */
 
 /* =========================================================
-   "Our clients" strip — home + /services/websites
+   "Our clients" — home + /services/websites (+ logo on /services cards)
    ========================================================= */
-.clients-strip{ padding: 8px 0 28px; }
-.clients-inner{
-  display: flex; align-items: center; gap: 18px 28px; flex-wrap: wrap;
-  padding-top: 20px; padding-bottom: 20px;
-  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-}
-.clients-label{
-  margin: 0; font-family: inherit; font-size: .78rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
-}
-.clients-list{ list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; flex: 1; }
-.client-item{
-  display: flex; flex-direction: column; gap: 2px;
-  padding: 10px 16px; border-radius: 10px; text-decoration: none;
-  background: var(--teal-tint); border-left: 3px solid var(--teal);
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-.client-item:hover{ transform: translateY(-2px); box-shadow: var(--shadow); }
-.client-item:focus-visible{ outline: 3px solid var(--teal); outline-offset: 3px; }
-.client-name{ font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; color: var(--teal-deep); }
-.client-meta{ font-size: .85rem; color: var(--ink-soft); }
+.clients-strip{ padding: 12px 0 36px; }
+.clients-head{ display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.clients-head h2{ margin: 0; }
 .clients-more{ font-weight: 700; color: var(--teal-deep); text-decoration: none; white-space: nowrap; }
 .clients-more:hover{ text-decoration: underline; }
-.svc-section + .clients-strip, .page-hero + .clients-strip{ padding-top: 24px; }
-@media (max-width: 640px){
-  .clients-inner{ flex-direction: column; align-items: flex-start; }
-  .clients-list, .client-item{ width: 100%; }
+.clients-list{ list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.client-card{
+  display: grid; grid-template-columns: minmax(240px, 320px) 1fr; align-items: center; gap: 28px;
+  padding: 24px 28px; background: var(--white); border: 1px solid var(--line); border-radius: 14px;
+}
+.client-logo{
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 18px 16px; border-radius: 10px; background: var(--paper-2, #F3EFE6);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.client-logo:hover{ transform: translateY(-2px); box-shadow: var(--shadow); }
+.client-logo:focus-visible{ outline: 3px solid var(--teal); outline-offset: 3px; }
+.client-logo img{ display: block; height: auto; max-width: 100%; }
+.client-logo img:first-child{ width: 96px; }
+.client-logo img:last-child{ width: 220px; }
+.client-thanks{
+  margin: 0 0 12px; font-family: var(--font-display); font-size: 1.2rem; line-height: 1.45; color: var(--teal-deep);
+  max-width: 52ch;
+}
+.client-meta{ margin: 0; font-size: .88rem; color: var(--ink-soft); }
+.client-meta a{ color: var(--teal-deep); font-weight: 600; }
+.svc-card .work-logo{ display: block; width: 190px; height: auto; margin: 0 0 14px; }
+@media (max-width: 760px){
+  .client-card{ grid-template-columns: 1fr; gap: 18px; padding: 20px; }
+  .client-thanks{ font-size: 1.08rem; }
 }

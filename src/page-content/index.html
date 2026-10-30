@@ -59,19 +59,26 @@
     </div>
   </section>
 
-  <!-- OUR CLIENTS — add a <li> per client (only with their permission) -->
+  <!-- OUR CLIENTS — copy one <li class="client-card"> per client (only with their permission).
+       Logos live in /assets/clients/. -->
   <section class="clients-strip" aria-labelledby="clients-title">
-    <div class="container clients-inner">
-      <h2 id="clients-title" class="clients-label">Our clients</h2>
+    <div class="container">
+      <div class="clients-head">
+        <h2 id="clients-title">Our clients</h2>
+        <a class="clients-more" href="/services/">See our work &rarr;</a>
+      </div>
       <ul class="clients-list">
-        <li>
-          <a class="client-item" href="https://wanderasia.tw" target="_blank" rel="noopener">
-            <span class="client-name">Wander Asia 漫遊亞洲</span>
-            <span class="client-meta">Tour operator, Taipei &middot; Website by Plyndi &middot; wanderasia.tw &#8599;</span>
+        <li class="client-card">
+          <a class="client-logo" href="https://wanderasia.tw" target="_blank" rel="noopener" aria-label="Wander Asia 漫遊亞洲 website (opens in a new tab)">
+            <img src="/assets/clients/wanderasia-symbol.svg" alt="" width="114" height="75" loading="lazy">
+            <img src="/assets/clients/wanderasia-wordmark.svg" alt="Wander Asia 漫遊亞洲" width="230" height="46" loading="lazy">
           </a>
+          <div class="client-body">
+            <p class="client-thanks">Thank you, Wander Asia, for trusting Plyndi with your website. We&rsquo;re proud to see it live and helping travelers discover Taiwan with local guides.</p>
+            <p class="client-meta">Tour operator, Taipei &middot; Website designed &amp; built by Plyndi &middot; <a href="https://wanderasia.tw" target="_blank" rel="noopener">wanderasia.tw&nbsp;&#8599;</a></p>
+          </div>
         </li>
       </ul>
-      <a class="clients-more" href="/services/">See our work &rarr;</a>
     </div>
   </section>
 
