@@ -13,7 +13,7 @@ const { active = '' } = Astro.props;
       {nav.map((item) => (
         <a href={item.href} class={item.key === active ? 'is-active' : undefined} aria-current={item.key === active ? 'page' : undefined}>{item.label}</a>
       ))}
-      <a class="btn btn-primary nav-cta" href={navCta.href}>{navCta.label}</a>
+      <a class="btn btn-primary nav-cta" href={navCta.href} target="_blank" rel="noopener">{navCta.label}</a>
     </nav>
   </div>
 </header>

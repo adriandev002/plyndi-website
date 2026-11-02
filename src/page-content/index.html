@@ -4,30 +4,15 @@
   <section class="hero hero-app">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <span class="hero-eyebrow">iPhone app &middot; In development</span>
+        <span class="hero-eyebrow">iPhone app &middot; Now on the App Store</span>
         <h1>One calm plan for your whole life.</h1>
         <p class="lede">Plyndi is an iPhone app for your day, your money and your trips &mdash; with workouts and lists alongside. Type &ldquo;dinner 480 baht in Bangkok&rdquo; and it files itself as an expense, converted to your currency.</p>
-        <div id="join-top">
-        <form class="newsletter-form signup-form" action="https://formspree.io/f/mwlkgqol" method="POST" data-success="You&rsquo;re on the launch list &mdash; one email, the day Plyndi is on the App Store.">
-          <div class="signup-row">
-            <label for="email-hero" class="visually-hidden">Email address</label>
-            <input type="email" id="email-hero" name="email" placeholder="you@email.com" autocomplete="email" required>
-            <button type="submit" class="btn btn-primary">Get early access</button>
-          </div>
-          <fieldset class="signup-platform">
-            <legend>My phone <span>(optional)</span></legend>
-            <label><input type="radio" name="platform" value="iphone"> iPhone</label>
-            <label><input type="radio" name="platform" value="android"> Android</label>
-          </fieldset>
-          <input type="hidden" name="_subject" value="Plyndi app launch list signup">
-          <input type="hidden" name="list" value="app-launch">
-          <input type="hidden" name="source" value="home-hero">
-          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-          <p class="signup-note">One email when it reaches the App Store. Nothing else. No bank connection, no ads, no data sale.</p>
-          <p class="form-status form-note" role="status" style="display:none"></p>
-        </form>
+        <div id="join-top" class="hero-actions">
+          <a class="btn btn-primary" href="https://apps.apple.com/app/plyndi/id6821974307" target="_blank" rel="noopener">Download on the App Store</a>
+          <a class="btn btn-outline" href="app.html">See what it does</a>
         </div>
-        <a class="hero-textlink" href="#build">See what&rsquo;s already built &darr;</a>
+        <p class="signup-note">Free on iPhone and iPad (iOS 17.6 or later). No bank connection, no ads, no data sale. On Android? <a href="#join">Get told when it lands</a>.</p>
+        <a class="hero-textlink" href="#build">See what&rsquo;s in it &darr;</a>
       </div>
 
       <figure class="hero-shot">
@@ -39,7 +24,7 @@
   <!-- BUILD STATUS: the honest tracker, promoted from the app page -->
   <section id="build" class="build-strip" aria-labelledby="build-title">
     <div class="container">
-      <h2 id="build-title" class="build-title">Where the build is today</h2>
+      <h2 id="build-title" class="build-title">What&rsquo;s in the app today</h2>
       <ul class="build-list">
         <li><span class="status-pill is-done">Built</span> Daily Briefing</li>
         <li><span class="status-pill is-done">Built</span> Money in any currency</li>
@@ -47,7 +32,8 @@
         <li><span class="status-pill is-done">Built</span> Quick Add &amp; receipt scan</li>
         <li><span class="status-pill is-done">Built</span> Fitness plans</li>
         <li><span class="status-pill is-wip">In progress</span> AI itinerary drafting</li>
-        <li><span class="status-pill is-next">Next</span> App Store</li>
+        <li><span class="status-pill is-done">Live</span> On the App Store</li>
+        <li><span class="status-pill is-next">Next</span> Android</li>
       </ul>
       <p class="build-foot">No screenshots of features that don&rsquo;t exist. <a href="app.html#build">Full build log &rarr;</a></p>
     </div>
@@ -266,11 +252,11 @@
       <div class="faq-list">
         <details class="faq-item">
           <summary>When can I download Plyndi?</summary>
-          <p>Not yet. It&rsquo;s a native iPhone app in active development, and App Store submission is the next milestone. There&rsquo;s no fixed date yet &mdash; <a href="#join">join the launch list</a> and you&rsquo;ll get one email the day it&rsquo;s live. The <a href="app.html#build">build log</a> shows exactly what&rsquo;s finished.</p>
+          <p>Now. Plyndi is on the App Store for iPhone and iPad (iOS 17.6 or later) &mdash; <a href="https://apps.apple.com/app/plyndi/id6821974307" target="_blank" rel="noopener">download it here</a>. The <a href="app.html#build">build log</a> shows what&rsquo;s finished and what&rsquo;s still being tuned.</p>
         </details>
         <details class="faq-item">
           <summary>How much will it cost?</summary>
-          <p>Plyndi Premium is the subscription that unlocks the AI features. The price isn&rsquo;t final yet; it will be published here before launch, and billing goes through Apple.</p>
+          <p>Plyndi is free to download. Plyndi Premium is the optional subscription that unlocks the AI features, monthly or yearly, with a 2-week free trial for new subscribers. Billing goes through Apple, and the App Store shows the price in your local currency.</p>
         </details>
         <details class="faq-item">
           <summary>Is my money data private?</summary>
@@ -282,7 +268,7 @@
         </details>
         <details class="faq-item">
           <summary>Will there be an Android version?</summary>
-          <p>It&rsquo;s planned, on the same backend, after the iPhone launch. If you use Android, pick it on the launch-list form &mdash; that tells me how many people are waiting.</p>
+          <p>It&rsquo;s planned, on the same backend. If you use Android, <a href="#join">leave your email</a> &mdash; that tells me how many people are waiting, and you&rsquo;ll get one email when it&rsquo;s out.</p>
         </details>
         <details class="faq-item">
           <summary>Is the trip sketch on this page AI?</summary>
@@ -305,22 +291,18 @@
     <div class="container">
       <div class="newsletter-card">
         <div>
-          <h2>Get Plyndi the day it launches</h2>
-          <p class="lede">One email when Plyndi is on the App Store. That&rsquo;s the whole list.</p>
+          <h2>On Android? Get told when it lands</h2>
+          <p class="lede">Plyndi is <a href="https://apps.apple.com/app/plyndi/id6821974307" target="_blank" rel="noopener">on the App Store now</a>. The Android version is next &mdash; one email when it&rsquo;s out. That&rsquo;s the whole list.</p>
         </div>
-        <form class="newsletter-form signup-form" action="https://formspree.io/f/mwlkgqol" method="POST" data-success="You&rsquo;re on the launch list &mdash; one email, the day Plyndi is on the App Store.">
+        <form class="newsletter-form signup-form" action="https://formspree.io/f/mwlkgqol" method="POST" data-success="You&rsquo;re on the list &mdash; one email, the day Plyndi is on Android.">
           <div class="signup-row">
             <label for="email-footer" class="visually-hidden">Email address</label>
             <input type="email" id="email-footer" name="email" placeholder="you@email.com" autocomplete="email" required>
-            <button type="submit" class="btn btn-primary">Join the launch list</button>
+            <button type="submit" class="btn btn-primary">Notify me</button>
           </div>
-          <fieldset class="signup-platform">
-            <legend>My phone <span>(optional)</span></legend>
-            <label><input type="radio" name="platform" value="iphone"> iPhone</label>
-            <label><input type="radio" name="platform" value="android"> Android</label>
-          </fieldset>
-          <input type="hidden" name="_subject" value="Plyndi app launch list signup">
-          <input type="hidden" name="list" value="app-launch">
+          <input type="hidden" name="platform" value="android">
+          <input type="hidden" name="_subject" value="Plyndi Android list signup">
+          <input type="hidden" name="list" value="android-launch">
           <input type="hidden" name="source" value="home-footer">
           <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
           <p class="signup-note">Prefer new travel guides? <a href="blog.html#subscribe">Get those instead</a>.</p>

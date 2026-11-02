@@ -9,4 +9,4 @@ export const nav = [
   { key: 'about', label: 'About', href: '/about.html' },
   { key: 'contact', label: 'Contact', href: '/contact.html' },
 ];
-export const navCta = { label: 'Join the launch list', href: '/index.html#join' };
+export const navCta = { label: 'Get the app', href: 'https://apps.apple.com/app/plyndi/id6821974307' };
